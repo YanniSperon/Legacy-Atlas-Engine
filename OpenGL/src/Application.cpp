@@ -724,6 +724,7 @@ int main(void)
 		GLuint sphereCowTex = Loader::LoadTexture("res/images/other/", "newcow.png", GL_REPEAT, GL_REPEAT, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
 		GLuint wallTex = Loader::LoadTexture("res/images/textures/", "wall.png", GL_REPEAT, GL_REPEAT, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
 		GLuint whiteTex = Loader::LoadTexture("res/images/colors/", "white.png", GL_REPEAT, GL_REPEAT, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
+		GLuint whitetransparentTex = Loader::LoadTexture("res/images/colors/", "whitetransparent.png", GL_REPEAT, GL_REPEAT, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
 		GLuint blueTex = Loader::LoadTexture("res/images/colors/", "blue.png", GL_REPEAT, GL_REPEAT, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
 		GLuint redTex = Loader::LoadTexture("res/images/colors/", "red.png", GL_REPEAT, GL_REPEAT, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
 		GLuint greenTex = Loader::LoadTexture("res/images/colors/", "green.png", GL_REPEAT, GL_REPEAT, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
@@ -740,6 +741,7 @@ int main(void)
 		textures.push_back(sphereCowTex);
 		textures.push_back(wallTex);
 		textures.push_back(whiteTex);
+		textures.push_back(whitetransparentTex);
 		textures.push_back(blueTex);
 		textures.push_back(redTex);
 		textures.push_back(greenTex);
@@ -762,14 +764,21 @@ int main(void)
 		Mode currentMode = Mode::cam;
 
 		Font arial24pt = Font("res/fonts/arial/", "arial.ttf", 24);
-		Font timesnewroman48pt = Font("res/fonts/times new roman/", "times.ttf", 48);
+		Font timesnewroman32pt = Font("res/fonts/times new roman/", "times.ttf", 32);
 
 		gui.push_back(Object2D(glm::vec2(-25.0f, -25.0f), glm::vec2(25.0f, 25.0f), glm::vec2(0.0f, 0.0f), glm::vec2(1920.0f / 2.0f, 1080.0f / 2.0f), glm::vec2(1.0f, 1.0f), tex2D, shader2D.GetShaderID(), cursorCoords.min, cursorCoords.max));
-		gui.push_back(Object2D(glm::vec2(-262.5f, -262.5f), glm::vec2(-12.5f, -12.5f), glm::vec2(0.0f, 0.0f), glm::vec2(1920, 1080), glm::vec2(1.0f, 1.0f), redTex, shader2D.GetShaderID(), glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f)));
-		gui.push_back(Object2D(glm::vec2(-275.0f, -275.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(1920, 1080), glm::vec2(1.0f, 1.0f), whiteTex, shader2D.GetShaderID(), glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f)));
+		gui.push_back(Object2D(glm::vec2(-262.5f, -262.5f), glm::vec2(-12.5f, -12.5f), glm::vec2(0.0f, 0.0f), glm::vec2(1920.0f, 1080.0f), glm::vec2(1.0f, 1.0f), redTex, shader2D.GetShaderID(), glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f)));
+		gui.push_back(Object2D(glm::vec2(-275.0f, -275.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(1920.0f, 1080.0f), glm::vec2(1.0f, 1.0f), whiteTex, shader2D.GetShaderID(), glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f)));
+		gui.push_back(Object2D(glm::vec2(0.0f, 0.0f), glm::vec2(720.0f, 270.0f), glm::vec2(0.0f, 0.0f), glm::vec2(25.0f, 800.0f), glm::vec2(1.0f, 1.0f), whitetransparentTex, shader2D.GetShaderID(), glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f)));
 
-		sentences.push_back(Sentence(textShader, timesnewroman48pt, "HP: ", 1.0f, glm::vec2(100.0f, 100.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
+		//sentences.push_back(Sentence(textShader, timesnewroman32pt, "HP: ", 1.0f, glm::vec2(100.0f, 100.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
+		sentences.push_back(Sentence(textShader, timesnewroman32pt, "Mode: ", 1.0f, glm::vec2(1500.0f, 100.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
 		sentences.push_back(Sentence(textShader, arial24pt, "Mini-Map", 1.0f, glm::vec2(1700.0f, 1000.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
+		sentences.push_back(Sentence(textShader, arial24pt, "Keybinds:", 1.0f, glm::vec2(337.5f, 1030.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
+		sentences.push_back(Sentence(textShader, arial24pt, "  C:Camera      V:Move      R:Rotate", 1.0f, glm::vec2(175.0f, 980.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
+		sentences.push_back(Sentence(textShader, arial24pt, "E:Scale      F:Fullscreen      T:Texture", 1.0f, glm::vec2(175.0f, 930.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
+		sentences.push_back(Sentence(textShader, arial24pt, "[: Change Selection Left                       K: Change Texture Left", 1.0f, glm::vec2(50.0f, 880.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
+		sentences.push_back(Sentence(textShader, arial24pt, "]: Change Selection Right                   L: Change Texture Right", 1.0f, glm::vec2(50.0f, 830.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
 
 		bool loadFile = true;
 		if (loadFile) {
@@ -820,9 +829,6 @@ int main(void)
 			///////////////////////////////////////////////////////////////////////////
 			if (fPressed) {
 				glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0, 0, currentWidth, currentHeight, GLFW_DONT_CARE);
-			}
-			if (hPressed) {
-				HP--;
 			}
 			if (escapePressed) {
 				editorEnabled = false;
@@ -1008,7 +1014,25 @@ int main(void)
 			///////////////////////////////////////////////////////////////////////////
 			glm::mat4 viewMatrix = camera.GetViewTransformMatrix();
 			///////////////////////////////////////////////////////////////////////////
-			sentences[0].SetText("HP: " + std::to_string(HP) + "%");
+			//sentences[0].SetText("HP: " + std::to_string(HP) + "%");
+			if (currentMode == Mode::cam) {
+				sentences[0].SetText("Mode: Camera");
+			}
+			else if (currentMode == Mode::output) {
+				sentences[0].SetText("Mode: Output");
+			}
+			else if (currentMode == Mode::rotate) {
+				sentences[0].SetText("Mode: Rotate");
+			}
+			else if (currentMode == Mode::scale) {
+				sentences[0].SetText("Mode: Scale");
+			}
+			else if (currentMode == Mode::texture) {
+				sentences[0].SetText("Mode: Texture");
+			}
+			else if (currentMode == Mode::translate) {
+				sentences[0].SetText("Mode: Translate");
+			}
 			renderer.submitForceRender3D(&skybox);
 			renderer.submit3D(&plane, camPos);
 			for (unsigned int i = 0; i < objectsOnScene.size(); i++) {

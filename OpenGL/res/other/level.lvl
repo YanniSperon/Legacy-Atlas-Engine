@@ -1,16 +1,16 @@
 Total Size: 6
 
 Object: 0
-translation.x: -6.32146
-translation.y: 0
-translation.z: -3.94965
-rotation.x: 43.8991
+translation.x: -5.97729
+translation.y: -1.19537
+translation.z: -5.19452
+rotation.x: 575.047
 rotation.y: 0
 rotation.z: -546.557
 scale.x: 8.14578
 scale.y: 2.95094
 scale.z: 4.13191
-texture: 6
+texture: 3
 shader: 1
 
 Object: 1
