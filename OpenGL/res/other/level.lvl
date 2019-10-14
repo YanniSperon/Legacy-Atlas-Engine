@@ -1,4 +1,4 @@
-Total Size: 8
+Total Size: 12
 
 Object: 0
 translation.x: -4.74961
@@ -92,6 +92,58 @@ texture: 6
 shader: 1
 
 Object: 7
+translation.x: 2.29585
+translation.y: 0
+translation.z: -3.0766
+rotation.x: 0
+rotation.y: 0
+rotation.z: 0
+scale.x: 2.11703
+scale.y: 2.19986
+scale.z: 1
+texture: 3
+shader: 1
+
+Object: 8
+translation.x: 1.82355
+translation.y: 0
+translation.z: -6.28584
+rotation.x: 0
+rotation.y: 0
+rotation.z: 0
+scale.x: 1
+scale.y: 1
+scale.z: 1
+texture: 3
+shader: 1
+
+Object: 9
+translation.x: -0.678123
+translation.y: 0
+translation.z: -4.11636
+rotation.x: 0
+rotation.y: 0
+rotation.z: 0
+scale.x: 1
+scale.y: 1
+scale.z: 1
+texture: 3
+shader: 1
+
+Object: 10
+translation.x: -1.40233
+translation.y: 0
+translation.z: -0.694733
+rotation.x: 0
+rotation.y: 0
+rotation.z: 0
+scale.x: 1
+scale.y: 1
+scale.z: 1
+texture: 3
+shader: 1
+
+Object: 11
 translation.x: 0
 translation.y: 0
 translation.z: 0

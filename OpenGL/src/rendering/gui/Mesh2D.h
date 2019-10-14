@@ -10,6 +10,8 @@ private:
 	glm::vec2 scale;
 	glm::vec2 minExtents;
 	glm::vec2 maxExtents;
+	glm::vec2 minTexCoords;
+	glm::vec2 maxTexCoords;
 	ShapeData2D shape;
 public:
 	Mesh2D();
@@ -19,6 +21,7 @@ public:
 	glm::mat4 GetModelTransformMatrix();
 	void RotateX(float x);
 	void RotateY(float y);
+	void Rotate1f(float value);
 	void Rotate2f(float x, float y);
 	void RotateVec2(glm::vec2 rot);
 	void RotateAdd2f(float x, float y);
@@ -39,5 +42,7 @@ public:
 	glm::vec2 GetRotation();
 	glm::vec2 GetScale();
 	ShapeData2D GetShape();
+	glm::vec2 GetMinTexCoords();
+	glm::vec2 GetMaxTexCoords();
 	void SetShape(ShapeData2D newShape);
 };

@@ -761,17 +761,20 @@ int main(void)
 		Object2D pausemenu = Object2D(glm::vec2(0.0f, 0.0f), glm::vec2(1920.0f, 1080.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f), pauseMenuTex, shader2D.GetShaderID(), glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f));
 		GLuint selectedObject = 0;
 		GLuint selectedObjectTexture = 0;
+		GLuint selectedGUIComponent = 0;
+		GLuint selectedGUIComponentTexture = 0;
 		Mode currentMode = Mode::cam;
 
 		Font arial24pt = Font("res/fonts/arial/", "arial.ttf", 24);
 		Font timesnewroman32pt = Font("res/fonts/times new roman/", "times.ttf", 32);
 
-		gui.push_back(Object2D(glm::vec2(-25.0f, -25.0f), glm::vec2(25.0f, 25.0f), glm::vec2(0.0f, 0.0f), glm::vec2(1920.0f / 2.0f, 1080.0f / 2.0f), glm::vec2(1.0f, 1.0f), tex2D, shader2D.GetShaderID(), cursorCoords.min, cursorCoords.max));
-		gui.push_back(Object2D(glm::vec2(-262.5f, -262.5f), glm::vec2(-12.5f, -12.5f), glm::vec2(0.0f, 0.0f), glm::vec2(1920.0f, 1080.0f), glm::vec2(1.0f, 1.0f), redTex, shader2D.GetShaderID(), glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f)));
-		gui.push_back(Object2D(glm::vec2(-275.0f, -275.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(1920.0f, 1080.0f), glm::vec2(1.0f, 1.0f), whiteTex, shader2D.GetShaderID(), glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f)));
-		gui.push_back(Object2D(glm::vec2(0.0f, 0.0f), glm::vec2(720.0f, 270.0f), glm::vec2(0.0f, 0.0f), glm::vec2(25.0f, 800.0f), glm::vec2(1.0f, 1.0f), whitetransparentTex, shader2D.GetShaderID(), glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f)));
+		//gui.push_back(Object2D(glm::vec2(-25.0f, -25.0f), glm::vec2(25.0f, 25.0f), glm::vec2(0.0f, 0.0f), glm::vec2(1920.0f / 2.0f, 1080.0f / 2.0f), glm::vec2(1.0f, 1.0f), tex2D, shader2D.GetShaderID(), cursorCoords.min, cursorCoords.max));
+		//gui.push_back(Object2D(glm::vec2(-262.5f, -262.5f), glm::vec2(-12.5f, -12.5f), glm::vec2(0.0f, 0.0f), glm::vec2(1920.0f, 1080.0f), glm::vec2(1.0f, 1.0f), redTex, shader2D.GetShaderID(), glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f)));
+		//gui.push_back(Object2D(glm::vec2(-275.0f, -275.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(1920.0f, 1080.0f), glm::vec2(1.0f, 1.0f), whiteTex, shader2D.GetShaderID(), glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f)));
+		//gui.push_back(Object2D(glm::vec2(0.0f, 0.0f), glm::vec2(720.0f, 270.0f), glm::vec2(0.0f, 0.0f), glm::vec2(25.0f, 800.0f), glm::vec2(1.0f, 1.0f), whitetransparentTex, shader2D.GetShaderID(), glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f)));
 
 		//sentences.push_back(Sentence(textShader, timesnewroman32pt, "HP: ", 1.0f, glm::vec2(100.0f, 100.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
+		sentences.push_back(Sentence(textShader, timesnewroman32pt, "Editor Type: ", 1.0f, glm::vec2(1500.0f, 150.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
 		sentences.push_back(Sentence(textShader, timesnewroman32pt, "Mode: ", 1.0f, glm::vec2(1500.0f, 100.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
 		sentences.push_back(Sentence(textShader, arial24pt, "Mini-Map", 1.0f, glm::vec2(1700.0f, 1000.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
 		sentences.push_back(Sentence(textShader, arial24pt, "Keybinds:", 1.0f, glm::vec2(337.5f, 1030.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
@@ -782,6 +785,7 @@ int main(void)
 
 		bool loadFile = true;
 		if (loadFile) {
+			IO::LoadFile(gui, "res/other/", "gui.gui");
 			IO::LoadFile(objectsOnScene, "res/other/", "level.lvl");
 		}
 
@@ -793,6 +797,8 @@ int main(void)
 
 		//std::chrono::milliseconds duration(2500);
 		//std::this_thread::sleep_for(duration);
+
+		EditorType currentEditorType = EditorType::scene;
 
 		ImGui::CreateContext();
 		ImGui_ImplGlfwGL3_Init(window, false);
@@ -830,6 +836,7 @@ int main(void)
 			if (fPressed) {
 				glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0, 0, currentWidth, currentHeight, GLFW_DONT_CARE);
 			}
+			///////////////////////////////////////////////////////////////////////////
 			if (escapePressed) {
 				editorEnabled = false;
 				renderer.submit2D(&pausemenu);
@@ -838,6 +845,7 @@ int main(void)
 			else {
 				editorEnabled = true;
 			}
+			///////////////////////////////////////////////////////////////////////////
 			if (editorEnabled) {
 				textureChangeTimer.ElapseTime(deltaTime);
 				selectionChangeTimer.ElapseTime(deltaTime);
@@ -861,149 +869,254 @@ int main(void)
 					else if (oPressed) {
 						currentMode = Mode::output;
 					}
+					else if (twoPressed) {
+						currentEditorType = EditorType::overlay;
+					}
+					else if (threePressed) {
+						currentEditorType = EditorType::scene;
+					}
+					else if (fourPressed) {
+						currentEditorType = EditorType::text;
+					}
 				}
 				else {
 					currentMode = Mode::cam;
 				}
 
-				if (currentMode == Mode::scale) {
-					if (wPressed) {
-						objectsOnScene[selectedObject].ScaleAdd3f(0.0f, 0.0f, -movementSpeed * deltaTime);
+				if (currentEditorType == EditorType::scene) {
+					if (currentMode == Mode::scale) {
+						if (wPressed) {
+							objectsOnScene[selectedObject].ScaleAdd3f(0.0f, 0.0f, -movementSpeed * deltaTime);
+						}
+						if (sPressed) {
+							objectsOnScene[selectedObject].ScaleAdd3f(0.0f, 0.0f, movementSpeed * deltaTime);
+						}
+						if (aPressed) {
+							objectsOnScene[selectedObject].ScaleAdd3f(-movementSpeed * deltaTime, 0.0f, 0.0f);
+						}
+						if (dPressed) {
+							objectsOnScene[selectedObject].ScaleAdd3f(movementSpeed * deltaTime, 0.0f, 0.0f);
+						}
+						if (spacePressed) {
+							objectsOnScene[selectedObject].ScaleAdd3f(0.0f, movementSpeed * deltaTime, 0.0f);
+						}
+						if (leftControlPressed) {
+							objectsOnScene[selectedObject].ScaleAdd3f(0.0f, -movementSpeed * deltaTime, 0.0f);
+						}
 					}
-					if (sPressed) {
-						objectsOnScene[selectedObject].ScaleAdd3f(0.0f, 0.0f, movementSpeed* deltaTime);
+					else if (currentMode == Mode::translate) {
+						if (wPressed) {
+							objectsOnScene[selectedObject].TranslateAdd3f(0.0f, 0.0f, -movementSpeed * deltaTime);
+						}
+						if (sPressed) {
+							objectsOnScene[selectedObject].TranslateAdd3f(0.0f, 0.0f, movementSpeed * deltaTime);
+						}
+						if (aPressed) {
+							objectsOnScene[selectedObject].TranslateAdd3f(-movementSpeed * deltaTime, 0.0f, 0.0f);
+						}
+						if (dPressed) {
+							objectsOnScene[selectedObject].TranslateAdd3f(movementSpeed * deltaTime, 0.0f, 0.0f);
+						}
+						if (spacePressed) {
+							objectsOnScene[selectedObject].TranslateAdd3f(0.0f, movementSpeed * deltaTime, 0.0f);
+						}
+						if (leftControlPressed) {
+							objectsOnScene[selectedObject].TranslateAdd3f(0.0f, -movementSpeed * deltaTime, 0.0f);
+						}
 					}
-					if (aPressed) {
-						objectsOnScene[selectedObject].ScaleAdd3f(-movementSpeed * deltaTime, 0.0f, 0.0f);
+					else if (currentMode == Mode::cam) {
+						if (wPressed) {
+							camera.MoveForward(deltaTime);
+						}
+						if (sPressed) {
+							camera.MoveBackward(deltaTime);
+						}
+						if (aPressed) {
+							camera.StrafeLeft(deltaTime);
+						}
+						if (dPressed) {
+							camera.StrafeRight(deltaTime);
+						}
+						if (spacePressed) {
+							camera.MoveUp(deltaTime);
+						}
+						if (leftControlPressed) {
+							camera.MoveDown(deltaTime);
+						}
 					}
-					if (dPressed) {
-						objectsOnScene[selectedObject].ScaleAdd3f(movementSpeed* deltaTime, 0.0f, 0.0f);
+					else if (currentMode == Mode::rotate) {
+						if (wPressed) {
+							objectsOnScene[selectedObject].RotateAdd3f(0.0f, 0.0f, glm::degrees(-movementSpeed * deltaTime));
+						}
+						if (sPressed) {
+							objectsOnScene[selectedObject].RotateAdd3f(0.0f, 0.0f, glm::degrees(movementSpeed * deltaTime));
+						}
+						if (aPressed) {
+							objectsOnScene[selectedObject].RotateAdd3f(glm::degrees(-movementSpeed * deltaTime), 0.0f, 0.0f);
+						}
+						if (dPressed) {
+							objectsOnScene[selectedObject].RotateAdd3f(glm::degrees(movementSpeed * deltaTime), 0.0f, 0.0f);
+						}
+						if (spacePressed) {
+							objectsOnScene[selectedObject].RotateAdd3f(0.0f, glm::degrees(movementSpeed * deltaTime), 0.0f);
+						}
+						if (leftControlPressed) {
+							objectsOnScene[selectedObject].RotateAdd3f(0.0f, glm::degrees(-movementSpeed * deltaTime), 0.0f);
+						}
 					}
-					if (spacePressed) {
-						objectsOnScene[selectedObject].ScaleAdd3f(0.0f, movementSpeed* deltaTime, 0.0f);
+					else if (currentMode == Mode::texture) {
+						if (kPressed) {
+							if (textureChangeTimer.HasFinished()) {
+								if (selectedObjectTexture > 0) {
+									selectedObjectTexture--;
+									textureChangeTimer.Reset(0.5f);
+									textureChangeTimer.Start();
+								}
+							}
+						}
+						if (lPressed) {
+							if (textureChangeTimer.HasFinished()) {
+								if (selectedObjectTexture < textures.size()) {
+									selectedObjectTexture++;
+									textureChangeTimer.Reset(0.5f);
+									textureChangeTimer.Start();
+								}
+							}
+						}
+						if (selectedObject >= 0 && selectedObject < objectsOnScene.size()) {
+							objectsOnScene[selectedObject].SetTexture(textures[selectedObjectTexture]);
+						}
 					}
-					if (leftControlPressed) {
-						objectsOnScene[selectedObject].ScaleAdd3f(0.0f, -movementSpeed * deltaTime, 0.0f);
+					else if (currentMode == Mode::output) {
+						if (sPressed) {
+							IO::SaveToFile(objectsOnScene, "res/other/", "level.lvl");
+							currentMode = Mode::cam;
+						}
 					}
-				}
-				else if (currentMode == Mode::translate) {
-					if (wPressed) {
-						objectsOnScene[selectedObject].TranslateAdd3f(0.0f, 0.0f, -movementSpeed * deltaTime);
-					}
-					if (sPressed) {
-						objectsOnScene[selectedObject].TranslateAdd3f(0.0f, 0.0f, movementSpeed* deltaTime);
-					}
-					if (aPressed) {
-						objectsOnScene[selectedObject].TranslateAdd3f(-movementSpeed * deltaTime, 0.0f, 0.0f);
-					}
-					if (dPressed) {
-						objectsOnScene[selectedObject].TranslateAdd3f(movementSpeed* deltaTime, 0.0f, 0.0f);
-					}
-					if (spacePressed) {
-						objectsOnScene[selectedObject].TranslateAdd3f(0.0f, movementSpeed* deltaTime, 0.0f);
-					}
-					if (leftControlPressed) {
-						objectsOnScene[selectedObject].TranslateAdd3f(0.0f, -movementSpeed * deltaTime, 0.0f);
-					}
-				}
-				else if (currentMode == Mode::cam) {
-					if (wPressed) {
-						camera.MoveForward(deltaTime);
-					}
-					if (sPressed) {
-						camera.MoveBackward(deltaTime);
-					}
-					if (aPressed) {
-						camera.StrafeLeft(deltaTime);
-					}
-					if (dPressed) {
-						camera.StrafeRight(deltaTime);
-					}
-					if (spacePressed) {
-						camera.MoveUp(deltaTime);
-					}
-					if (leftControlPressed) {
-						camera.MoveDown(deltaTime);
-					}
-				}
-				else if (currentMode == Mode::rotate) {
-					if (wPressed) {
-						objectsOnScene[selectedObject].RotateAdd3f(0.0f, 0.0f, glm::degrees(-movementSpeed * deltaTime));
-					}
-					if (sPressed) {
-						objectsOnScene[selectedObject].RotateAdd3f(0.0f, 0.0f, glm::degrees(movementSpeed* deltaTime));
-					}
-					if (aPressed) {
-						objectsOnScene[selectedObject].RotateAdd3f(glm::degrees(-movementSpeed * deltaTime), 0.0f, 0.0f);
-					}
-					if (dPressed) {
-						objectsOnScene[selectedObject].RotateAdd3f(glm::degrees(movementSpeed* deltaTime), 0.0f, 0.0f);
-					}
-					if (spacePressed) {
-						objectsOnScene[selectedObject].RotateAdd3f(0.0f, glm::degrees(movementSpeed* deltaTime), 0.0f);
-					}
-					if (leftControlPressed) {
-						objectsOnScene[selectedObject].RotateAdd3f(0.0f, glm::degrees(-movementSpeed * deltaTime), 0.0f);
-					}
-				}
-				else if (currentMode == Mode::texture) {
-					if (kPressed) {
-						if (textureChangeTimer.HasFinished()) {
-							if (selectedObjectTexture > 0) {
-								selectedObjectTexture--;
-								textureChangeTimer.Reset(0.5f);
-								textureChangeTimer.Start();
+					if (leftBracketPressed) {
+						if (selectionChangeTimer.HasFinished()) {
+							if (selectedObject > 0) {
+								selectedObject--;
+								selectedObjectTexture = objectsOnScene[selectedObject].GetTextureID();
+								selectionChangeTimer.Reset(0.5f);
+								selectionChangeTimer.Start();
 							}
 						}
 					}
-					if (lPressed) {
-						if (textureChangeTimer.HasFinished()) {
-							if (selectedObjectTexture < textures.size()) {
-								selectedObjectTexture++;
-								textureChangeTimer.Reset(0.5f);
-								textureChangeTimer.Start();
+					if (rightBracketPressed) {
+						if (selectionChangeTimer.HasFinished()) {
+							if (selectedObject < objectsOnScene.size()) {
+								selectedObject++;
+								selectedObjectTexture = objectsOnScene[selectedObject].GetTextureID();
+								selectionChangeTimer.Reset(0.5f);
+								selectionChangeTimer.Start();
 							}
 						}
 					}
-					if (selectedObject >= 0 && selectedObject < objectsOnScene.size()) {
-						objectsOnScene[selectedObject].SetTexture(textures[selectedObjectTexture]);
-					}
-				}
-				else if (currentMode == Mode::output) {
-					if (sPressed) {
-						IO::SaveToFile(objectsOnScene, "res/other/", "level.lvl");
-						currentMode = Mode::cam;
-					}
-				}
-
-				if (leftBracketPressed) {
-					if (selectionChangeTimer.HasFinished()) {
-						if (selectedObject > 0) {
-							selectedObject--;
-							selectedObjectTexture = objectsOnScene[selectedObject].GetTextureID();
-							selectionChangeTimer.Reset(0.5f);
-							selectionChangeTimer.Start();
+					if (nPressed) {
+						if (spawnTimer.HasFinished()) {
+							objectsOnScene.push_back(AABBCollidable(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), type::cubeModel, "", "", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), sphereCowTex, shader.GetShaderID(), 1.0f, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), 1.0f, glm::vec3(0.0f, 0.0f, 0.0f)));
+							selectedObject = objectsOnScene.size() - 1;
+							selectedObjectTexture = 0;
+							spawnTimer.Reset(0.5f);
+							spawnTimer.Start();
 						}
 					}
-				}
-				if (rightBracketPressed) {
-					if (selectionChangeTimer.HasFinished()) {
-						if (selectedObject < objectsOnScene.size()) {
-							selectedObject++;
-							selectedObjectTexture = objectsOnScene[selectedObject].GetTextureID();
-							selectionChangeTimer.Reset(0.5f);
-							selectionChangeTimer.Start();
+				} else if (currentEditorType == EditorType::overlay) {
+					if (currentMode == Mode::scale) {
+						if (wPressed) {
+							gui[selectedGUIComponent].ScaleAdd2f(0.0f, movementSpeed * deltaTime);
+						}
+						if (sPressed) {
+							gui[selectedGUIComponent].ScaleAdd2f(0.0f, -movementSpeed * deltaTime);
+						}
+						if (aPressed) {
+							gui[selectedGUIComponent].ScaleAdd2f(-movementSpeed * deltaTime, 0.0f);
+						}
+						if (dPressed) {
+							gui[selectedGUIComponent].ScaleAdd2f(movementSpeed * deltaTime, 0.0f);
 						}
 					}
-				}
-
-				if (nPressed) {
-					if (spawnTimer.HasFinished()) {
-						objectsOnScene.push_back(AABBCollidable(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), type::cubeModel, "", "", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), sphereCowTex, shader.GetShaderID(), 1.0f, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), 1.0f, glm::vec3(0.0f, 0.0f, 0.0f)));
-						selectedObject = objectsOnScene.size() - 1;
-						selectedObjectTexture = 0;
-						spawnTimer.Reset(0.5f);
-						spawnTimer.Start();
+					else if (currentMode == Mode::translate) {
+						if (wPressed) {
+							gui[selectedGUIComponent].TranslateAdd2f(0.0f, movementSpeed * deltaTime * 10.0f);
+						}
+						if (sPressed) {
+							gui[selectedGUIComponent].TranslateAdd2f(0.0f, -movementSpeed * deltaTime * 10.0f);
+						}
+						if (aPressed) {
+							gui[selectedGUIComponent].TranslateAdd2f(-movementSpeed * deltaTime * 10.0f, 0.0f);
+						}
+						if (dPressed) {
+							gui[selectedGUIComponent].TranslateAdd2f(movementSpeed * deltaTime * 10.0f, 0.0f);
+						}
+					}
+					else if (currentMode == Mode::rotate) {
+						if (wPressed) {
+							gui[selectedGUIComponent].RotateAdd2f(0.0f, movementSpeed * deltaTime);
+						}
+						if (sPressed) {
+							gui[selectedGUIComponent].RotateAdd2f(0.0f, -movementSpeed * deltaTime);
+						}
+					}
+					else if (currentMode == Mode::texture) {
+						if (kPressed) {
+							if (textureChangeTimer.HasFinished()) {
+								if (selectedGUIComponent > 0) {
+									selectedGUIComponentTexture--;
+									textureChangeTimer.Reset(0.5f);
+									textureChangeTimer.Start();
+								}
+							}
+						}
+						if (lPressed) {
+							if (textureChangeTimer.HasFinished()) {
+								if (selectedGUIComponent < textures.size()) {
+									selectedGUIComponentTexture++;
+									textureChangeTimer.Reset(0.5f);
+									textureChangeTimer.Start();
+								}
+							}
+						}
+						if (selectedGUIComponent >= 0 && selectedObject < gui.size()) {
+							gui[selectedGUIComponent].SetTexture(textures[selectedObjectTexture]);
+						}
+					}
+					else if (currentMode == Mode::output) {
+						if (sPressed) {
+							IO::SaveToFile(gui, "res/other/", "level.lvl");
+							currentMode = Mode::cam;
+						}
+					}
+					if (leftBracketPressed) {
+						if (selectionChangeTimer.HasFinished()) {
+							if (selectedGUIComponent > 0) {
+								selectedGUIComponent--;
+								selectedGUIComponentTexture = gui[selectedGUIComponent].GetTextureID();
+								selectionChangeTimer.Reset(0.5f);
+								selectionChangeTimer.Start();
+							}
+						}
+					}
+					if (rightBracketPressed) {
+						if (selectionChangeTimer.HasFinished()) {
+							if (selectedGUIComponent < objectsOnScene.size()) {
+								selectedGUIComponent++;
+								selectedGUIComponentTexture = gui[selectedGUIComponent].GetTextureID();
+								selectionChangeTimer.Reset(0.5f);
+								selectionChangeTimer.Start();
+							}
+						}
+					}
+					if (nPressed) {
+						if (spawnTimer.HasFinished()) {
+							printf("Spawned new object");
+							gui.push_back(Object2D(glm::vec2(-50.0f, -50.0f), glm::vec2(50.0f, 50.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f), sphereCowTex, shader2D.GetShaderID(), glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f)));
+							selectedGUIComponent = gui.size() - 1;
+							selectedGUIComponentTexture = 0;
+							spawnTimer.Reset(0.5f);
+							spawnTimer.Start();
+						}
 					}
 				}
 			}
@@ -1033,14 +1146,28 @@ int main(void)
 			else if (currentMode == Mode::translate) {
 				sentences[0].SetText("Mode: Translate");
 			}
+			///////////////////////////////////////////////////////////////////////////
+			if (currentEditorType == EditorType::overlay) {
+				sentences[1].SetText("Editor Type: Overlay");
+			}
+			else if (currentEditorType == EditorType::scene) {
+				sentences[1].SetText("Editor Type: Scene");
+			}
+			else if (currentEditorType == EditorType::text) {
+				sentences[1].SetText("Editor Type: Text");
+			}
+			///////////////////////////////////////////////////////////////////////////
 			renderer.submitForceRender3D(&skybox);
 			renderer.submit3D(&plane, camPos);
+			///////////////////////////////////////////////////////////////////////////
 			for (unsigned int i = 0; i < objectsOnScene.size(); i++) {
 				renderer.submit3D(&objectsOnScene[i], camPos);
 			}
+
 			for (unsigned int i = 0; i < gui.size(); i++) {
 				renderer.submit2D(&gui[i]);
 			}
+
 			for (unsigned int i = 0; i < sentences.size(); i++) {
 				renderer.submitText(&sentences[i]);
 			}
@@ -1057,6 +1184,7 @@ int main(void)
 			glfwPollEvents();
 			///////////////////////////////////////////////////////////////////////////
 		}
+		IO::SaveToFile(gui, "res/other/", "gui.gui");
 		IO::SaveToFile(objectsOnScene, "res/other/", "level.lvl");
 		config.WriteConfig("res/other/", "config.cfg");
 	}

@@ -5,6 +5,11 @@ enum Mode
 	scale, translate, rotate, cam, texture, output
 };
 
+enum EditorType
+{
+	text, overlay, scene
+};
+
 struct Texture
 {
 	std::string name;

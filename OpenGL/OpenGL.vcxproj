@@ -91,7 +91,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>src\gui;src\leveleditor;src\other;src\primitives;src\physics;src\rendering;src;src\vendor;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\OPENVR\include;$(SolutionDir)Dependencies\IRRKLANG\include;$(SolutionDir)Dependencies\FREETYPE\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src\rendering\gui;src\leveleditor;src\other;src\primitives;src\physics;src\rendering;src;src\vendor;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\OPENVR\include;$(SolutionDir)Dependencies\IRRKLANG\include;$(SolutionDir)Dependencies\FREETYPE\include;</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -104,7 +104,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>src\gui;src\leveleditor;src\other;src\primitives;src\physics;src\rendering;src;src\vendor;$(SolutionDir)Dependencies\GLFW x64\include;$(SolutionDir)Dependencies\GLEW x64\include;$(SolutionDir)Dependencies\OPENVR\include;$(SolutionDir)Dependencies\IRRKLANG x64\include;$(SolutionDir)Dependencies\FREETYPE x64\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src\rendering\gui;src\leveleditor;src\other;src\primitives;src\physics;src\rendering;src;src\vendor;$(SolutionDir)Dependencies\GLFW x64\include;$(SolutionDir)Dependencies\GLEW x64\include;$(SolutionDir)Dependencies\OPENVR\include;$(SolutionDir)Dependencies\IRRKLANG x64\include;$(SolutionDir)Dependencies\FREETYPE x64\include;</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -119,7 +119,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>src\gui;src\leveleditor;src\other;src\primitives;src\physics;src\rendering;src;src\vendor;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\OPENVR\include;$(SolutionDir)Dependencies\IRRKLANG\include;$(SolutionDir)Dependencies\FREETYPE\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src\rendering\gui;src\leveleditor;src\other;src\primitives;src\physics;src\rendering;src;src\vendor;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\OPENVR\include;$(SolutionDir)Dependencies\IRRKLANG\include;$(SolutionDir)Dependencies\FREETYPE\include;</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -136,7 +136,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>src\gui;src\leveleditor;src\other;src\primitives;src\physics;src\rendering;src;src\vendor;$(SolutionDir)Dependencies\GLFW x64\include;$(SolutionDir)Dependencies\GLEW x64\include;$(SolutionDir)Dependencies\OPENVR\include;$(SolutionDir)Dependencies\IRRKLANG x64\include;$(SolutionDir)Dependencies\FREETYPE x64\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src\rendering\gui;src\leveleditor;src\other;src\primitives;src\physics;src\rendering;src;src\vendor;$(SolutionDir)Dependencies\GLFW x64\include;$(SolutionDir)Dependencies\GLEW x64\include;$(SolutionDir)Dependencies\OPENVR\include;$(SolutionDir)Dependencies\IRRKLANG x64\include;$(SolutionDir)Dependencies\FREETYPE x64\include;</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -147,11 +147,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\gui\Font.cpp" />
-    <ClCompile Include="src\gui\Letter.cpp" />
-    <ClCompile Include="src\gui\Mesh2D.cpp" />
-    <ClCompile Include="src\gui\Object2D.cpp" />
-    <ClCompile Include="src\gui\Sentence.cpp" />
+    <ClCompile Include="src\rendering\gui\Font.cpp" />
+    <ClCompile Include="src\rendering\gui\Letter.cpp" />
+    <ClCompile Include="src\rendering\gui\Mesh2D.cpp" />
+    <ClCompile Include="src\rendering\gui\Object2D.cpp" />
+    <ClCompile Include="src\rendering\gui\Sentence.cpp" />
     <ClCompile Include="src\other\IO.cpp" />
     <ClCompile Include="src\physics\AxisAlignedBoundingBox.cpp" />
     <ClCompile Include="src\physics\BoundingSphere.cpp" />
@@ -295,11 +295,12 @@
     <None Include="src\vendor\glm\gtx\wrap.inl" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\gui\Font.h" />
-    <ClInclude Include="src\gui\Letter.h" />
-    <ClInclude Include="src\gui\Mesh2D.h" />
-    <ClInclude Include="src\gui\Object2D.h" />
-    <ClInclude Include="src\gui\Sentence.h" />
+    <ClInclude Include="src\rendering\gui\Font.h" />
+    <ClInclude Include="src\rendering\gui\GUI.h" />
+    <ClInclude Include="src\rendering\gui\Letter.h" />
+    <ClInclude Include="src\rendering\gui\Mesh2D.h" />
+    <ClInclude Include="src\rendering\gui\Object2D.h" />
+    <ClInclude Include="src\rendering\gui\Sentence.h" />
     <ClInclude Include="src\leveleditor\LevelEditor.h" />
     <ClInclude Include="src\other\IO.h" />
     <ClInclude Include="src\physics\AxisAlignedBoundingBox.h" />
