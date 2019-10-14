@@ -1,22 +1,22 @@
-Total Size: 6
+Total Size: 8
 
 Object: 0
-translation.x: -5.97729
-translation.y: -1.19537
-translation.z: -5.19452
-rotation.x: 575.047
+translation.x: -4.74961
+translation.y: -0.742473
+translation.z: -5.36426
+rotation.x: 529.434
 rotation.y: 0
-rotation.z: -546.557
-scale.x: 8.14578
+rotation.z: -539.032
+scale.x: 6.95998
 scale.y: 2.95094
-scale.z: 4.13191
-texture: 3
+scale.z: 3.03335
+texture: 10
 shader: 1
 
 Object: 1
-translation.x: 3.76231
+translation.x: 1.28887
 translation.y: 1.46612
-translation.z: 5.6895
+translation.z: 2.53968
 rotation.x: -143.378
 rotation.y: 0
 rotation.z: -31.8174
@@ -27,9 +27,9 @@ texture: 11
 shader: 1
 
 Object: 2
-translation.x: 4.6957
+translation.x: 5.95486
 translation.y: 1.80551
-translation.z: -3.60966
+translation.z: -4.58916
 rotation.x: 67.0559
 rotation.y: 0
 rotation.z: -147.356
@@ -40,9 +40,9 @@ texture: 3
 shader: 1
 
 Object: 3
-translation.x: -4.44286
+translation.x: -5.4735
 translation.y: 0
-translation.z: 1.86346
+translation.z: 1.45404
 rotation.x: 55.1319
 rotation.y: 0
 rotation.z: -47.6152
@@ -53,9 +53,9 @@ texture: 7
 shader: 1
 
 Object: 4
-translation.x: -5.0052
+translation.x: -5.34147
 translation.y: 0
-translation.z: 7.08976
+translation.z: 6.93341
 rotation.x: 82.916
 rotation.y: 0
 rotation.z: 0
@@ -76,5 +76,31 @@ scale.x: 3.08531
 scale.y: 18.1734
 scale.z: 2.7557
 texture: 0
+shader: 1
+
+Object: 6
+translation.x: 6.55793
+translation.y: 1.55031
+translation.z: 7.30029
+rotation.x: 0
+rotation.y: 0
+rotation.z: 0
+scale.x: 5.24331
+scale.y: 3.30442
+scale.z: 3.32756
+texture: 6
+shader: 1
+
+Object: 7
+translation.x: 0
+translation.y: 0
+translation.z: 0
+rotation.x: 0
+rotation.y: 0
+rotation.z: 0
+scale.x: 1
+scale.y: 1
+scale.z: 1
+texture: 3
 shader: 1
 
