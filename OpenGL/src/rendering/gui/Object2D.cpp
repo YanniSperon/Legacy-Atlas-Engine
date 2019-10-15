@@ -6,7 +6,7 @@ Object2D::Object2D()
 
 }
 
-Object2D::Object2D(glm::vec2 minCorner, glm::vec2 maxCorner, glm::vec2 rot, glm::vec2 trans, glm::vec2 s, GLuint tex, GLuint shader, glm::vec2 minTexCoord, glm::vec2 maxTexCoord)
+Object2D::Object2D(glm::vec2 minCorner, glm::vec2 maxCorner, float rot, glm::vec2 trans, glm::vec2 s, GLuint tex, GLuint shader, glm::vec2 minTexCoord, glm::vec2 maxTexCoord)
 	: Mesh2D(minCorner, maxCorner, rot, trans, s, minTexCoord, maxTexCoord), shaderID(shader), texID(0)
 {
 	texID = tex;

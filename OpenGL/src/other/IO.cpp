@@ -115,7 +115,7 @@ void IO::LoadFile(std::vector<Object2D>& vec, const std::string dir, const std::
 	}
 
 	glm::vec2 translation;
-	glm::vec2 rotation;
+	float rotation;
 	glm::vec2 scale;
 	glm::vec2 texCoordMin;
 	glm::vec2 texCoordMax;
@@ -139,13 +139,9 @@ void IO::LoadFile(std::vector<Object2D>& vec, const std::string dir, const std::
 			std::string value = line.substr(15);
 			translation.y = std::stof(value);
 		}
-		else if (line.find("rotation.x: ") != std::string::npos) {
-			std::string value = line.substr(12);
-			rotation.x = std::stof(value);
-		}
-		else if (line.find("rotation.y: ") != std::string::npos) {
-			std::string value = line.substr(12);
-			rotation.y = std::stof(value);
+		else if (line.find("rotation: ") != std::string::npos) {
+			std::string value = line.substr(10);
+			rotation = std::stof(value);
 		}
 		else if (line.find("scale.x: ") != std::string::npos) {
 			std::string value = line.substr(9);
@@ -180,8 +176,7 @@ void IO::LoadFile(std::vector<Object2D>& vec, const std::string dir, const std::
 			shader = std::stoi(value);
 		}
 		else if (line.find("End Object2D") != std::string::npos) {
-			printf("Creation object2D with:\ntranslation: (%f, %f)\nrotation: (%f, %f)\nscale: (%f, %f)\ntexture: %i\nshader: %i\ntexCoordMin: (%f, %f)\ntexCoordMax: (%f, %f)\n", translation.x, translation.y, rotation.x, rotation.y, scale.x, scale.y, texture, shader, texCoordMin.x, texCoordMin.y, texCoordMax.x, texCoordMax.y);
-			vec.push_back(Object2D(glm::vec2(-0.5f, -0.5f), glm::vec2(0.5f, 0.5f), rotation, translation, scale, texture, shader, texCoordMin, texCoordMax));
+			vec.push_back(Object2D(glm::vec2(-50.0f, -50.0f), glm::vec2(50.0f, 50.0f), rotation, translation, scale, texture, shader, texCoordMin, texCoordMax));
 		}
 	}
 }
@@ -193,7 +188,7 @@ void IO::SaveToFile(std::vector<Object2D>& vec, const std::string dir, const std
 	outfile << "Total Size: " << vec.size() << "\n\n";
 	for (unsigned int i = 0; i < vec.size(); i++) {
 		glm::vec2 translation = vec[i].GetTranslation();
-		glm::vec2 rotation = vec[i].GetRotation();
+		float rotation = vec[i].GetRotation();
 		glm::vec2 scale = vec[i].GetScale();
 		glm::vec2 texCoordMin = vec[i].GetMinTexCoords();
 		glm::vec2 texCoordMax = vec[i].GetMaxTexCoords();
@@ -202,8 +197,7 @@ void IO::SaveToFile(std::vector<Object2D>& vec, const std::string dir, const std
 		outfile << "Object2D: " << i << "\n";
 		outfile << "translation.x: " << translation.x << "\n";
 		outfile << "translation.y: " << translation.y << "\n";
-		outfile << "rotation.x: " << rotation.x << "\n";
-		outfile << "rotation.y: " << rotation.y << "\n";
+		outfile << "rotation: " << rotation << "\n";
 		outfile << "scale.x: " << scale.x << "\n";
 		outfile << "scale.y: " << scale.y << "\n";
 		outfile << "texture: " << tex << "\n";

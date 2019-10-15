@@ -4,12 +4,11 @@
 #include "glm/gtx/euler_angles.hpp"
 
 Mesh2D::Mesh2D()
-	: rotation(0.0f, 0.0f), translation(0.0f, 0.0f), scale(0.0f, 0.0f), minExtents(0.0f, 0.0f), maxExtents(0.0f, 0.0f), minTexCoords(0.0f, 0.0f), maxTexCoords(1.0f, 1.0f)
+	: rotation(0.0f), translation(0.0f, 0.0f), scale(0.0f, 0.0f), minExtents(0.0f, 0.0f), maxExtents(0.0f, 0.0f), minTexCoords(0.0f, 0.0f), maxTexCoords(1.0f, 1.0f)
 {
-
 }
 
-Mesh2D::Mesh2D(glm::vec2 min, glm::vec2 max, glm::vec2 rot, glm::vec2 trans, glm::vec2 s, glm::vec2 minTex, glm::vec2 maxTex)
+Mesh2D::Mesh2D(glm::vec2 min, glm::vec2 max, float rot, glm::vec2 trans, glm::vec2 s, glm::vec2 minTex, glm::vec2 maxTex)
 	: rotation(rot), translation(trans), scale(s), minExtents(min), maxExtents(max), minTexCoords(minTex), maxTexCoords(maxTex)
 {
 	shape = ShapeGenerator::makeSquare(min, max, minTex, maxTex);
@@ -22,40 +21,17 @@ Mesh2D::~Mesh2D()
 
 glm::mat4 Mesh2D::GetModelTransformMatrix()
 {
-	//rotate(T angle, T x, T y, T z)
-	return (glm::translate(glm::mat4(), glm::vec3(translation, 0.0f)) * glm::rotate(glm::mat4(), glm::radians(rotation.y), glm::vec3(maxExtents.x - minExtents.x, maxExtents.y - minExtents.y, 0.0f)) * glm::scale(glm::mat4(), glm::vec3(scale, 1.0f)));
+	return (glm::translate(glm::mat4(), glm::vec3(translation, 0.0f)) * glm::yawPitchRoll(glm::radians(0.0f), glm::radians(0.0f), glm::radians(rotation)) * glm::scale(glm::mat4(), glm::vec3(scale, 1.0f)));
 }
 
-void Mesh2D::RotateX(float x)
+void Mesh2D::Rotate1f(float x)
 {
-	rotation.x = x;
+	rotation = x;
 }
 
-void Mesh2D::RotateY(float y)
+void Mesh2D::RotateAdd1f(float x)
 {
-	rotation.y = y;
-}
-
-void Mesh2D::Rotate2f(float x, float y)
-{
-	rotation.x = x;
-	rotation.y = y;
-}
-
-void Mesh2D::RotateVec2(glm::vec2 rot)
-{
-	rotation = rot;
-}
-
-void Mesh2D::RotateAdd2f(float x, float y)
-{
-	rotation.x += x;
-	rotation.y += y;
-}
-
-void Mesh2D::RotateAddVec2(glm::vec2 rot)
-{
-	rotation += rot;
+	rotation += x;
 }
 
 void Mesh2D::TranslateX(float x)
@@ -127,7 +103,7 @@ glm::vec2 Mesh2D::GetTranslation()
 	return translation;
 }
 
-glm::vec2 Mesh2D::GetRotation()
+float Mesh2D::GetRotation()
 {
 	return rotation;
 }

@@ -5,8 +5,8 @@
 
 class Mesh2D {
 private:
-	glm::vec2 rotation;
 	glm::vec2 translation;
+	float rotation;
 	glm::vec2 scale;
 	glm::vec2 minExtents;
 	glm::vec2 maxExtents;
@@ -15,17 +15,12 @@ private:
 	ShapeData2D shape;
 public:
 	Mesh2D();
-	Mesh2D(glm::vec2 min, glm::vec2 max, glm::vec2 rot, glm::vec2 trans, glm::vec2 s, glm::vec2 minTex, glm::vec2 maxTex);
+	Mesh2D(glm::vec2 min, glm::vec2 max, float rot, glm::vec2 trans, glm::vec2 s, glm::vec2 minTex, glm::vec2 maxTex);
 	~Mesh2D();
 
 	glm::mat4 GetModelTransformMatrix();
-	void RotateX(float x);
-	void RotateY(float y);
-	void Rotate1f(float value);
-	void Rotate2f(float x, float y);
-	void RotateVec2(glm::vec2 rot);
-	void RotateAdd2f(float x, float y);
-	void RotateAddVec2(glm::vec2 rot);
+	void Rotate1f(float x);
+	void RotateAdd1f(float x);
 	void TranslateX(float x);
 	void TranslateY(float y);
 	void Translate2f(float x, float y);
@@ -39,7 +34,7 @@ public:
 	void ScaleAdd2f(float x, float y);
 	void ScaleAddVec2(glm::vec2 s);
 	glm::vec2 GetTranslation();
-	glm::vec2 GetRotation();
+	float GetRotation();
 	glm::vec2 GetScale();
 	ShapeData2D GetShape();
 	glm::vec2 GetMinTexCoords();
