@@ -87,9 +87,6 @@
     <ClCompile Include="src\rendering\gui\Font.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\rendering\gui\Letter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\rendering\gui\Mesh2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -97,6 +94,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\rendering\gui\Sentence.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\other\Search.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -963,9 +963,6 @@
     <ClInclude Include="src\rendering\gui\GUI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\rendering\gui\Letter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\rendering\gui\Mesh2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -973,6 +970,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\rendering\gui\Sentence.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\other\Search.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

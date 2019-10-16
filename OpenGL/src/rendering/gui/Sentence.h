@@ -11,6 +11,7 @@ private:
 	glm::vec3 color;
 public:
 	Sentence(Shader& shdr, Font& f, std::string t, float s, glm::vec2 pos, glm::vec3 col);
+	~Sentence();
 
 	Shader& GetShader();
 	void SetShader(Shader& shdr);

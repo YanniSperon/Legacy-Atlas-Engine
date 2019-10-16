@@ -26,6 +26,7 @@
 #include "IO.h"
 #include "Object2D.h"
 #include "Font.h"
+#include "Search.h"
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
@@ -752,12 +753,12 @@ int main(void)
 
 
 
-		Object plane = Object(glm::vec3(-5.0f, -5.0f, -5.0f), glm::vec3(5.0f, 5.0f, 5.0f), type::blankModel, "res/models/", "plane.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -3.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), whiteTex, shader.GetShaderID());
-		Object skybox = Object(glm::vec3(-50.0f, -50.0f, -50.0f), glm::vec3(50.0f, 50.0f, 50.0f), type::skyBox, "", "", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), skyboxTex, shader.GetShaderID());
-		std::vector<Object> objectsOnScene;
-		std::vector<Object2D> gui;
-		std::vector<Object2D> preloadedGui;
-		std::vector<Sentence> sentences;
+		Object plane(glm::vec3(-5.0f, -5.0f, -5.0f), glm::vec3(5.0f, 5.0f, 5.0f), type::blankModel, "res/models/", "plane.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -3.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), whiteTex, shader.GetShaderID());
+		Object skybox(glm::vec3(-50.0f, -50.0f, -50.0f), glm::vec3(50.0f, 50.0f, 50.0f), type::skyBox, "", "", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), skyboxTex, shader.GetShaderID());
+		std::vector<Object*> objectsOnScene;
+		std::vector<Object2D*> gui;
+		std::vector<Object2D*> preloadedGui;
+		std::vector<Sentence*> sentences;
 
 		Object2D pausemenu = Object2D(glm::vec2(0.0f, 0.0f), glm::vec2(1920.0f, 1080.0f), 0.0f, glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f), pauseMenuTex, shader2D.GetShaderID(), glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f));
 		GLuint selectedObject = 0;
@@ -769,20 +770,20 @@ int main(void)
 		Font arial24pt = Font("res/fonts/arial/", "arial.ttf", 24);
 		Font timesnewroman32pt = Font("res/fonts/times new roman/", "times.ttf", 32);
 
-		preloadedGui.push_back(Object2D(glm::vec2(-25.0f, -25.0f), glm::vec2(25.0f, 25.0f), 0.0f, glm::vec2(1920.0f / 2.0f, 1080.0f / 2.0f), glm::vec2(1.0f, 1.0f), tex2D, shader2D.GetShaderID(), cursorCoords.min, cursorCoords.max));
-		preloadedGui.push_back(Object2D(glm::vec2(-262.5f, -262.5f), glm::vec2(-12.5f, -12.5f), 0.0f, glm::vec2(1920.0f, 1080.0f), glm::vec2(1.0f, 1.0f), redTex, shader2D.GetShaderID(), glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f)));
-		preloadedGui.push_back(Object2D(glm::vec2(-275.0f, -275.0f), glm::vec2(0.0f, 0.0f), 0.0f, glm::vec2(1920.0f, 1080.0f), glm::vec2(1.0f, 1.0f), whiteTex, shader2D.GetShaderID(), glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f)));
-		preloadedGui.push_back(Object2D(glm::vec2(0.0f, 0.0f), glm::vec2(720.0f, 270.0f), 0.0f, glm::vec2(25.0f, 800.0f), glm::vec2(1.0f, 1.0f), whitetransparentTex, shader2D.GetShaderID(), glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f)));
+		preloadedGui.push_back(new Object2D(glm::vec2(-25.0f, -25.0f), glm::vec2(25.0f, 25.0f), 0.0f, glm::vec2(1920.0f / 2.0f, 1080.0f / 2.0f), glm::vec2(1.0f, 1.0f), tex2D, shader2D.GetShaderID(), cursorCoords.min, cursorCoords.max));
+		preloadedGui.push_back(new Object2D(glm::vec2(-262.5f, -262.5f), glm::vec2(-12.5f, -12.5f), 0.0f, glm::vec2(1920.0f, 1080.0f), glm::vec2(1.0f, 1.0f), redTex, shader2D.GetShaderID(), glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f)));
+		preloadedGui.push_back(new Object2D(glm::vec2(-275.0f, -275.0f), glm::vec2(0.0f, 0.0f), 0.0f, glm::vec2(1920.0f, 1080.0f), glm::vec2(1.0f, 1.0f), whiteTex, shader2D.GetShaderID(), glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f)));
+		preloadedGui.push_back(new Object2D(glm::vec2(0.0f, 0.0f), glm::vec2(720.0f, 270.0f), 0.0f, glm::vec2(25.0f, 800.0f), glm::vec2(1.0f, 1.0f), whitetransparentTex, shader2D.GetShaderID(), glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f)));
 
 		//sentences.push_back(Sentence(textShader, timesnewroman32pt, "HP: ", 1.0f, glm::vec2(100.0f, 100.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
-		sentences.push_back(Sentence(textShader, timesnewroman32pt, "Editor Type: ", 1.0f, glm::vec2(1500.0f, 150.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
-		sentences.push_back(Sentence(textShader, timesnewroman32pt, "Mode: ", 1.0f, glm::vec2(1500.0f, 100.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
-		sentences.push_back(Sentence(textShader, arial24pt, "Mini-Map", 1.0f, glm::vec2(1700.0f, 1000.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
-		sentences.push_back(Sentence(textShader, arial24pt, "Keybinds:", 1.0f, glm::vec2(337.5f, 1030.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
-		sentences.push_back(Sentence(textShader, arial24pt, "  C:Camera      V:Move      R:Rotate", 1.0f, glm::vec2(175.0f, 980.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
-		sentences.push_back(Sentence(textShader, arial24pt, "E:Scale      F:Fullscreen      T:Texture", 1.0f, glm::vec2(175.0f, 930.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
-		sentences.push_back(Sentence(textShader, arial24pt, "[: Change Selection Left                       K: Change Texture Left", 1.0f, glm::vec2(50.0f, 880.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
-		sentences.push_back(Sentence(textShader, arial24pt, "]: Change Selection Right                   L: Change Texture Right", 1.0f, glm::vec2(50.0f, 830.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
+		sentences.push_back(new Sentence(textShader, timesnewroman32pt, "Editor Type: ", 1.0f, glm::vec2(1500.0f, 150.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
+		sentences.push_back(new Sentence(textShader, timesnewroman32pt, "Mode: ", 1.0f, glm::vec2(1500.0f, 100.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
+		sentences.push_back(new Sentence(textShader, arial24pt, "Mini-Map", 1.0f, glm::vec2(1700.0f, 1000.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
+		sentences.push_back(new Sentence(textShader, arial24pt, "Keybinds:", 1.0f, glm::vec2(337.5f, 1030.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
+		sentences.push_back(new Sentence(textShader, arial24pt, "  C:Camera      V:Move      R:Rotate", 1.0f, glm::vec2(175.0f, 980.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
+		sentences.push_back(new Sentence(textShader, arial24pt, "E:Scale      F:Fullscreen      T:Texture", 1.0f, glm::vec2(175.0f, 930.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
+		sentences.push_back(new Sentence(textShader, arial24pt, "[: Change Selection Left                       K: Change Texture Left", 1.0f, glm::vec2(50.0f, 880.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
+		sentences.push_back(new Sentence(textShader, arial24pt, "]: Change Selection Right                   L: Change Texture Right", 1.0f, glm::vec2(50.0f, 830.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
 
 		bool loadFile = true;
 		if (loadFile) {
@@ -852,7 +853,17 @@ int main(void)
 				textureChangeTimer.ElapseTime(deltaTime);
 				selectionChangeTimer.ElapseTime(deltaTime);
 				spawnTimer.ElapseTime(deltaTime);
-				if (objectsOnScene.size() > 0) {
+
+				if (onePressed) {
+					currentEditorType = EditorType::scene;
+				}
+				else if (twoPressed) {
+					currentEditorType = EditorType::overlay;
+				}
+				else if (threePressed) {
+					currentEditorType = EditorType::text;
+				}
+				if ((objectsOnScene.size() > 0 && currentEditorType == EditorType::scene) || (gui.size() > 0 && currentEditorType == EditorType::overlay)) {
 					if (cPressed) {
 						currentMode = Mode::cam;
 					}
@@ -871,15 +882,6 @@ int main(void)
 					else if (oPressed) {
 						currentMode = Mode::output;
 					}
-					else if (onePressed) {
-						currentEditorType = EditorType::scene;
-					}
-					else if (twoPressed) {
-						currentEditorType = EditorType::overlay;
-					}
-					else if (threePressed) {
-						currentEditorType = EditorType::text;
-					}
 				}
 				else {
 					currentMode = Mode::cam;
@@ -888,42 +890,42 @@ int main(void)
 				if (currentEditorType == EditorType::scene) {
 					if (currentMode == Mode::scale) {
 						if (wPressed) {
-							objectsOnScene[selectedObject].ScaleAdd3f(0.0f, 0.0f, -movementSpeed * deltaTime);
+							objectsOnScene[selectedObject]->ScaleAdd3f(0.0f, 0.0f, -movementSpeed * deltaTime);
 						}
 						if (sPressed) {
-							objectsOnScene[selectedObject].ScaleAdd3f(0.0f, 0.0f, movementSpeed * deltaTime);
+							objectsOnScene[selectedObject]->ScaleAdd3f(0.0f, 0.0f, movementSpeed * deltaTime);
 						}
 						if (aPressed) {
-							objectsOnScene[selectedObject].ScaleAdd3f(-movementSpeed * deltaTime, 0.0f, 0.0f);
+							objectsOnScene[selectedObject]->ScaleAdd3f(-movementSpeed * deltaTime, 0.0f, 0.0f);
 						}
 						if (dPressed) {
-							objectsOnScene[selectedObject].ScaleAdd3f(movementSpeed * deltaTime, 0.0f, 0.0f);
+							objectsOnScene[selectedObject]->ScaleAdd3f(movementSpeed * deltaTime, 0.0f, 0.0f);
 						}
 						if (spacePressed) {
-							objectsOnScene[selectedObject].ScaleAdd3f(0.0f, movementSpeed * deltaTime, 0.0f);
+							objectsOnScene[selectedObject]->ScaleAdd3f(0.0f, movementSpeed * deltaTime, 0.0f);
 						}
 						if (leftControlPressed) {
-							objectsOnScene[selectedObject].ScaleAdd3f(0.0f, -movementSpeed * deltaTime, 0.0f);
+							objectsOnScene[selectedObject]->ScaleAdd3f(0.0f, -movementSpeed * deltaTime, 0.0f);
 						}
 					}
 					else if (currentMode == Mode::translate) {
 						if (wPressed) {
-							objectsOnScene[selectedObject].TranslateAdd3f(0.0f, 0.0f, -movementSpeed * deltaTime);
+							objectsOnScene[selectedObject]->TranslateAdd3f(0.0f, 0.0f, -movementSpeed * deltaTime);
 						}
 						if (sPressed) {
-							objectsOnScene[selectedObject].TranslateAdd3f(0.0f, 0.0f, movementSpeed * deltaTime);
+							objectsOnScene[selectedObject]->TranslateAdd3f(0.0f, 0.0f, movementSpeed * deltaTime);
 						}
 						if (aPressed) {
-							objectsOnScene[selectedObject].TranslateAdd3f(-movementSpeed * deltaTime, 0.0f, 0.0f);
+							objectsOnScene[selectedObject]->TranslateAdd3f(-movementSpeed * deltaTime, 0.0f, 0.0f);
 						}
 						if (dPressed) {
-							objectsOnScene[selectedObject].TranslateAdd3f(movementSpeed * deltaTime, 0.0f, 0.0f);
+							objectsOnScene[selectedObject]->TranslateAdd3f(movementSpeed * deltaTime, 0.0f, 0.0f);
 						}
 						if (spacePressed) {
-							objectsOnScene[selectedObject].TranslateAdd3f(0.0f, movementSpeed * deltaTime, 0.0f);
+							objectsOnScene[selectedObject]->TranslateAdd3f(0.0f, movementSpeed * deltaTime, 0.0f);
 						}
 						if (leftControlPressed) {
-							objectsOnScene[selectedObject].TranslateAdd3f(0.0f, -movementSpeed * deltaTime, 0.0f);
+							objectsOnScene[selectedObject]->TranslateAdd3f(0.0f, -movementSpeed * deltaTime, 0.0f);
 						}
 					}
 					else if (currentMode == Mode::cam) {
@@ -948,22 +950,22 @@ int main(void)
 					}
 					else if (currentMode == Mode::rotate) {
 						if (wPressed) {
-							objectsOnScene[selectedObject].RotateAdd3f(0.0f, 0.0f, glm::degrees(-movementSpeed * deltaTime));
+							objectsOnScene[selectedObject]->RotateAdd3f(0.0f, 0.0f, glm::degrees(-movementSpeed * deltaTime));
 						}
 						if (sPressed) {
-							objectsOnScene[selectedObject].RotateAdd3f(0.0f, 0.0f, glm::degrees(movementSpeed * deltaTime));
+							objectsOnScene[selectedObject]->RotateAdd3f(0.0f, 0.0f, glm::degrees(movementSpeed * deltaTime));
 						}
 						if (aPressed) {
-							objectsOnScene[selectedObject].RotateAdd3f(glm::degrees(-movementSpeed * deltaTime), 0.0f, 0.0f);
+							objectsOnScene[selectedObject]->RotateAdd3f(glm::degrees(-movementSpeed * deltaTime), 0.0f, 0.0f);
 						}
 						if (dPressed) {
-							objectsOnScene[selectedObject].RotateAdd3f(glm::degrees(movementSpeed * deltaTime), 0.0f, 0.0f);
+							objectsOnScene[selectedObject]->RotateAdd3f(glm::degrees(movementSpeed * deltaTime), 0.0f, 0.0f);
 						}
 						if (spacePressed) {
-							objectsOnScene[selectedObject].RotateAdd3f(0.0f, glm::degrees(movementSpeed * deltaTime), 0.0f);
+							objectsOnScene[selectedObject]->RotateAdd3f(0.0f, glm::degrees(movementSpeed * deltaTime), 0.0f);
 						}
 						if (leftControlPressed) {
-							objectsOnScene[selectedObject].RotateAdd3f(0.0f, glm::degrees(-movementSpeed * deltaTime), 0.0f);
+							objectsOnScene[selectedObject]->RotateAdd3f(0.0f, glm::degrees(-movementSpeed * deltaTime), 0.0f);
 						}
 					}
 					else if (currentMode == Mode::texture) {
@@ -986,7 +988,7 @@ int main(void)
 							}
 						}
 						if (selectedObject >= 0 && selectedObject < objectsOnScene.size()) {
-							objectsOnScene[selectedObject].SetTexture(textures[selectedObjectTexture]);
+							objectsOnScene[selectedObject]->SetTexture(textures[selectedObjectTexture]);
 						}
 					}
 					else if (currentMode == Mode::output) {
@@ -999,7 +1001,7 @@ int main(void)
 						if (selectionChangeTimer.HasFinished()) {
 							if (selectedObject > 0) {
 								selectedObject--;
-								selectedObjectTexture = objectsOnScene[selectedObject].GetTextureID();
+								selectedObjectTexture = objectsOnScene[selectedObject]->GetTextureID();
 								selectionChangeTimer.Reset(0.5f);
 								selectionChangeTimer.Start();
 							}
@@ -1009,7 +1011,7 @@ int main(void)
 						if (selectionChangeTimer.HasFinished()) {
 							if (selectedObject < objectsOnScene.size() - 1) {
 								selectedObject++;
-								selectedObjectTexture = objectsOnScene[selectedObject].GetTextureID();
+								selectedObjectTexture = objectsOnScene[selectedObject]->GetTextureID();
 								selectionChangeTimer.Reset(0.5f);
 								selectionChangeTimer.Start();
 							}
@@ -1017,7 +1019,7 @@ int main(void)
 					}
 					if (nPressed) {
 						if (spawnTimer.HasFinished()) {
-							objectsOnScene.push_back(AABBCollidable(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), type::cubeModel, "", "", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), sphereCowTex, shader.GetShaderID(), 1.0f, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), 1.0f, glm::vec3(0.0f, 0.0f, 0.0f)));
+							objectsOnScene.push_back(new AABBCollidable(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), type::cubeModel, "", "", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), sphereCowTex, shader.GetShaderID(), 1.0f, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), 1.0f, glm::vec3(0.0f, 0.0f, 0.0f)));
 							selectedObject = objectsOnScene.size() - 1;
 							selectedObjectTexture = 0;
 							spawnTimer.Reset(0.5f);
@@ -1026,49 +1028,51 @@ int main(void)
 					}
 					if (backspacePressed) {
 						if (spawnTimer.HasFinished()) {
-							objectsOnScene.erase(objectsOnScene.begin() + selectedObject);
-							selectedObject--;
-							selectedObjectTexture = objectsOnScene[selectedObject].GetTextureID();
-							spawnTimer.Reset(0.5f);
-							spawnTimer.Start();
+							if (objectsOnScene.size() > 0) {
+								objectsOnScene.erase(objectsOnScene.begin() + selectedObject);
+								selectedObject = 0;
+								selectedObjectTexture = 0;//Search::LinearSearchVector(textures, objectsOnScene[selectedObject]->GetTextureID());
+								spawnTimer.Reset(0.5f);
+								spawnTimer.Start();
+							}
 						}
 					}
 				}
 				else if (currentEditorType == EditorType::overlay) {
 					if (currentMode == Mode::scale) {
 						if (wPressed) {
-							gui[selectedGUIComponent].ScaleAdd2f(0.0f, movementSpeed * deltaTime);
+							gui[selectedGUIComponent]->ScaleAdd2f(0.0f, movementSpeed * deltaTime);
 						}
 						if (sPressed) {
-							gui[selectedGUIComponent].ScaleAdd2f(0.0f, -movementSpeed * deltaTime);
+							gui[selectedGUIComponent]->ScaleAdd2f(0.0f, -movementSpeed * deltaTime);
 						}
 						if (aPressed) {
-							gui[selectedGUIComponent].ScaleAdd2f(-movementSpeed * deltaTime, 0.0f);
+							gui[selectedGUIComponent]->ScaleAdd2f(-movementSpeed * deltaTime, 0.0f);
 						}
 						if (dPressed) {
-							gui[selectedGUIComponent].ScaleAdd2f(movementSpeed * deltaTime, 0.0f);
+							gui[selectedGUIComponent]->ScaleAdd2f(movementSpeed * deltaTime, 0.0f);
 						}
 					}
 					else if (currentMode == Mode::translate) {
 						if (wPressed) {
-							gui[selectedGUIComponent].TranslateAdd2f(0.0f, movementSpeed * deltaTime * 10.0f);
+							gui[selectedGUIComponent]->TranslateAdd2f(0.0f, movementSpeed * deltaTime * 10.0f);
 						}
 						if (sPressed) {
-							gui[selectedGUIComponent].TranslateAdd2f(0.0f, -movementSpeed * deltaTime * 10.0f);
+							gui[selectedGUIComponent]->TranslateAdd2f(0.0f, -movementSpeed * deltaTime * 10.0f);
 						}
 						if (aPressed) {
-							gui[selectedGUIComponent].TranslateAdd2f(-movementSpeed * deltaTime * 10.0f, 0.0f);
+							gui[selectedGUIComponent]->TranslateAdd2f(-movementSpeed * deltaTime * 10.0f, 0.0f);
 						}
 						if (dPressed) {
-							gui[selectedGUIComponent].TranslateAdd2f(movementSpeed * deltaTime * 10.0f, 0.0f);
+							gui[selectedGUIComponent]->TranslateAdd2f(movementSpeed * deltaTime * 10.0f, 0.0f);
 						}
 					}
 					else if (currentMode == Mode::rotate) {
 						if (wPressed) {
-							gui[selectedGUIComponent].RotateAdd1f(movementSpeed * deltaTime);
+							gui[selectedGUIComponent]->RotateAdd1f(movementSpeed * deltaTime);
 						}
 						if (sPressed) {
-							gui[selectedGUIComponent].RotateAdd1f(-movementSpeed * deltaTime);
+							gui[selectedGUIComponent]->RotateAdd1f(-movementSpeed * deltaTime);
 						}
 					}
 					else if (currentMode == Mode::texture) {
@@ -1091,7 +1095,7 @@ int main(void)
 							}
 						}
 						if (selectedGUIComponent >= 0 && selectedGUIComponent < gui.size()) {
-							gui[selectedGUIComponent].SetTexture(textures[selectedGUIComponentTexture]);
+							gui[selectedGUIComponent]->SetTexture(textures[selectedGUIComponentTexture]);
 						}
 					}
 					else if (currentMode == Mode::output) {
@@ -1104,7 +1108,7 @@ int main(void)
 						if (selectionChangeTimer.HasFinished()) {
 							if (selectedGUIComponent > 0) {
 								selectedGUIComponent--;
-								selectedGUIComponentTexture = gui[selectedGUIComponent].GetTextureID();
+								selectedGUIComponentTexture = gui[selectedGUIComponent]->GetTextureID();
 								printf("SelectedGUIComponent: %i", selectedGUIComponent);
 								selectionChangeTimer.Reset(0.5f);
 								selectionChangeTimer.Start();
@@ -1115,7 +1119,7 @@ int main(void)
 						if (selectionChangeTimer.HasFinished()) {
 							if (selectedGUIComponent < gui.size() - 1) {
 								selectedGUIComponent++;
-								selectedGUIComponentTexture = gui[selectedGUIComponent].GetTextureID();
+								selectedGUIComponentTexture = gui[selectedGUIComponent]->GetTextureID();
 								selectionChangeTimer.Reset(0.5f);
 								selectionChangeTimer.Start();
 							}
@@ -1123,7 +1127,7 @@ int main(void)
 					}
 					if (nPressed) {
 						if (spawnTimer.HasFinished()) {
-							gui.push_back(Object2D(glm::vec2(-50.0f, -50.0f), glm::vec2(50.0f, 50.0f), 0.0f, glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f), sphereCowTex, shader2D.GetShaderID(), glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f)));
+							gui.push_back(new Object2D(glm::vec2(-50.0f, -50.0f), glm::vec2(50.0f, 50.0f), 0.0f, glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f), sphereCowTex, shader2D.GetShaderID(), glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f)));
 							selectedGUIComponent = gui.size() - 1;
 							selectedGUIComponentTexture = 0;
 							spawnTimer.Reset(0.5f);
@@ -1132,42 +1136,44 @@ int main(void)
 					}
 					if (backspacePressed) {
 						if (spawnTimer.HasFinished()) {
-							gui.erase(gui.begin() + selectedGUIComponent);
-							selectedGUIComponent--;
-							selectedGUIComponentTexture = gui[selectedGUIComponent].GetTextureID();
-							spawnTimer.Reset(0.5f);
-							spawnTimer.Start();
+							if (gui.size() > 0) {
+								gui.erase(gui.begin() + selectedGUIComponent);
+								selectedGUIComponent = 0;
+								selectedGUIComponentTexture = 0;//Search::LinearSearchVector(textures, objectsOnScene[selectedObject]->GetTextureID());
+								spawnTimer.Reset(0.5f);
+								spawnTimer.Start();
+							}
 						}
 					}
 				}
 				///////////////////////////////////////////////////////////////////////////
-				//sentences[0].SetText("HP: " + std::to_string(HP) + "%");
+				sentences[0]->SetText("HP: " + std::to_string(HP) + "%");
 				if (currentMode == Mode::cam) {
-					sentences[0].SetText("Mode: Camera");
+					sentences[0]->SetText("Mode: Camera");
 				}
 				else if (currentMode == Mode::output) {
-					sentences[0].SetText("Mode: Output");
+					sentences[0]->SetText("Mode: Output");
 				}
 				else if (currentMode == Mode::rotate) {
-					sentences[0].SetText("Mode: Rotate");
+					sentences[0]->SetText("Mode: Rotate");
 				}
 				else if (currentMode == Mode::scale) {
-					sentences[0].SetText("Mode: Scale");
+					sentences[0]->SetText("Mode: Scale");
 				}
 				else if (currentMode == Mode::texture) {
-					sentences[0].SetText("Mode: Texture");
+					sentences[0]->SetText("Mode: Texture");
 				}
 				else if (currentMode == Mode::translate) {
-					sentences[0].SetText("Mode: Translate");
+					sentences[0]->SetText("Mode: Translate");
 				}
 				if (currentEditorType == EditorType::overlay) {
-					sentences[1].SetText("Editor Type: Overlay");
+					sentences[1]->SetText("Editor Type: Overlay");
 				}
 				else if (currentEditorType == EditorType::scene) {
-					sentences[1].SetText("Editor Type: Scene");
+					sentences[1]->SetText("Editor Type: Scene");
 				}
 				else if (currentEditorType == EditorType::text) {
-					sentences[1].SetText("Editor Type: Text");
+					sentences[1]->SetText("Editor Type: Text");
 				}
 				///////////////////////////////////////////////////////////////////////////
 			}
@@ -1182,19 +1188,19 @@ int main(void)
 			renderer.submit3D(&plane, camPos);
 			///////////////////////////////////////////////////////////////////////////
 			for (unsigned int i = 0; i < objectsOnScene.size(); i++) {
-				renderer.submit3D(&objectsOnScene[i], camPos);
+				renderer.submit3D(objectsOnScene[i], camPos);
 			}
 			///////////////////////////////////////////////////////////////////////////
 			for (unsigned int i = 0; i < preloadedGui.size(); i++) {
-				renderer.submit2D(&preloadedGui[i]);
+				renderer.submit2D(preloadedGui[i]);
 			}
 			///////////////////////////////////////////////////////////////////////////
 			for (unsigned int i = 0; i < gui.size(); i++) {
-				renderer.submit2D(&gui[i]);
+				renderer.submit2D(gui[i]);
 			}
 			///////////////////////////////////////////////////////////////////////////
 			for (unsigned int i = 0; i < sentences.size(); i++) {
-				renderer.submitText(&sentences[i]);
+				renderer.submitText(sentences[i]);
 			}
 			///////////////////////////////////////////////////////////////////////////
 			renderer.flush(viewMatrix, currentWidth, currentHeight, FOV);

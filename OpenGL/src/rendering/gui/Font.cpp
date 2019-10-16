@@ -77,6 +77,12 @@ Font::Font(std::string fontDirectory, std::string fontName, GLuint characterSize
 	glBindVertexArray(0);
 }
 
+Font::~Font()
+{
+	glDeleteBuffers(1, &VBO);
+	glDeleteVertexArrays(1, &VAO);
+}
+
 void Font::RenderText(Shader& s, std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color, glm::mat4 projection)
 {
 	// Activate corresponding render state	

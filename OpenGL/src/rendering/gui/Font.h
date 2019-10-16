@@ -19,6 +19,7 @@ private:
 public:
 	Font();
 	Font(std::string fontDirectory, std::string fontName, GLuint characterSize);
+	~Font();
 
 	void RenderText(Shader& s, std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color, glm::mat4 projection);
 };

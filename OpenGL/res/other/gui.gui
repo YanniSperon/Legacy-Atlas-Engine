@@ -1,12 +1,12 @@
 Total Size: 1
 
 Object2D: 0
-translation.x: 192.358
-translation.y: 164.878
-rotation: 15.2739
-scale.x: 1.84141
-scale.y: 1.36563
-texture: 10
+translation.x: 240.06
+translation.y: 479.375
+rotation: 0
+scale.x: 1
+scale.y: 1
+texture: 3
 textureCoordMin.x: 0
 textureCoordMin.y: 0
 textureCoordMax.x: 1

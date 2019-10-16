@@ -147,8 +147,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\other\Search.cpp" />
     <ClCompile Include="src\rendering\gui\Font.cpp" />
-    <ClCompile Include="src\rendering\gui\Letter.cpp" />
     <ClCompile Include="src\rendering\gui\Mesh2D.cpp" />
     <ClCompile Include="src\rendering\gui\Object2D.cpp" />
     <ClCompile Include="src\rendering\gui\Sentence.cpp" />
@@ -295,9 +295,9 @@
     <None Include="src\vendor\glm\gtx\wrap.inl" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\other\Search.h" />
     <ClInclude Include="src\rendering\gui\Font.h" />
     <ClInclude Include="src\rendering\gui\GUI.h" />
-    <ClInclude Include="src\rendering\gui\Letter.h" />
     <ClInclude Include="src\rendering\gui\Mesh2D.h" />
     <ClInclude Include="src\rendering\gui\Object2D.h" />
     <ClInclude Include="src\rendering\gui\Sentence.h" />

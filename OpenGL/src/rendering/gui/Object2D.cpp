@@ -36,6 +36,9 @@ Object2D::Object2D(glm::vec2 minCorner, glm::vec2 maxCorner, float rot, glm::vec
 
 Object2D::~Object2D()
 {
+	Unbind();
+	glDeleteBuffers(1, &vertexBufferID);
+	glDeleteBuffers(1, &indexBufferID);
 }
 
 void Object2D::Draw()

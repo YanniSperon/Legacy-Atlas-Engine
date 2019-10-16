@@ -6,6 +6,11 @@ Sentence::Sentence(Shader& shdr, Font& f, std::string t, float s, glm::vec2 pos,
 
 }
 
+Sentence::~Sentence()
+{
+
+}
+
 Shader& Sentence::GetShader()
 {
 	return shader;

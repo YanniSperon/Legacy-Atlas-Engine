@@ -68,7 +68,9 @@ Object::Object(glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string 
 
 Object::~Object()
 {
-
+	Unbind();
+	glDeleteBuffers(1, &vertexBufferID);
+	glDeleteBuffers(1, &indexBufferID);
 }
 
 void Object::Draw()
