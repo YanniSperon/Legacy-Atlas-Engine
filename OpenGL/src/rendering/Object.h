@@ -14,7 +14,7 @@ public:
 	Object();
 	Object(glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string dir, std::string name, GLuint tex, GLuint shader);
 	Object(glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string dir, std::string name, glm::vec3 rot, glm::vec3 trans, glm::vec3 s, GLuint tex, GLuint shader);
-	~Object();
+	virtual ~Object();
 
 	void Draw();
 	void Bind();

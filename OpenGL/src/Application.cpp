@@ -27,6 +27,7 @@
 #include "Object2D.h"
 #include "Font.h"
 #include "Search.h"
+#include "Light.h"
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
@@ -714,7 +715,8 @@ int main(void)
 
 		SimpleRenderer renderer;
 
-		Shader shader("res/shaders/Basic.shader");
+		Shader shader("res/shaders/Lighting.shader");
+		Shader basic("res/shaders/Basic.shader");
 		Shader glassShader("res/shaders/Window.shader");
 		Shader shader2D("res/shaders/2D.shader");
 		Shader textShader("res/shaders/Text.shader");
@@ -753,12 +755,12 @@ int main(void)
 
 
 
-		Object plane(glm::vec3(-5.0f, -5.0f, -5.0f), glm::vec3(5.0f, 5.0f, 5.0f), type::blankModel, "res/models/", "plane.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -3.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), whiteTex, shader.GetShaderID());
-		Object skybox(glm::vec3(-50.0f, -50.0f, -50.0f), glm::vec3(50.0f, 50.0f, 50.0f), type::skyBox, "", "", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), skyboxTex, shader.GetShaderID());
 		std::vector<Object*> objectsOnScene;
+		std::vector<Object*> preloadedObjectsOnScene;
 		std::vector<Object2D*> gui;
 		std::vector<Object2D*> preloadedGui;
 		std::vector<Sentence*> sentences;
+		//Object* temp = new Object(glm::vec3(-1.0f, -1.0f, -1.0f), glm::vec3(1.0f, 1.0f, 1.0f), type::cubeModel, "", "", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 5.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), sphereCowTex, shader.GetShaderID());
 
 		Object2D pausemenu = Object2D(glm::vec2(0.0f, 0.0f), glm::vec2(1920.0f, 1080.0f), 0.0f, glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f), pauseMenuTex, shader2D.GetShaderID(), glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f));
 		GLuint selectedObject = 0;
@@ -769,7 +771,10 @@ int main(void)
 
 		Font arial24pt = Font("res/fonts/arial/", "arial.ttf", 24);
 		Font timesnewroman32pt = Font("res/fonts/times new roman/", "times.ttf", 32);
+		//Font comicsans48pt = Font("res/fonts/comic sans/", "comic.ttf", 48);
 
+		preloadedObjectsOnScene.push_back(new Object(glm::vec3(-50.0f, -50.0f, -50.0f), glm::vec3(50.0f, 50.0f, 50.0f), type::skyBox, "", "", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), skyboxTex, basic.GetShaderID()));
+		preloadedObjectsOnScene.push_back(new Object(glm::vec3(-5.0f, -5.0f, -5.0f), glm::vec3(5.0f, 5.0f, 5.0f), type::blankModel, "res/models/", "plane.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -3.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), whiteTex, shader.GetShaderID()));
 		preloadedGui.push_back(new Object2D(glm::vec2(-25.0f, -25.0f), glm::vec2(25.0f, 25.0f), 0.0f, glm::vec2(1920.0f / 2.0f, 1080.0f / 2.0f), glm::vec2(1.0f, 1.0f), tex2D, shader2D.GetShaderID(), cursorCoords.min, cursorCoords.max));
 		preloadedGui.push_back(new Object2D(glm::vec2(-262.5f, -262.5f), glm::vec2(-12.5f, -12.5f), 0.0f, glm::vec2(1920.0f, 1080.0f), glm::vec2(1.0f, 1.0f), redTex, shader2D.GetShaderID(), glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f)));
 		preloadedGui.push_back(new Object2D(glm::vec2(-275.0f, -275.0f), glm::vec2(0.0f, 0.0f), 0.0f, glm::vec2(1920.0f, 1080.0f), glm::vec2(1.0f, 1.0f), whiteTex, shader2D.GetShaderID(), glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f)));
@@ -784,12 +789,17 @@ int main(void)
 		sentences.push_back(new Sentence(textShader, arial24pt, "E:Scale      F:Fullscreen      T:Texture", 1.0f, glm::vec2(175.0f, 930.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
 		sentences.push_back(new Sentence(textShader, arial24pt, "[: Change Selection Left                       K: Change Texture Left", 1.0f, glm::vec2(50.0f, 880.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
 		sentences.push_back(new Sentence(textShader, arial24pt, "]: Change Selection Right                   L: Change Texture Right", 1.0f, glm::vec2(50.0f, 830.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
+		//sentences.push_back(new Sentence(textShader, comicsans48pt, "COMIC SANS", 1.0f, glm::vec2(1920.0f/2.0f, 1080.0f/2.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
+
+		//objectsOnScene.push_back(new Object(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), type::blankModel, "res/models/", "torus.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(5.0f, 5.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), whiteTex, shader.GetShaderID()));
 
 		bool loadFile = true;
 		if (loadFile) {
 			IO::LoadFile(gui, "res/other/", "gui.gui");
 			IO::LoadFile(objectsOnScene, "res/other/", "level.lvl");
 		}
+
+		Light* light = new Light(glm::vec4(1.0f, 0.0f, 1.0f, 1.0f), glm::vec3(-0.1f, -0.1f, -0.1f), glm::vec3(0.1f, 0.1f, 0.1f), type::cubeInvertedLighting, "", "", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 5.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), whiteTex, shader.GetShaderID());
 
 		//GLuint leftEyeFrameBuffer;
 		//glGenFramebuffers(1, &leftEyeFrameBuffer);
@@ -863,7 +873,10 @@ int main(void)
 				else if (threePressed) {
 					currentEditorType = EditorType::text;
 				}
-				if ((objectsOnScene.size() > 0 && currentEditorType == EditorType::scene) || (gui.size() > 0 && currentEditorType == EditorType::overlay)) {
+				else if (fourPressed) {
+					currentEditorType = EditorType::light;
+				}
+				if ((objectsOnScene.size() > 0 && currentEditorType == EditorType::scene) || (gui.size() > 0 && currentEditorType == EditorType::overlay) || (currentEditorType == EditorType::light)) {
 					if (cPressed) {
 						currentMode = Mode::cam;
 					}
@@ -1001,7 +1014,7 @@ int main(void)
 						if (selectionChangeTimer.HasFinished()) {
 							if (selectedObject > 0) {
 								selectedObject--;
-								selectedObjectTexture = objectsOnScene[selectedObject]->GetTextureID();
+								selectedObjectTexture = Search::LinearSearchVector(textures, objectsOnScene[selectedObject]->GetTextureID());
 								selectionChangeTimer.Reset(0.5f);
 								selectionChangeTimer.Start();
 							}
@@ -1011,7 +1024,7 @@ int main(void)
 						if (selectionChangeTimer.HasFinished()) {
 							if (selectedObject < objectsOnScene.size() - 1) {
 								selectedObject++;
-								selectedObjectTexture = objectsOnScene[selectedObject]->GetTextureID();
+								selectedObjectTexture = Search::LinearSearchVector(textures, objectsOnScene[selectedObject]->GetTextureID());
 								selectionChangeTimer.Reset(0.5f);
 								selectionChangeTimer.Start();
 							}
@@ -1029,9 +1042,16 @@ int main(void)
 					if (backspacePressed) {
 						if (spawnTimer.HasFinished()) {
 							if (objectsOnScene.size() > 0) {
+								delete objectsOnScene[selectedObject];
 								objectsOnScene.erase(objectsOnScene.begin() + selectedObject);
-								selectedObject = 0;
-								selectedObjectTexture = 0;//Search::LinearSearchVector(textures, objectsOnScene[selectedObject]->GetTextureID());
+								if (selectedObject > 0) {
+									selectedObject--;
+								}
+								if (objectsOnScene.size() >= 0) {
+									selectedObjectTexture = Search::LinearSearchVector(textures, objectsOnScene[selectedObject]->GetTextureID());
+								} else {
+									selectedObjectTexture = 0;
+								}
 								spawnTimer.Reset(0.5f);
 								spawnTimer.Start();
 							}
@@ -1108,8 +1128,7 @@ int main(void)
 						if (selectionChangeTimer.HasFinished()) {
 							if (selectedGUIComponent > 0) {
 								selectedGUIComponent--;
-								selectedGUIComponentTexture = gui[selectedGUIComponent]->GetTextureID();
-								printf("SelectedGUIComponent: %i", selectedGUIComponent);
+								selectedGUIComponentTexture = Search::LinearSearchVector(textures, gui[selectedGUIComponent]->GetTextureID());
 								selectionChangeTimer.Reset(0.5f);
 								selectionChangeTimer.Start();
 							}
@@ -1119,7 +1138,7 @@ int main(void)
 						if (selectionChangeTimer.HasFinished()) {
 							if (selectedGUIComponent < gui.size() - 1) {
 								selectedGUIComponent++;
-								selectedGUIComponentTexture = gui[selectedGUIComponent]->GetTextureID();
+								selectedGUIComponentTexture = Search::LinearSearchVector(textures, gui[selectedGUIComponent]->GetTextureID());
 								selectionChangeTimer.Reset(0.5f);
 								selectionChangeTimer.Start();
 							}
@@ -1137,12 +1156,102 @@ int main(void)
 					if (backspacePressed) {
 						if (spawnTimer.HasFinished()) {
 							if (gui.size() > 0) {
+								delete gui[selectedGUIComponent];
 								gui.erase(gui.begin() + selectedGUIComponent);
-								selectedGUIComponent = 0;
-								selectedGUIComponentTexture = 0;//Search::LinearSearchVector(textures, objectsOnScene[selectedObject]->GetTextureID());
+								if (selectedGUIComponent > 0) {
+									selectedGUIComponent--;
+								}
+								if (objectsOnScene.size() >= 0) {
+									selectedGUIComponentTexture = Search::LinearSearchVector(textures, light->GetTextureID());
+								}
+								else {
+									selectedGUIComponentTexture = 0;
+								}
 								spawnTimer.Reset(0.5f);
 								spawnTimer.Start();
 							}
+						}
+					}
+				}
+				else if (currentEditorType == EditorType::light) {
+					if (currentMode == Mode::scale) {
+						if (wPressed) {
+							light->ScaleAdd3f(0.0f, 0.0f, -movementSpeed * deltaTime);
+						}
+						if (sPressed) {
+							light->ScaleAdd3f(0.0f, 0.0f, movementSpeed * deltaTime);
+						}
+						if (aPressed) {
+							light->ScaleAdd3f(-movementSpeed * deltaTime, 0.0f, 0.0f);
+						}
+						if (dPressed) {
+							light->ScaleAdd3f(movementSpeed * deltaTime, 0.0f, 0.0f);
+						}
+						if (spacePressed) {
+							light->ScaleAdd3f(0.0f, movementSpeed * deltaTime, 0.0f);
+						}
+						if (leftControlPressed) {
+							light->ScaleAdd3f(0.0f, -movementSpeed * deltaTime, 0.0f);
+						}
+					}
+					else if (currentMode == Mode::translate) {
+						if (wPressed) {
+							light->TranslateAdd3f(0.0f, 0.0f, -movementSpeed * deltaTime);
+						}
+						if (sPressed) {
+							light->TranslateAdd3f(0.0f, 0.0f, movementSpeed * deltaTime);
+						}
+						if (aPressed) {
+							light->TranslateAdd3f(-movementSpeed * deltaTime, 0.0f, 0.0f);
+						}
+						if (dPressed) {
+							light->TranslateAdd3f(movementSpeed * deltaTime, 0.0f, 0.0f);
+						}
+						if (spacePressed) {
+							light->TranslateAdd3f(0.0f, movementSpeed * deltaTime, 0.0f);
+						}
+						if (leftControlPressed) {
+							light->TranslateAdd3f(0.0f, -movementSpeed * deltaTime, 0.0f);
+						}
+					}
+					else if (currentMode == Mode::cam) {
+						if (wPressed) {
+							camera.MoveForward(deltaTime);
+						}
+						if (sPressed) {
+							camera.MoveBackward(deltaTime);
+						}
+						if (aPressed) {
+							camera.StrafeLeft(deltaTime);
+						}
+						if (dPressed) {
+							camera.StrafeRight(deltaTime);
+						}
+						if (spacePressed) {
+							camera.MoveUp(deltaTime);
+						}
+						if (leftControlPressed) {
+							camera.MoveDown(deltaTime);
+						}
+					}
+					else if (currentMode == Mode::rotate) {
+						if (wPressed) {
+							light->RotateAdd3f(0.0f, 0.0f, glm::degrees(-movementSpeed * deltaTime));
+						}
+						if (sPressed) {
+							light->RotateAdd3f(0.0f, 0.0f, glm::degrees(movementSpeed * deltaTime));
+						}
+						if (aPressed) {
+							light->RotateAdd3f(glm::degrees(-movementSpeed * deltaTime), 0.0f, 0.0f);
+						}
+						if (dPressed) {
+							light->RotateAdd3f(glm::degrees(movementSpeed * deltaTime), 0.0f, 0.0f);
+						}
+						if (spacePressed) {
+							light->RotateAdd3f(0.0f, glm::degrees(movementSpeed * deltaTime), 0.0f);
+						}
+						if (leftControlPressed) {
+							light->RotateAdd3f(0.0f, glm::degrees(-movementSpeed * deltaTime), 0.0f);
 						}
 					}
 				}
@@ -1175,17 +1284,26 @@ int main(void)
 				else if (currentEditorType == EditorType::text) {
 					sentences[1]->SetText("Editor Type: Text");
 				}
+				else if (currentEditorType == EditorType::light) {
+					sentences[1]->SetText("Editor Type: Light");
+				}
 				///////////////////////////////////////////////////////////////////////////
 			}
 			///////////////////////////////////////////////////////////////////////////
 			camera.ChangeMovementSpeed(movementSpeed);
 			camPos = camera.GetTranslation();
-			camera.BringWith(skybox);
+			camera.BringWith(preloadedObjectsOnScene[0]);
 			///////////////////////////////////////////////////////////////////////////
 			glm::mat4 viewMatrix = camera.GetViewTransformMatrix();
 			///////////////////////////////////////////////////////////////////////////
-			renderer.submitForceRender3D(&skybox);
-			renderer.submit3D(&plane, camPos);
+			for (unsigned int i = 0; i < preloadedObjectsOnScene.size(); i++) {
+				if (i == 0) {
+					renderer.submitForceRender3D(preloadedObjectsOnScene[i]);
+				}
+				else {
+					renderer.submit3D(preloadedObjectsOnScene[i], camPos);
+				}
+			}
 			///////////////////////////////////////////////////////////////////////////
 			for (unsigned int i = 0; i < objectsOnScene.size(); i++) {
 				renderer.submit3D(objectsOnScene[i], camPos);
@@ -1203,7 +1321,7 @@ int main(void)
 				renderer.submitText(sentences[i]);
 			}
 			///////////////////////////////////////////////////////////////////////////
-			renderer.flush(viewMatrix, currentWidth, currentHeight, FOV);
+			renderer.flush(viewMatrix, currentWidth, currentHeight, FOV, light);
 			///////////////////////////////////////////////////////////////////////////
 			{
 				ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);

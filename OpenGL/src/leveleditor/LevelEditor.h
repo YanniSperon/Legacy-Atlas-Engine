@@ -7,7 +7,7 @@ enum Mode
 
 enum EditorType
 {
-	text, overlay, scene
+	text, overlay, scene, light
 };
 
 struct Texture

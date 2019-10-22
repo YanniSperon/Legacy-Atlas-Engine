@@ -157,6 +157,7 @@
     <ClCompile Include="src\physics\BoundingSphere.cpp" />
     <ClCompile Include="src\physics\AABBCollidable.cpp" />
     <ClCompile Include="src\physics\IntersectData.cpp" />
+    <ClCompile Include="src\rendering\Light.cpp" />
     <ClCompile Include="src\rendering\Loader.cpp" />
     <ClCompile Include="src\rendering\Object.cpp" />
     <ClCompile Include="src\other\Config.cpp" />
@@ -180,6 +181,7 @@
     <None Include="imgui.ini" />
     <None Include="res\shaders\2D.shader" />
     <None Include="res\shaders\Basic.shader" />
+    <None Include="res\shaders\Lighting.shader" />
     <None Include="res\shaders\Text.shader" />
     <None Include="res\shaders\Window.shader" />
     <None Include="src\vendor\glm\detail\func_common.inl" />
@@ -307,6 +309,7 @@
     <ClInclude Include="src\physics\BoundingSphere.h" />
     <ClInclude Include="src\physics\AABBCollidable.h" />
     <ClInclude Include="src\physics\IntersectData.h" />
+    <ClInclude Include="src\rendering\Light.h" />
     <ClInclude Include="src\rendering\Loader.h" />
     <ClInclude Include="src\rendering\Object.h" />
     <ClInclude Include="src\other\Config.h" />

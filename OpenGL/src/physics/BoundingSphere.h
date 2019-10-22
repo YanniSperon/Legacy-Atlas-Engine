@@ -9,7 +9,6 @@ private:
 public:
 	BoundingSphere();
 	BoundingSphere(const glm::vec3 center, float radius);
-	~BoundingSphere();
 
 	IntersectData IntersectBoundingSphere(const BoundingSphere& other);
 

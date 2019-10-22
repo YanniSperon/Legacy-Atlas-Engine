@@ -10,7 +10,6 @@ private:
 public:
 	Plane();
 	Plane(const glm::vec3& norm, float dist);
-	~Plane();
 
 	Plane Normalized() const;
 	IntersectData IntersectSphere(const BoundingSphere& other) const;

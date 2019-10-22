@@ -1,16 +1,2 @@
-Total Size: 1
-
-Object2D: 0
-translation.x: 240.06
-translation.y: 479.375
-rotation: 0
-scale.x: 1
-scale.y: 1
-texture: 3
-textureCoordMin.x: 0
-textureCoordMin.y: 0
-textureCoordMax.x: 1
-textureCoordMax.y: 1
-shader: 7
-End Object2D
+Total Size: 0
 

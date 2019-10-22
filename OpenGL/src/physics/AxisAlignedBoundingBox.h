@@ -10,7 +10,6 @@ private:
 public:
 	AxisAlignedBoundingBox();
 	AxisAlignedBoundingBox(const glm::vec3& minCorner, const glm::vec3& maxCorner);
-	~AxisAlignedBoundingBox();
 
 	IntersectData IntersectAxisAlignedBoundingBox(const AxisAlignedBoundingBox& other) const;
 

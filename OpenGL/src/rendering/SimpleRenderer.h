@@ -18,4 +18,5 @@ public:
 	void submit3D(Object* renderable, glm::vec3 camPos) override;
 	void submitForceRender3D(Object* renderable) override;
 	void flush(glm::mat4 cameraView, int width, int height, float FOV) override;
+	void flush(glm::mat4 cameraView, int width, int height, float FOV, Light* light) override;
 };

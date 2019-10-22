@@ -7,6 +7,7 @@
 #include "Object2D.h"
 #include "Font.h"
 #include "Sentence.h"
+#include "Light.h"
 
 class Renderer {
 public:
@@ -15,4 +16,5 @@ public:
 	virtual void submit3D(Object* renderable, glm::vec3 camPos) = 0;
 	virtual void submitForceRender3D(Object* renderable) = 0;
 	virtual void flush(glm::mat4 cameraView, int width, int height, float FOV) = 0;
+	virtual void flush(glm::mat4 cameraView, int width, int height, float FOV, Light* light) = 0;
 };

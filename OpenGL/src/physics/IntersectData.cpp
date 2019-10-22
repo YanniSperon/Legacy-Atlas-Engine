@@ -10,7 +10,3 @@ IntersectData::IntersectData(const bool intersects, const float dist)
 {
 
 }
-
-IntersectData::~IntersectData()
-{
-}

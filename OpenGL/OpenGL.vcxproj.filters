@@ -99,6 +99,9 @@
     <ClCompile Include="src\other\Search.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\rendering\Light.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\Basic.shader" />
@@ -439,6 +442,7 @@
     <None Include="res\shaders\Window.shader" />
     <None Include="res\shaders\2D.shader" />
     <None Include="res\shaders\Text.shader" />
+    <None Include="res\shaders\Lighting.shader" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\vendor\glm\detail\_features.hpp">
@@ -973,6 +977,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\other\Search.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rendering\Light.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

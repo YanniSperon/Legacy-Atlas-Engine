@@ -29,5 +29,6 @@ public:
 	void MoveDown(float delta);
 	void ChangeMovementSpeed(float newSpeed);
 	void BringWith(Mesh &obj);
+	void BringWith(Mesh* obj);
 	glm::vec3 GetTranslation();
 };

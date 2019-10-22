@@ -50,5 +50,5 @@ void main()
 	vec3 diffuse = diff * lightColor;
 
 
-	color = texColor;
+	color = vec4(ambient + diffuse, 1.0) * texColor;
 }

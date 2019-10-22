@@ -46,10 +46,6 @@ AxisAlignedBoundingBox::AxisAlignedBoundingBox(const glm::vec3& minCorner, const
 
 }
 
-AxisAlignedBoundingBox::~AxisAlignedBoundingBox()
-{
-}
-
 IntersectData AxisAlignedBoundingBox::IntersectAxisAlignedBoundingBox(const AxisAlignedBoundingBox& other) const
 {
 	glm::vec3 distances1 = other.GetMinExtents() - maxExtents;

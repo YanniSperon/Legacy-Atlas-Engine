@@ -12,11 +12,6 @@ Plane::Plane(const glm::vec3& norm, float dist)
 
 }
 
-Plane::~Plane()
-{
-
-}
-
 Plane Plane::Normalized() const
 {
 	float magnitude = sqrtf((normal.x * normal.x) + (normal.y * normal.y) + (normal.z * normal.z));

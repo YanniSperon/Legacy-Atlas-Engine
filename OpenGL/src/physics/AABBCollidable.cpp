@@ -11,7 +11,3 @@ AABBCollidable::AABBCollidable(const glm::vec3& minCorner, const glm::vec3& maxC
 {
 
 }
-
-AABBCollidable::~AABBCollidable()
-{
-}

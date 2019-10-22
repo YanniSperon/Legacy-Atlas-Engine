@@ -12,11 +12,6 @@ BoundingSphere::BoundingSphere(const glm::vec3 center, float radius)
 
 }
 
-BoundingSphere::~BoundingSphere()
-{
-
-}
-
 IntersectData BoundingSphere::IntersectBoundingSphere(const BoundingSphere& other)
 {
 	float radiusDistance = radius + other.radius;

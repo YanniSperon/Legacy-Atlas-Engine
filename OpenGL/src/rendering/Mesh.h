@@ -6,7 +6,7 @@
 
 enum type
 {
-	triangle, cubeModel, blankModel, texturedModel, skyBox, flat
+	cubeModel, blankModel, texturedModel, skyBox, cubeInvertedLighting
 };
 
 class Mesh {
