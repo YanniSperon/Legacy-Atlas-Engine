@@ -14,7 +14,7 @@ static void LoadData(std::vector<Object*>& vec, std::string filePath)
 {
 	std::ifstream objDataStream(filePath);
 	if (!objDataStream.is_open()) {
-		printf("Error loading object at path: \"%s\"", filePath);
+		printf("Error loading object at path: \"%s\"", filePath.c_str());
 	}
 
 	glm::vec3 translation(0.0f, 0.0f, 0.0f);
@@ -39,16 +39,11 @@ static void LoadData(std::vector<Object*>& vec, std::string filePath)
 	glm::vec3 lightSpecular(1.0f, 1.0f, 1.0f);
 	type objectType = type::cubeModel;
 
-	/*
-	shininess:  
-	*/
-
 	while (!objDataStream.eof()) {
 		std::string line;
 		std::getline(objDataStream, line);
 
 		if (line.find("#") != std::string::npos) {
-			// comment
 		} else if (line.find("type: ") != std::string::npos) {
 			strType = line.substr(6);
 		}
@@ -264,20 +259,21 @@ static void LoadData(std::vector<Object*>& vec, std::string filePath)
 	}
 	Object* value;
 	if (strType == "Light") {
-		value = new Light(LightIntensity(lightAmbient, lightDiffuse, lightSpecular), glm::vec3(-5.0f, -5.0f, -5.0f), glm::vec3(5.0f, 5.0f, 5.0f), type::blankModel, "res/models/", "tank.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 10.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 5, 1, Material(glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(0.5f, 0.5f, 0.5f), 32.0f), false);
-	}
+		value = new Light(LightIntensity(lightAmbient, lightDiffuse, lightSpecular), glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), objectType, "res/models/", "tank.obj", rotation, translation, scale, tex, shader, Material(ambient, diffuse, specular, shininess), false);
+	} 
 	else if (strType == "PhysicsBody") {
-		value = new PhysicsBody(glm::vec3(-5.0f, -5.0f, -5.0f), glm::vec3(5.0f, 5.0f, 5.0f), objectType, "res/models/", "tank.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 10.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 5, 1, Material(glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(0.5f, 0.5f, 0.5f), 32.0f), mass, linearVelocity, angularVelocity, force, torque, momentOfInertia, gravity, false);
+		value = new PhysicsBody(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), objectType, "res/models/", "tank.obj", rotation, translation, scale, tex, shader, Material(ambient, diffuse, specular, shininess), mass, linearVelocity, angularVelocity, force, torque, momentOfInertia, gravity, false);
 	}
 	else if (strType == "AABBCollidable") {
-		value = new AABBCollidable(glm::vec3(-5.0f, -5.0f, -5.0f), glm::vec3(5.0f, 5.0f, 5.0f), objectType, "res/models/", "tank.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 10.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 5, 1, Material(glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(0.5f, 0.5f, 0.5f), 32.0f), mass, linearVelocity, angularVelocity, force, torque, momentOfInertia, gravity, false);
-	}
+		value = new AABBCollidable(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), objectType, "res/models/", "tank.obj", rotation, translation, scale, tex, shader, Material(ambient, diffuse, specular, shininess), mass, linearVelocity, angularVelocity, force, torque, momentOfInertia, gravity, false);
+	} 
 	else if (strType == "Object") {
-		value = new Object(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), objectType, "res/models/", "tank.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 10.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 5, 1, Material(glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(0.5f, 0.5f, 0.5f), 32.0f), false);
-	}
+		value = new Object(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), objectType, "res/models/", "tank.obj", rotation, translation, scale, tex, shader, Material(ambient, diffuse, specular, shininess), false);
+	} 
 	else if (strType == "Invalid") {
-		value = new Object(glm::vec3(-5.0f, -5.0f, -5.0f), glm::vec3(5.0f, 5.0f, 5.0f), objectType, "res/models/", "tank.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 10.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 5, 1, Material(glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(0.5f, 0.5f, 0.5f), 32.0f), false);
+		value = new Object(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), objectType, "res/models/", "tank.obj", rotation, translation, scale, tex, shader, Material(ambient, diffuse, specular, shininess), false);
 	}
+
 	meshLoaderMutex.lock();
 	vec.push_back(value);
 	meshLoaderMutex.unlock();
@@ -285,7 +281,7 @@ static void LoadData(std::vector<Object*>& vec, std::string filePath)
 
 void IO::LoadFile(std::vector<Object*>& vec, const std::string dir, const std::string fileName)
 {
-	printf("File loading began\n");
+	std::vector<std::future<void>> futures;
 	std::ifstream f(dir + fileName);
 
 	if (!f.is_open()) {
@@ -310,14 +306,21 @@ void IO::LoadFile(std::vector<Object*>& vec, const std::string dir, const std::s
 	}
 
 	for (unsigned int i = 0; i < filepaths.size(); i++) {
-		std::async(std::launch::async, LoadData, std::ref(vec), filepaths[i]);
+		futures.push_back(std::async(std::launch::async, LoadData, std::ref(vec), filepaths[i]));
 	}
-	printf("Threads launched\n");
-	std::this_thread::sleep_for(std::chrono::seconds(5));
-	for (unsigned int i = 0; i < vec.size(); i++) {
-		vec[i]->GLInit();
-	}
-	printf("GLinitialized\n");
+	//std::this_thread::sleep_for(std::chrono::seconds(5));
+	//for (unsigned int i = 0; i < vec.size(); i++) {
+	//	vec[i]->GLInit();
+	//}
+	//printf("Waiting for threads\n");
+	//for (unsigned int i = 0; i < futures.size(); i++) {
+	//	futures[i].get();
+	//}
+	//printf("Threads completed, initializing OpenGL\n");
+	//for (unsigned int i = 0; i < vec.size(); i++) {
+	//	vec[i]->GLInit();
+	//}
+	//printf("OpenGL initialized\n");
 }
 
 void IO::SaveToFile(std::vector<Object*>& vec, const std::string dir, const std::string fileName)
@@ -345,7 +348,8 @@ void IO::SaveToFile(std::vector<Object*>& vec, const std::string dir, const std:
 
 		std::string modelType = vec[i]->GetModelType();
 
-		objectFile << "type: " << type << ": " << i << "\n";
+		objectFile << "Object: " << i << "\n";
+		objectFile << "type: " << type << "\n";
 		objectFile << "modelType: " << modelType << "\n";
 		objectFile << "translation.x: " << translation.x << "\n";
 		objectFile << "translation.y: " << translation.y << "\n";

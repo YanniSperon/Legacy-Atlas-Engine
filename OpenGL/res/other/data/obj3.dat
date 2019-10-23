@@ -1,7 +1,9 @@
-AABBCollidable: 3
-translation.x: 6.89567
-translation.y: 0
-translation.z: 11.1023
+Object: 3
+type: AABBCollidable
+modelType: cubeModel
+translation.x: -5.19606
+translation.y: 3.51691
+translation.z: -4.39742
 rotation.x: 0
 rotation.y: 0
 rotation.z: 0

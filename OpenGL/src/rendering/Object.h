@@ -28,6 +28,7 @@ private:
 	GLuint shaderID;
 	GLsizei numIndices;
 	Material material;
+	bool glInitialized;
 public:
 	Object();
 	Object(glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string dir, std::string name, GLuint tex, GLuint shader, bool glInit);
@@ -46,6 +47,8 @@ public:
 	GLuint GetShaderID();
 	GLuint GetTextureID();
 	Material GetMaterial();
+
+	bool IsGLInitialized();
 
 	virtual std::string GetType() override;
 };

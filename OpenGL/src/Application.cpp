@@ -1,6 +1,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <irrKlang.h>
+#include <openvr.h>
 
 #include <iostream>
 #include <fstream>
@@ -40,7 +41,7 @@
 #include "imgui/imgui_impl_glfw_gl3.h"
 
 Config config = Config("res/other/", "config.cfg");
-//#define DGPU
+#define DGPU
 
 #ifdef DGPU
 extern "C"
@@ -699,6 +700,19 @@ int main(void)
 
 	irrklang::ISoundEngine* engine = irrklang::createIrrKlangDevice();
 
+	vr::IVRSystem* vr_pointer = NULL;
+
+	if (hasVR) {
+		vr::EVRInitError eError = vr::VRInitError_None;
+		vr_pointer = VR_Init(&eError, vr::VRApplication_Scene); // VRApplication_Background OR VRApplication_Scene OR VRApplication_Overlay OR VRApplication_Utility
+		if (eError != vr::VRInitError_None)
+		{
+			hasVR = false;
+			vr_pointer = NULL;
+			printf("Unable to init VR runtime: %s \n", VR_GetVRInitErrorAsEnglishDescription(eError));
+		}
+	}
+
 	printf("Vendor: %s\nModel: %s\nVersion: %s\n", glGetString(GL_VENDOR), glGetString(GL_RENDERER), glGetString(GL_VERSION));
 
 	{
@@ -827,6 +841,13 @@ int main(void)
 		//GLuint rightEyeFrameBuffer;
 		//glGenFramebuffers(1, &rightEyeFrameBuffer);
 		//glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		GLuint leftEyeFrameBuffer;
+		glGenFramebuffers(1, &leftEyeFrameBuffer);
+		GLuint rightEyeFrameBuffer;
+		glGenFramebuffers(1, &rightEyeFrameBuffer);
+
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 		//std::chrono::milliseconds duration(2500);
 		//std::this_thread::sleep_for(duration);
@@ -1341,6 +1362,23 @@ int main(void)
 			for (unsigned int i = 0; i < sentences.size(); i++) {
 				renderer.SubmitText(sentences[i]);
 			}
+			///////////////////////////////////////////////////////////////////////////
+			//if (hasVR) {
+			//	vr::TrackedDevicePose_t trackedDevicePose;
+			//	vr_pointer->GetDeviceToAbsoluteTrackingPose(
+			//		vr::TrackingUniverseStanding, 0, &trackedDevicePose, 1);
+			//	vr::VRCompositor()->WaitGetPoses(&trackedDevicePose, vr::k_unMaxTrackedDeviceCount, NULL, 0);
+			//
+			//	glBlitNamedFramebuffer(0, leftEyeFrameBuffer, 0, 0, currentWidth, currentHeight, 0, 0, currentWidth, currentHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+			//	const vr::Texture_t tex = { reinterpret_cast<void*>(intptr_t(leftEyeFrameBuffer)), vr::TextureType_OpenGL, vr::ColorSpace_Gamma };
+			//	vr::EVRCompositorError value = vr::VRCompositor()->Submit(vr::Eye_Left, &tex);
+			//	if (value != vr::VRCompositorError_None)
+			//	{
+			//		printf("VRCompositorError: %i \n", value);
+			//		//vr::VRCompositorError_DoNotHaveFocus;
+			//		//vr::VRCompositorError
+			//	}
+			//}
 			///////////////////////////////////////////////////////////////////////////
 			renderer.SimpleFlush(&camera, currentWidth, currentHeight, FOV, light);
 			///////////////////////////////////////////////////////////////////////////

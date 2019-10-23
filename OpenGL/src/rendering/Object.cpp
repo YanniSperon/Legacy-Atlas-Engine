@@ -5,13 +5,13 @@
 #include "stb_image/stb_image.h"
 
 Object::Object()
-	: Mesh(), vertexBufferID(0), indexBufferID(0), numIndices(0), texID(0), shaderID(0), material()
+	: Mesh(), vertexBufferID(0), indexBufferID(0), numIndices(0), texID(0), shaderID(0), material(), glInitialized(false)
 {
 
 }
 
 Object::Object(glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string dir, std::string name, GLuint tex, GLuint shader, bool glInit)
-	: Mesh(minCorner, maxCorner, type, dir, name), shaderID(0), texID(0), material()
+	: Mesh(minCorner, maxCorner, type, dir, name), shaderID(0), texID(0), material(), glInitialized(false), vertexBufferID(0), indexBufferID(0)
 {
 	texID = tex;
 	numIndices = (GLsizei)GetShape().numIndices;
@@ -22,7 +22,7 @@ Object::Object(glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string 
 }
 
 Object::Object(glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string dir, std::string name, glm::vec3 rot, glm::vec3 trans, glm::vec3 s, GLuint tex, GLuint shader, bool glInit)
-	: Mesh(minCorner, maxCorner, type, dir, name, rot, trans, s), shaderID(shader), texID(0), material()
+	: Mesh(minCorner, maxCorner, type, dir, name, rot, trans, s), shaderID(shader), texID(0), material(), glInitialized(false), vertexBufferID(0), indexBufferID(0)
 {
 	texID = tex;
 	numIndices = (GLsizei)GetShape().numIndices;
@@ -33,7 +33,7 @@ Object::Object(glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string 
 }
 
 Object::Object(glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string dir, std::string name, glm::vec3 rot, glm::vec3 trans, glm::vec3 s, GLuint tex, GLuint shader, Material mat, bool glInit)
-	: Mesh(minCorner, maxCorner, type, dir, name, rot, trans, s), shaderID(shader), texID(0), material(mat)
+	: Mesh(minCorner, maxCorner, type, dir, name, rot, trans, s), shaderID(shader), texID(0), material(mat), glInitialized(false), vertexBufferID(0), indexBufferID(0)
 {
 	texID = tex;
 	numIndices = (GLsizei)GetShape().numIndices;
@@ -52,6 +52,8 @@ Object::~Object()
 
 void Object::GLInit()
 {
+	glInitialized = true;
+
 	glGenBuffers(1, &vertexBufferID);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
 	glBufferData(GL_ARRAY_BUFFER, GetShape().vertexBufferSize(), GetShape().vertices, GL_STATIC_DRAW);
@@ -130,6 +132,11 @@ GLuint Object::GetTextureID()
 Material Object::GetMaterial()
 {
 	return material;
+}
+
+bool Object::IsGLInitialized()
+{
+	return glInitialized;
 }
 
 std::string Object::GetType()

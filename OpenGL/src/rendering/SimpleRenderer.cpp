@@ -41,6 +41,9 @@ void SimpleRenderer::Submit2D(Object2D* renderable)
 
 void SimpleRenderer::Submit3D(Object* renderable, glm::vec3 camPos)
 {
+	if (!renderable->IsGLInitialized()) {
+		renderable->GLInit();
+	}
 	glm::vec3 changeInValues = renderable->GetTranslation() - camPos;
 	float distanceSquared = changeInValues.x * changeInValues.x + changeInValues.y * changeInValues.y;
 	if (distanceSquared < 100.0f * 100.0f) {
@@ -50,6 +53,9 @@ void SimpleRenderer::Submit3D(Object* renderable, glm::vec3 camPos)
 
 void SimpleRenderer::SubmitForceRender3D(Object* renderable)
 {
+	if (!renderable->IsGLInitialized()) {
+		renderable->GLInit();
+	}
 	renderQueue3D.push_back(renderable);
 }
 
