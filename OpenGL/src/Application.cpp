@@ -41,7 +41,7 @@
 #include "imgui/imgui_impl_glfw_gl3.h"
 
 Config config = Config("res/other/", "config.cfg");
-#define DGPU
+//#define DGPU
 
 #ifdef DGPU
 extern "C"
