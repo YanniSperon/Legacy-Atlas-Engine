@@ -24,18 +24,22 @@ void SetUniformVec3(const std::string& name, const glm::vec3& vector, GLuint sha
 	glUniform3fv(GetUniformLocation(name, shaderID), 1, &vector[0]);
 }
 
+void SetUniform1f(const std::string& name, const float& value, GLuint shaderID)
+{
+	glUniform1f(GetUniformLocation(name, shaderID), value);
+}
 
-void SimpleRenderer::submitText(Sentence* renderable)
+void SimpleRenderer::SubmitText(Sentence* renderable)
 {
 	renderQueueText.push_back(renderable);
 }
 
-void SimpleRenderer::submit2D(Object2D* renderable)
+void SimpleRenderer::Submit2D(Object2D* renderable)
 {
 	renderQueue2D.push_back(renderable);
 }
 
-void SimpleRenderer::submit3D(Object* renderable, glm::vec3 camPos)
+void SimpleRenderer::Submit3D(Object* renderable, glm::vec3 camPos)
 {
 	glm::vec3 changeInValues = renderable->GetTranslation() - camPos;
 	float distanceSquared = changeInValues.x * changeInValues.x + changeInValues.y * changeInValues.y;
@@ -44,14 +48,14 @@ void SimpleRenderer::submit3D(Object* renderable, glm::vec3 camPos)
 	}
 }
 
-void SimpleRenderer::submitForceRender3D(Object* renderable)
+void SimpleRenderer::SubmitForceRender3D(Object* renderable)
 {
 	renderQueue3D.push_back(renderable);
 }
 
-void SimpleRenderer::flush(glm::mat4 cameraView, int width, int height, float FOV)
+void SimpleRenderer::Flush(Camera* camera, int width, int height, float FOV)
 {
-	glm::mat4 viewMatrix = cameraView;
+	glm::mat4 viewMatrix = camera->GetViewTransformMatrix();
 	if (width != localWidthBuffer || height != localHeightBuffer) {
 		if (width > 0 && height > 0) {
 			projectionMatrix = glm::perspective(glm::radians(FOV), (float)width / (float)height, 0.1f, 100.0f);
@@ -68,7 +72,7 @@ void SimpleRenderer::flush(glm::mat4 cameraView, int width, int height, float FO
 			UseProgram(shaderID);
 			SetUniformMat4f("V", viewMatrix, shaderID);
 			SetUniformMat4f("P", projectionMatrix, shaderID);
-			SetUniformVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f), shaderID);
+			SetUniformVec3("camPos", camera->GetTranslation(), shaderID);
 			SetUniformVec3("lightPos", glm::vec3(0.0f, 5.0f, 0.0f), shaderID);
 			pastShader = shaderID;
 		}
@@ -100,9 +104,9 @@ void SimpleRenderer::flush(glm::mat4 cameraView, int width, int height, float FO
 	glEnable(GL_DEPTH_TEST);
 }
 
-void SimpleRenderer::flush(glm::mat4 cameraView, int width, int height, float FOV, Light* light)
+void SimpleRenderer::Flush(Camera* camera, int width, int height, float FOV, Light* light)
 {
-	glm::mat4 viewMatrix = cameraView;
+	glm::mat4 viewMatrix = camera->GetViewTransformMatrix();
 	if (width != localWidthBuffer || height != localHeightBuffer) {
 		if (width > 0 && height > 0) {
 			projectionMatrix = glm::perspective(glm::radians(FOV), (float)width / (float)height, 0.1f, 100.0f);
@@ -110,7 +114,6 @@ void SimpleRenderer::flush(glm::mat4 cameraView, int width, int height, float FO
 		}
 	}
 
-	glm::mat4 VP = projectionMatrix * viewMatrix;
 	GLuint pastShader = 0;
 	while (!renderQueue3D.empty())
 	{
@@ -120,8 +123,7 @@ void SimpleRenderer::flush(glm::mat4 cameraView, int width, int height, float FO
 			UseProgram(shaderID);
 			SetUniformMat4f("V", viewMatrix, shaderID);
 			SetUniformMat4f("P", projectionMatrix, shaderID);
-			SetUniformVec3("lightColor", light->GetLightColor(), shaderID);
-			SetUniformVec3("lightPos", light->GetTranslation(), shaderID);
+			SetUniformVec3("camPos", camera->GetTranslation(), shaderID);
 			pastShader = shaderID;
 		}
 		SetUniformMat4f("M", renderable->GetModelTransformMatrix(), pastShader);
@@ -134,8 +136,8 @@ void SimpleRenderer::flush(glm::mat4 cameraView, int width, int height, float FO
 		UseProgram(shaderID);
 		SetUniformMat4f("V", viewMatrix, shaderID);
 		SetUniformMat4f("P", projectionMatrix, shaderID);
-		SetUniformVec3("lightColor", light->GetLightColor(), shaderID);
-		SetUniformVec3("lightPos", light->GetTranslation(), shaderID);
+		SetUniformVec3("camPos", camera->GetTranslation(), shaderID);
+		SetUniformVec3("light.position", light->GetTranslation(), shaderID);
 		pastShader = shaderID;
 	}
 	SetUniformMat4f("M", light->GetModelTransformMatrix(), pastShader);
@@ -154,6 +156,124 @@ void SimpleRenderer::flush(glm::mat4 cameraView, int width, int height, float FO
 		renderable->Draw();
 		renderQueue2D.pop_front();
 	}
+	glDisable(GL_DEPTH_TEST);
+	while (!renderQueueText.empty())
+	{
+		Sentence* renderable = renderQueueText.front();
+		renderable->GetFont().RenderText(renderable->GetShader(), renderable->GetText(), renderable->GetPosition().x, renderable->GetPosition().y, renderable->GetScale(), renderable->GetColor(), orthographicMatrix);
+		renderQueueText.pop_front();
+	}
+	glEnable(GL_DEPTH_TEST);
+}
+
+void SimpleRenderer::SimpleFlush(Camera* camera, int width, int height, float FOV)
+{
+	glm::mat4 viewMatrix = camera->GetViewTransformMatrix();
+	if (width != localWidthBuffer || height != localHeightBuffer) {
+		if (width > 0 && height > 0) {
+			projectionMatrix = glm::perspective(glm::radians(FOV), (float)width / (float)height, 0.1f, 100.0f);
+			orthographicMatrix = glm::ortho(0.0f, 1920.0f, 0.0f, 1080.0f);
+		}
+	}
+
+	while (!renderQueue3D.empty()) {
+		Object* renderable = renderQueue3D.front();
+		GLuint shaderID = renderable->GetShaderID();
+		UseProgram(shaderID);
+		SetUniformMat4f("P", projectionMatrix, shaderID);
+		SetUniformMat4f("V", viewMatrix, shaderID);
+		SetUniformMat4f("M", renderable->GetModelTransformMatrix(), shaderID);
+		SetUniformVec3("camPos", camera->GetTranslation(), shaderID);
+		SetUniformVec3("material.ambient", renderable->GetMaterial().ambient, shaderID);
+		SetUniformVec3("material.diffuse", renderable->GetMaterial().diffuse, shaderID);
+		SetUniformVec3("material.specular", renderable->GetMaterial().specular, shaderID);
+		SetUniform1f("material.shininess", renderable->GetMaterial().shininess, shaderID);
+		SetUniformVec3("light.position", glm::vec3(0.0f, 5.0f, 0.0f), shaderID);
+		SetUniformVec3("light.ambient", glm::vec3(1.0f, 1.0f, 1.0f), shaderID);
+		SetUniformVec3("light.diffuse", glm::vec3(1.0f, 1.0f, 1.0f), shaderID);
+		SetUniformVec3("light.specular", glm::vec3(1.0f, 1.0f, 1.0f), shaderID);
+		renderable->Draw();
+		renderQueue3D.pop_front();
+	}
+
+	while (!renderQueue2D.empty())
+	{
+		Object2D* renderable = renderQueue2D.front();
+		GLuint shaderID = renderable->GetShaderID();
+		UseProgram(shaderID);
+		SetUniformMat4f("P", orthographicMatrix, shaderID);
+		SetUniformMat4f("M", renderable->GetModelTransformMatrix(), shaderID);
+		renderable->Draw();
+		renderQueue2D.pop_front();
+	}
+	
+	glDisable(GL_DEPTH_TEST);
+	while (!renderQueueText.empty())
+	{
+		Sentence* renderable = renderQueueText.front();
+		renderable->GetFont().RenderText(renderable->GetShader(), renderable->GetText(), renderable->GetPosition().x, renderable->GetPosition().y, renderable->GetScale(), renderable->GetColor(), orthographicMatrix);
+		renderQueueText.pop_front();
+	}
+	glEnable(GL_DEPTH_TEST);
+}
+
+void SimpleRenderer::SimpleFlush(Camera* camera, int width, int height, float FOV, Light* light)
+{
+	glm::mat4 viewMatrix = camera->GetViewTransformMatrix();
+	if (width != localWidthBuffer || height != localHeightBuffer) {
+		if (width > 0 && height > 0) {
+			projectionMatrix = glm::perspective(glm::radians(FOV), (float)width / (float)height, 0.1f, 100.0f);
+			orthographicMatrix = glm::ortho(0.0f, 1920.0f, 0.0f, 1080.0f);
+		}
+	}
+	while (!renderQueue3D.empty()) {
+		Object* renderable = renderQueue3D.front();
+		GLuint shaderID = renderable->GetShaderID();
+		UseProgram(shaderID);
+		SetUniformMat4f("P", projectionMatrix, shaderID);
+		SetUniformMat4f("V", viewMatrix, shaderID);
+		SetUniformMat4f("M", renderable->GetModelTransformMatrix(), shaderID);
+		SetUniformVec3("camPos", camera->GetTranslation(), shaderID);
+		SetUniformVec3("material.ambient", renderable->GetMaterial().ambient, shaderID);
+		SetUniformVec3("material.diffuse", renderable->GetMaterial().diffuse, shaderID);
+		SetUniformVec3("material.specular", renderable->GetMaterial().specular, shaderID);
+		SetUniform1f("material.shininess", renderable->GetMaterial().shininess, shaderID);
+		SetUniformVec3("light.position", light->GetTranslation(), shaderID);
+		SetUniformVec3("light.ambient", light->GetLightIntensity().ambient, shaderID);
+		SetUniformVec3("light.diffuse", light->GetLightIntensity().diffuse, shaderID);
+		SetUniformVec3("light.specular", light->GetLightIntensity().specular, shaderID);
+		renderable->Draw();
+		renderQueue3D.pop_front();
+	}
+
+	Object* r = light;
+	GLuint s = r->GetShaderID();
+	UseProgram(s);
+	SetUniformMat4f("P", projectionMatrix, s);
+	SetUniformMat4f("V", viewMatrix, s);
+	SetUniformMat4f("M", r->GetModelTransformMatrix(), s);
+	SetUniformVec3("camPos", camera->GetTranslation(), s);
+	SetUniformVec3("material.ambient", r->GetMaterial().ambient, s);
+	SetUniformVec3("material.diffuse", r->GetMaterial().diffuse, s);
+	SetUniformVec3("material.specular", r->GetMaterial().specular, s);
+	SetUniform1f("material.shininess", r->GetMaterial().shininess, s);
+	SetUniformVec3("light.position", light->GetTranslation(), s);
+	SetUniformVec3("light.ambient", light->GetLightIntensity().ambient, s);
+	SetUniformVec3("light.diffuse", light->GetLightIntensity().diffuse, s);
+	SetUniformVec3("light.specular", light->GetLightIntensity().specular, s);
+	r->Draw();
+
+	while (!renderQueue2D.empty())
+	{
+		Object2D* renderable = renderQueue2D.front();
+		GLuint shaderID = renderable->GetShaderID();
+		UseProgram(shaderID);
+		SetUniformMat4f("P", orthographicMatrix, shaderID);
+		SetUniformMat4f("M", renderable->GetModelTransformMatrix(), shaderID);
+		renderable->Draw();
+		renderQueue2D.pop_front();
+	}
+	
 	glDisable(GL_DEPTH_TEST);
 	while (!renderQueueText.empty())
 	{

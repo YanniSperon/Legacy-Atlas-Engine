@@ -1,17 +1,28 @@
 #include "Light.h"
 
-Light::Light(glm::vec3 lColor, glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string dir, std::string name, glm::vec3 rot, glm::vec3 trans, glm::vec3 s, GLuint tex, GLuint shader)
-	: Object(minCorner, maxCorner, type, dir, name, rot, trans, s, tex, shader), lightColor(lColor)
+Light::Light(LightIntensity lightIntensity, glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string dir, std::string name, glm::vec3 rot, glm::vec3 trans, glm::vec3 s, GLuint tex, GLuint shader, bool glInit)
+	: Object(minCorner, maxCorner, type, dir, name, rot, trans, s, tex, shader, glInit), intensity(lightIntensity)
 {
 
 }
 
-void Light::SetLightColor(glm::vec3 newValue)
+Light::Light(LightIntensity lightIntensity, glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string dir, std::string name, glm::vec3 rot, glm::vec3 trans, glm::vec3 s, GLuint tex, GLuint shader, Material mat, bool glInit)
+	: Object(minCorner, maxCorner, type, dir, name, rot, trans, s, tex, shader, mat, glInit), intensity(lightIntensity)
 {
-	lightColor = newValue;
+
 }
 
-glm::vec3 Light::GetLightColor()
+void Light::SetLightIntensity(LightIntensity newValue)
 {
-	return lightColor;
+	intensity = newValue;
+}
+
+LightIntensity Light::GetLightIntensity()
+{
+	return intensity;
+}
+
+std::string Light::GetType()
+{
+	return "Light";
 }

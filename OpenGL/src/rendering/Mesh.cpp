@@ -5,13 +5,13 @@
 #include <iostream>
 
 Mesh::Mesh()
-	: directory(""), fileName("Error"), rotation(0.0f, 0.0f, 0.0f), translation(0.0f, 0.0f, 0.0f), shape(), minExtents(0.0f, 0.0f, 0.0f), maxExtents(0.0f, 0.0f, 0.0f), scale(1.0f, 1.0f, 1.0f)
+	: directory(""), fileName("Error"), rotation(0.0f, 0.0f, 0.0f), translation(0.0f, 0.0f, 0.0f), shape(), minExtents(0.0f, 0.0f, 0.0f), maxExtents(0.0f, 0.0f, 0.0f), scale(1.0f, 1.0f, 1.0f), objectType(type::cubeModel)
 {
 
 }
 
 Mesh::Mesh(glm::vec3 min, glm::vec3 max, type type, std::string dir, std::string name)
-	: directory(directory), fileName(fileName), rotation(0.0f, 0.0f, 0.0f), translation(0.0f, 0.0f, 0.0f), minExtents(min), maxExtents(max), scale(1.0f, 1.0f, 1.0f)
+	: directory(directory), fileName(fileName), rotation(0.0f, 0.0f, 0.0f), translation(0.0f, 0.0f, 0.0f), minExtents(min), maxExtents(max), scale(1.0f, 1.0f, 1.0f), objectType(type)
 {
 	if (type == type::cubeModel) {
 		shape = ShapeGenerator::makeCube(minExtents, maxExtents);
@@ -34,7 +34,7 @@ Mesh::Mesh(glm::vec3 min, glm::vec3 max, type type, std::string dir, std::string
 }
 
 Mesh::Mesh(glm::vec3 min, glm::vec3 max, type type, std::string dir, std::string name, glm::vec3 rot, glm::vec3 trans, glm::vec3 s)
-	: directory(directory), fileName(fileName), rotation(rot), translation(trans), minExtents(min), maxExtents(max), scale(s)
+	: directory(directory), fileName(fileName), rotation(rot), translation(trans), minExtents(min), maxExtents(max), scale(s), objectType(type)
 {
 	if (type == type::cubeModel) {
 		shape = ShapeGenerator::makeCube(minExtents, maxExtents);
@@ -232,4 +232,28 @@ ShapeData Mesh::GetShape()
 void Mesh::SetShape(ShapeData newShape)
 {
 	shape = newShape;
+}
+
+std::string Mesh::GetModelType()
+{
+	if (objectType == type::cubeModel) {
+		return "cubeModel";
+	}
+	else if (objectType == type::cubeInvertedLighting) {
+		return "cubeInvertedLighting";
+	}
+	else if (objectType == type::skyBox) {
+		return "skyBox";
+	}
+	else if (objectType == type::blankModel) {
+		return "blankModel";
+	}
+	else if (objectType == type::texturedModel) {
+		return "texturedModel";
+	}
+}
+
+std::string Mesh::GetType()
+{
+	return "Mesh";
 }

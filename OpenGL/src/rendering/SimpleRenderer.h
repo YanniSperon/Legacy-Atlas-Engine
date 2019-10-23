@@ -13,10 +13,12 @@ private:
 	int localWidthBuffer = 0;
 	int localHeightBuffer = 0;
 public:
-	void submitText(Sentence* renderable) override;
-	void submit2D(Object2D* renderable) override;
-	void submit3D(Object* renderable, glm::vec3 camPos) override;
-	void submitForceRender3D(Object* renderable) override;
-	void flush(glm::mat4 cameraView, int width, int height, float FOV) override;
-	void flush(glm::mat4 cameraView, int width, int height, float FOV, Light* light) override;
+	void SubmitText(Sentence* renderable) override;
+	void Submit2D(Object2D* renderable) override;
+	void Submit3D(Object* renderable, glm::vec3 camPos) override;
+	void SubmitForceRender3D(Object* renderable) override;
+	void Flush(Camera* camera, int width, int height, float FOV) override;
+	void Flush(Camera* camera, int width, int height, float FOV, Light* light) override;
+	void SimpleFlush(Camera* camera, int width, int height, float FOV) override;
+	void SimpleFlush(Camera* camera, int width, int height, float FOV, Light* light) override;
 };

@@ -22,10 +22,11 @@ Config::~Config()
 void Config::ReadConfig(std::string dir, std::string name)
 {
 	fullscreen = false;
+	forceFullscreen = false;
 	vr = false;
-	initialWidth = 1920;
-	initialHeight = 1080;
-	mouseSensitivity = 0.005f;
+	initialWidth = 1280;
+	initialHeight = 720;
+	mouseSensitivity = 0.15f;
 	FOV = 90.0f;
 	vsync = 1;
 	mouseMode = MouseMode::default;
@@ -47,6 +48,10 @@ void Config::ReadConfig(std::string dir, std::string name)
 		else if (line.find("fullscreen=") != std::string::npos) {
 			std::string value = line.substr(11);
 			fullscreen = (bool)std::stoi(value);
+		}
+		else if (line.find("forceFullscreen=") != std::string::npos) {
+			std::string value = line.substr(16);
+			forceFullscreen = (bool)std::stoi(value);
 		}
 		else if (line.find("vsync=") != std::string::npos) {
 			std::string value = line.substr(6);
@@ -84,7 +89,11 @@ void Config::WriteConfig(std::string dir, std::string name)
 	printf("Saving to file: %s%s", dir.c_str(), name.c_str());
 	std::ofstream outfile(dir + name);
 	outfile << "#choose whether the application will launch in fullscreen or not\n";
-	outfile << "fullscreen="<< std::to_string(fullscreen) << "\n";
+	outfile << "fullscreen=" << std::to_string(fullscreen) << "\n";
+	outfile << "\n";
+	outfile << "#choose whether the application will force fullscreen if the window is the\n";
+	outfile << "#same size as the screen\n";
+	outfile << "forceFullscreen=" << std::to_string(forceFullscreen) << "\n";
 	outfile << "\n";
 	outfile << "#enable vsync\n";
 	outfile << "vsync=" << std::to_string(vsync) << "\n";
@@ -138,6 +147,16 @@ bool Config::GetVRPreference()
 void Config::SetVRPreference(bool newValue)
 {
 	vr = newValue;
+}
+
+bool Config::GetForceFullscreen()
+{
+	return forceFullscreen;
+}
+
+void Config::SetForceFullscreen(bool newValue)
+{
+	forceFullscreen = newValue;
 }
 
 int Config::GetInitialWidthPreference()

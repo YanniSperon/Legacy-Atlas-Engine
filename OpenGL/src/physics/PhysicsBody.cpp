@@ -6,8 +6,8 @@ PhysicsBody::PhysicsBody()
 
 }
 
-PhysicsBody::PhysicsBody(glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string dir, std::string name, glm::vec3 rotation, glm::vec3 translation, glm::vec3 s,GLuint tex, GLuint shader, float m, glm::vec3 linearVel, glm::vec3 angularVel, glm::vec3 f, glm::vec3 t, float MOI, glm::vec3 gravity)
-	: Object(minCorner, maxCorner, type, dir, name, rotation, translation, s, tex, shader), mass(m), linearVelocity(linearVel), force(f), angularVelocity(angularVel), torque(t), momentOfInertia(MOI), gravitationalForce(gravity)
+PhysicsBody::PhysicsBody(glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string dir, std::string name, glm::vec3 rotation, glm::vec3 translation, glm::vec3 s,GLuint tex, GLuint shader, Material mat, float m, glm::vec3 linearVel, glm::vec3 angularVel, glm::vec3 f, glm::vec3 t, float MOI, glm::vec3 gravity, bool glInit)
+	: Object(minCorner, maxCorner, type, dir, name, rotation, translation, s, tex, shader, mat, glInit), mass(m), linearVelocity(linearVel), force(f), angularVelocity(angularVel), torque(t), momentOfInertia(MOI), gravitationalForce(gravity)
 {
 
 }
@@ -52,9 +52,44 @@ glm::vec3 PhysicsBody::GetLinearAccelerationWithoutGravity()
 	return glm::vec3(force / mass);
 }
 
+float PhysicsBody::GetMass()
+{
+	return mass;
+}
+
+glm::vec3 PhysicsBody::GetGravitationalForce()
+{
+	return gravitationalForce;
+}
+
 glm::vec3 PhysicsBody::GetLinearVelocity()
 {
 	return linearVelocity;
+}
+
+glm::vec3 PhysicsBody::GetAngularVelocity()
+{
+	return angularVelocity;
+}
+
+glm::vec3 PhysicsBody::GetForce()
+{
+	return force;
+}
+
+glm::vec3 PhysicsBody::GetTorque()
+{
+	return torque;
+}
+
+float PhysicsBody::GetMomentOfInertia()
+{
+	return momentOfInertia;
+}
+
+std::string PhysicsBody::GetType()
+{
+	return "PhysicsBody";
 }
 
 glm::vec3 PhysicsBody::GetLinearAcceleration()

@@ -18,7 +18,7 @@ private:
 	float momentOfInertia;
 public:
 	PhysicsBody();
-	PhysicsBody(glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string dir, std::string name, glm::vec3 rotation, glm::vec3 translation, glm::vec3 s, GLuint tex, GLuint shader, float m, glm::vec3 linearVel, glm::vec3 angularVel, glm::vec3 f, glm::vec3 t, float MOI, glm::vec3 gravity);
+	PhysicsBody(glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string dir, std::string name, glm::vec3 rotation, glm::vec3 translation, glm::vec3 s, GLuint tex, GLuint shader, Material mat, float m, glm::vec3 linearVel, glm::vec3 angularVel, glm::vec3 f, glm::vec3 t, float MOI, glm::vec3 gravity, bool glInit);
 
 	void Update(float delta);
 	Position UpdateValues(float deltaT, Position oldPosition);
@@ -27,7 +27,15 @@ public:
 
 	glm::vec3 GetLinearAcceleration();
 	glm::vec3 GetLinearAccelerationWithoutGravity();
+	float GetMass();
+	glm::vec3 GetGravitationalForce();
 	glm::vec3 GetLinearVelocity();
+	glm::vec3 GetAngularVelocity();
+	glm::vec3 GetForce();
+	glm::vec3 GetTorque();
+	float GetMomentOfInertia();
 
 	inline const glm::vec3& GetVelocity() const { return linearVelocity; }
+
+	virtual std::string GetType() override;
 };

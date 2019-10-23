@@ -8,6 +8,7 @@ enum MouseMode {
 class Config {
 private:
 	bool fullscreen;
+	bool forceFullscreen;
 	bool vr;
 	int initialWidth;
 	int initialHeight;
@@ -30,6 +31,9 @@ public:
 
 	bool GetVRPreference();
 	void SetVRPreference(bool newValue);
+
+	bool GetForceFullscreen();
+	void SetForceFullscreen(bool newValue);
 
 	int GetInitialWidthPreference();
 	void SetInitialWidthPreference(int newValue);

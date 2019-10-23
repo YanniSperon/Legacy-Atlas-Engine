@@ -5,46 +5,53 @@
 #include "stb_image/stb_image.h"
 
 Object::Object()
-	: Mesh(), vertexBufferID(0), indexBufferID(0), numIndices(0), texID(0), shaderID(0)
+	: Mesh(), vertexBufferID(0), indexBufferID(0), numIndices(0), texID(0), shaderID(0), material()
 {
 
 }
 
-Object::Object(glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string dir, std::string name, GLuint tex, GLuint shader)
-	: Mesh(minCorner, maxCorner, type, dir, name), shaderID(0), texID(0)
+Object::Object(glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string dir, std::string name, GLuint tex, GLuint shader, bool glInit)
+	: Mesh(minCorner, maxCorner, type, dir, name), shaderID(0), texID(0), material()
 {
 	texID = tex;
-
-	glGenBuffers(1, &vertexBufferID);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
-	glBufferData(GL_ARRAY_BUFFER, GetShape().vertexBufferSize(), GetShape().vertices, GL_STATIC_DRAW);
-
-
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, 0);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (char*)(sizeof(float) * 3));
-	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (char*)(sizeof(float) * 5));
-
-
-	glGenBuffers(1, &indexBufferID);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferID);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, GetShape().indexBufferSize(), GetShape().indices, GL_STATIC_DRAW);
-
 	numIndices = (GLsizei)GetShape().numIndices;
 
-	GetShape().cleanUp();
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	if (glInit) {
+		GLInit();
+	}
 }
 
-Object::Object(glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string dir, std::string name, glm::vec3 rot, glm::vec3 trans, glm::vec3 s, GLuint tex, GLuint shader)
-	: Mesh(minCorner, maxCorner, type, dir, name, rot, trans, s), shaderID(shader), texID(0)
+Object::Object(glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string dir, std::string name, glm::vec3 rot, glm::vec3 trans, glm::vec3 s, GLuint tex, GLuint shader, bool glInit)
+	: Mesh(minCorner, maxCorner, type, dir, name, rot, trans, s), shaderID(shader), texID(0), material()
 {
 	texID = tex;
+	numIndices = (GLsizei)GetShape().numIndices;
 
+	if (glInit) {
+		GLInit();
+	}
+}
+
+Object::Object(glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string dir, std::string name, glm::vec3 rot, glm::vec3 trans, glm::vec3 s, GLuint tex, GLuint shader, Material mat, bool glInit)
+	: Mesh(minCorner, maxCorner, type, dir, name, rot, trans, s), shaderID(shader), texID(0), material(mat)
+{
+	texID = tex;
+	numIndices = (GLsizei)GetShape().numIndices;
+
+	if (glInit) {
+		GLInit();
+	}
+}
+
+Object::~Object()
+{
+	Unbind();
+	glDeleteBuffers(1, &vertexBufferID);
+	glDeleteBuffers(1, &indexBufferID);
+}
+
+void Object::GLInit()
+{
 	glGenBuffers(1, &vertexBufferID);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
 	glBufferData(GL_ARRAY_BUFFER, GetShape().vertexBufferSize(), GetShape().vertices, GL_STATIC_DRAW);
@@ -62,19 +69,10 @@ Object::Object(glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferID);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, GetShape().indexBufferSize(), GetShape().indices, GL_STATIC_DRAW);
 
-	numIndices = (GLsizei)GetShape().numIndices;
-
 	GetShape().cleanUp();
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-}
-
-Object::~Object()
-{
-	Unbind();
-	glDeleteBuffers(1, &vertexBufferID);
-	glDeleteBuffers(1, &indexBufferID);
 }
 
 void Object::Draw()
@@ -114,6 +112,11 @@ void Object::SetTexture(GLuint tex)
 	texID = tex;
 }
 
+void Object::SetMaterial(Material mat)
+{
+	material = mat;
+}
+
 GLuint Object::GetShaderID()
 {
 	return shaderID;
@@ -122,4 +125,14 @@ GLuint Object::GetShaderID()
 GLuint Object::GetTextureID()
 {
 	return texID;
+}
+
+Material Object::GetMaterial()
+{
+	return material;
+}
+
+std::string Object::GetType()
+{
+	return "Object";
 }

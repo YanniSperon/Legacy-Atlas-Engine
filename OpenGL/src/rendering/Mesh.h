@@ -19,6 +19,7 @@ private:
 	ShapeData shape;
 	glm::vec3 minExtents;
 	glm::vec3 maxExtents;
+	type objectType;
 public:
 	Mesh();
 	Mesh(glm::vec3 min, glm::vec3 max, type type, std::string dir, std::string name);
@@ -52,4 +53,7 @@ public:
 	glm::vec3 GetScale();
 	ShapeData GetShape();
 	void SetShape(ShapeData newShape);
+
+	std::string GetModelType();
+	virtual std::string GetType();
 };
