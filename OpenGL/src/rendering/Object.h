@@ -8,7 +8,7 @@ struct Material {
 	float shininess;
 
 	Material()
-		: ambient(0.1f, 0.1f, 0.1f), diffuse(0.25f, 0.25f, 0.25f), specular(0.25f, 0.25f, 0.25f), shininess(32)
+		: ambient(1.0f, 1.0f, 1.0f), diffuse(1.0f, 1.0f, 1.0f), specular(1.0f, 1.0f, 1.0f), shininess(32)
 	{
 
 	}

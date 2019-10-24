@@ -510,7 +510,6 @@ ShapeData ShapeGenerator::makeSkybox(glm::vec3& min, glm::vec3& max)
 
 ShapeData ShapeGenerator::loadShape(std::string fileName, glm::vec3& min, glm::vec3& max)
 {
-	printf("Reading \"%s\"\n", fileName.c_str());
 	ShapeData ret;
 
 	std::vector<Vertex> positions;
@@ -590,9 +589,7 @@ ShapeData ShapeGenerator::loadTexturedShape(std::string directory, std::string n
 	std::vector<TexCoord> tempTex;
 	std::vector<glm::vec3> normals;
 
-	std::string fileName = directory + name;
-
-	std::ifstream obj(fileName);
+	std::ifstream obj(directory + name);
 
 	unsigned int positionsSize = 0;
 	unsigned int indicesSize = 0;
@@ -658,7 +655,7 @@ ShapeData ShapeGenerator::loadTexturedShape(std::string directory, std::string n
 		}
 		else if (line[0] == 'v' && line[1] == 'n') {
 			glm::vec3 v;
-			s >> junk >> v.x >> v.y >> v.z;
+			s >> junk >> junk >> v.x >> v.y >> v.z;
 			normals.push_back(v);
 		}
 		else if (line[0] == 'f' && line[1] == ' ')
