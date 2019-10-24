@@ -5,24 +5,13 @@
 #include "stb_image/stb_image.h"
 
 Object::Object()
-	: Mesh(), vertexBufferID(0), indexBufferID(0), numIndices(0), texID(0), shaderID(0), material(), glInitialized(false)
+	: Mesh(), vertexBufferID(0), indexBufferID(0), numIndices(0), texID(0), shaderID(0), material(), glInitialized(false), hasLighting(true)
 {
 
 }
 
-Object::Object(glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string dir, std::string name, GLuint tex, GLuint shader, bool glInit)
-	: Mesh(minCorner, maxCorner, type, dir, name), shaderID(0), texID(0), material(), glInitialized(false), vertexBufferID(0), indexBufferID(0)
-{
-	texID = tex;
-	numIndices = (GLsizei)GetShape().numIndices;
-
-	if (glInit) {
-		GLInit();
-	}
-}
-
-Object::Object(glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string dir, std::string name, glm::vec3 rot, glm::vec3 trans, glm::vec3 s, GLuint tex, GLuint shader, bool glInit)
-	: Mesh(minCorner, maxCorner, type, dir, name, rot, trans, s), shaderID(shader), texID(0), material(), glInitialized(false), vertexBufferID(0), indexBufferID(0)
+Object::Object(glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string dir, std::string name, GLuint tex, GLuint shader, bool glInit, bool lighting)
+	: Mesh(minCorner, maxCorner, type, dir, name), shaderID(0), texID(0), material(), glInitialized(false), vertexBufferID(0), indexBufferID(0), hasLighting(lighting)
 {
 	texID = tex;
 	numIndices = (GLsizei)GetShape().numIndices;
@@ -32,8 +21,19 @@ Object::Object(glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string 
 	}
 }
 
-Object::Object(glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string dir, std::string name, glm::vec3 rot, glm::vec3 trans, glm::vec3 s, GLuint tex, GLuint shader, Material mat, bool glInit)
-	: Mesh(minCorner, maxCorner, type, dir, name, rot, trans, s), shaderID(shader), texID(0), material(mat), glInitialized(false), vertexBufferID(0), indexBufferID(0)
+Object::Object(glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string dir, std::string name, glm::vec3 rot, glm::vec3 trans, glm::vec3 s, GLuint tex, GLuint shader, bool glInit, bool lighting)
+	: Mesh(minCorner, maxCorner, type, dir, name, rot, trans, s), shaderID(shader), texID(0), material(), glInitialized(false), vertexBufferID(0), indexBufferID(0), hasLighting(lighting)
+{
+	texID = tex;
+	numIndices = (GLsizei)GetShape().numIndices;
+
+	if (glInit) {
+		GLInit();
+	}
+}
+
+Object::Object(glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string dir, std::string name, glm::vec3 rot, glm::vec3 trans, glm::vec3 s, GLuint tex, GLuint shader, Material mat, bool glInit, bool lighting)
+	: Mesh(minCorner, maxCorner, type, dir, name, rot, trans, s), shaderID(shader), texID(0), material(mat), glInitialized(false), vertexBufferID(0), indexBufferID(0), hasLighting(lighting)
 {
 	texID = tex;
 	numIndices = (GLsizei)GetShape().numIndices;
@@ -71,11 +71,12 @@ void Object::GLInit()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferID);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, GetShape().indexBufferSize(), GetShape().indices, GL_STATIC_DRAW);
 
-	GetShape().cleanUp();
+	//GetShape().cleanUp();
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	printf("GLInit\n");
+
+	glFinish();
 }
 
 void Object::Draw()
@@ -120,6 +121,11 @@ void Object::SetMaterial(Material mat)
 	material = mat;
 }
 
+void Object::SetLighting(bool newValue)
+{
+	hasLighting = newValue;
+}
+
 GLuint Object::GetShaderID()
 {
 	return shaderID;
@@ -135,7 +141,12 @@ Material Object::GetMaterial()
 	return material;
 }
 
-bool Object::IsGLInitialized()
+bool Object::GetHasLighting()
+{
+	return hasLighting;
+}
+
+bool Object::GetGLInitialized()
 {
 	return glInitialized;
 }

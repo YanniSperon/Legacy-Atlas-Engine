@@ -41,6 +41,9 @@ void SimpleRenderer::Submit2D(Object2D* renderable)
 
 void SimpleRenderer::Submit3D(Object* renderable, glm::vec3 camPos)
 {
+	if (!renderable->GetGLInitialized()) {
+		renderable->GLInit();
+	}
 	glm::vec3 changeInValues = renderable->GetTranslation() - camPos;
 	float distanceSquared = changeInValues.x * changeInValues.x + changeInValues.y * changeInValues.y;
 	if (distanceSquared < 100.0f * 100.0f) {
@@ -50,7 +53,7 @@ void SimpleRenderer::Submit3D(Object* renderable, glm::vec3 camPos)
 
 void SimpleRenderer::SubmitForceRender3D(Object* renderable)
 {
-	if (!renderable->IsGLInitialized()) {
+	if (!renderable->GetGLInitialized()) {
 		renderable->GLInit();
 	}
 	renderQueue3D.push_back(renderable);
@@ -236,15 +239,17 @@ void SimpleRenderer::SimpleFlush(Camera* camera, int width, int height, float FO
 		SetUniformMat4f("P", projectionMatrix, shaderID);
 		SetUniformMat4f("V", viewMatrix, shaderID);
 		SetUniformMat4f("M", renderable->GetModelTransformMatrix(), shaderID);
-		SetUniformVec3("camPos", camera->GetTranslation(), shaderID);
-		SetUniformVec3("material.ambient", renderable->GetMaterial().ambient, shaderID);
-		SetUniformVec3("material.diffuse", renderable->GetMaterial().diffuse, shaderID);
-		SetUniformVec3("material.specular", renderable->GetMaterial().specular, shaderID);
-		SetUniform1f("material.shininess", renderable->GetMaterial().shininess, shaderID);
-		SetUniformVec3("light.position", light->GetTranslation(), shaderID);
-		SetUniformVec3("light.ambient", light->GetLightIntensity().ambient, shaderID);
-		SetUniformVec3("light.diffuse", light->GetLightIntensity().diffuse, shaderID);
-		SetUniformVec3("light.specular", light->GetLightIntensity().specular, shaderID);
+		if (renderable->GetHasLighting()) {
+			SetUniformVec3("camPos", camera->GetTranslation(), shaderID);
+			SetUniformVec3("material.ambient", renderable->GetMaterial().ambient, shaderID);
+			SetUniformVec3("material.diffuse", renderable->GetMaterial().diffuse, shaderID);
+			SetUniformVec3("material.specular", renderable->GetMaterial().specular, shaderID);
+			SetUniform1f("material.shininess", renderable->GetMaterial().shininess, shaderID);
+			SetUniformVec3("light.position", light->GetTranslation(), shaderID);
+			SetUniformVec3("light.ambient", light->GetLightIntensity().ambient, shaderID);
+			SetUniformVec3("light.diffuse", light->GetLightIntensity().diffuse, shaderID);
+			SetUniformVec3("light.specular", light->GetLightIntensity().specular, shaderID);
+		}
 		renderable->Draw();
 		renderQueue3D.pop_front();
 	}
@@ -255,15 +260,17 @@ void SimpleRenderer::SimpleFlush(Camera* camera, int width, int height, float FO
 	SetUniformMat4f("P", projectionMatrix, s);
 	SetUniformMat4f("V", viewMatrix, s);
 	SetUniformMat4f("M", r->GetModelTransformMatrix(), s);
-	SetUniformVec3("camPos", camera->GetTranslation(), s);
-	SetUniformVec3("material.ambient", r->GetMaterial().ambient, s);
-	SetUniformVec3("material.diffuse", r->GetMaterial().diffuse, s);
-	SetUniformVec3("material.specular", r->GetMaterial().specular, s);
-	SetUniform1f("material.shininess", r->GetMaterial().shininess, s);
-	SetUniformVec3("light.position", light->GetTranslation(), s);
-	SetUniformVec3("light.ambient", light->GetLightIntensity().ambient, s);
-	SetUniformVec3("light.diffuse", light->GetLightIntensity().diffuse, s);
-	SetUniformVec3("light.specular", light->GetLightIntensity().specular, s);
+	if (r->GetHasLighting()) {
+		SetUniformVec3("camPos", camera->GetTranslation(), s);
+		SetUniformVec3("material.ambient", r->GetMaterial().ambient, s);
+		SetUniformVec3("material.diffuse", r->GetMaterial().diffuse, s);
+		SetUniformVec3("material.specular", r->GetMaterial().specular, s);
+		SetUniform1f("material.shininess", r->GetMaterial().shininess, s);
+		SetUniformVec3("light.position", light->GetTranslation(), s);
+		SetUniformVec3("light.ambient", light->GetLightIntensity().ambient, s);
+		SetUniformVec3("light.diffuse", light->GetLightIntensity().diffuse, s);
+		SetUniformVec3("light.specular", light->GetLightIntensity().specular, s);
+	}
 	r->Draw();
 
 	while (!renderQueue2D.empty())

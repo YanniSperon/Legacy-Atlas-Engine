@@ -510,12 +510,7 @@ ShapeData ShapeGenerator::makeSkybox(glm::vec3& min, glm::vec3& max)
 
 ShapeData ShapeGenerator::loadShape(std::string fileName, glm::vec3& min, glm::vec3& max)
 {
-	float minX = INFINITY;
-	float minY = INFINITY;
-	float minZ = INFINITY;
-	float maxX = -INFINITY;
-	float maxY = -INFINITY;
-	float maxZ = -INFINITY;
+	printf("Reading \"%s\"\n", fileName.c_str());
 	ShapeData ret;
 
 	std::vector<Vertex> positions;
@@ -548,24 +543,6 @@ ShapeData ShapeGenerator::loadShape(std::string fileName, glm::vec3& min, glm::v
 			s >> junk >> v.x >> v.y >> v.z;
 			Vertex vert;
 			vert.position = v;
-			if (vert.position.x < minX) {
-				minX = vert.position.x;
-			}
-			else if (vert.position.x > maxX) {
-				maxX = vert.position.x;
-			}
-			if (vert.position.y < minY) {
-				minY = vert.position.y;
-			}
-			else if (vert.position.y > maxY) {
-				maxY = vert.position.y;
-			}
-			if (vert.position.z < minZ) {
-				minZ = vert.position.z;
-			}
-			else if (vert.position.z > maxZ) {
-				maxZ = vert.position.z;
-			}
 			positions.push_back(vert);
 			positionsSize += 1;
 		}
@@ -606,14 +583,6 @@ ShapeData ShapeGenerator::loadShape(std::string fileName, glm::vec3& min, glm::v
 
 ShapeData ShapeGenerator::loadTexturedShape(std::string directory, std::string name, glm::vec3& min, glm::vec3& max)
 {
-	float minX = INFINITY;
-	float minY = INFINITY;
-	float minZ = INFINITY;
-
-	float maxX = -INFINITY;
-	float maxY = -INFINITY;
-	float maxZ = -INFINITY;
-
 	ShapeData ret;
 
 	std::vector<Vertex> positions;
@@ -684,24 +653,6 @@ ShapeData ShapeGenerator::loadTexturedShape(std::string directory, std::string n
 			s >> junk >> v.x >> v.y >> v.z;
 			Vertex vert;
 			vert.position = v;
-			if (vert.position.x < minX) {
-				minX = vert.position.x;
-			}
-			else if (vert.position.x > maxX) {
-				maxX = vert.position.x;
-			}
-			if (vert.position.y < minY) {
-				minY = vert.position.y;
-			}
-			else if (vert.position.y > maxY) {
-				maxY = vert.position.y;
-			}
-			if (vert.position.z < minZ) {
-				minZ = vert.position.z;
-			}
-			else if (vert.position.z > maxZ) {
-				maxZ = vert.position.z;
-			}
 			positions.push_back(vert);
 			positionsSize += 1;
 		}

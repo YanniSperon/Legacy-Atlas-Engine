@@ -52,8 +52,12 @@ public:
 	glm::vec3 GetRotation();
 	glm::vec3 GetScale();
 	ShapeData GetShape();
+	std::string GetModelFileName();
+	std::string GetModelFileDirectory();
 	void SetShape(ShapeData newShape);
 
 	std::string GetModelType();
 	virtual std::string GetType();
+
+	static void CleanUpCache();
 };

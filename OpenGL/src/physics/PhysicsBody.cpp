@@ -6,8 +6,8 @@ PhysicsBody::PhysicsBody()
 
 }
 
-PhysicsBody::PhysicsBody(glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string dir, std::string name, glm::vec3 rotation, glm::vec3 translation, glm::vec3 s,GLuint tex, GLuint shader, Material mat, float m, glm::vec3 linearVel, glm::vec3 angularVel, glm::vec3 f, glm::vec3 t, float MOI, glm::vec3 gravity, bool glInit)
-	: Object(minCorner, maxCorner, type, dir, name, rotation, translation, s, tex, shader, mat, glInit), mass(m), linearVelocity(linearVel), force(f), angularVelocity(angularVel), torque(t), momentOfInertia(MOI), gravitationalForce(gravity)
+PhysicsBody::PhysicsBody(glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string dir, std::string name, glm::vec3 rotation, glm::vec3 translation, glm::vec3 s,GLuint tex, GLuint shader, Material mat, float m, glm::vec3 linearVel, glm::vec3 angularVel, glm::vec3 f, glm::vec3 t, float MOI, glm::vec3 gravity, bool glInit, bool lighting)
+	: Object(minCorner, maxCorner, type, dir, name, rotation, translation, s, tex, shader, mat, glInit, lighting), mass(m), linearVelocity(linearVel), force(f), angularVelocity(angularVel), torque(t), momentOfInertia(MOI), gravitationalForce(gravity)
 {
 
 }

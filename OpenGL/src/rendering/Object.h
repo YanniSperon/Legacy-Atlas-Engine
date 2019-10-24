@@ -29,11 +29,12 @@ private:
 	GLsizei numIndices;
 	Material material;
 	bool glInitialized;
+	bool hasLighting;
 public:
 	Object();
-	Object(glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string dir, std::string name, GLuint tex, GLuint shader, bool glInit);
-	Object(glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string dir, std::string name, glm::vec3 rot, glm::vec3 trans, glm::vec3 s, GLuint tex, GLuint shader, bool glInit);
-	Object(glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string dir, std::string name, glm::vec3 rot, glm::vec3 trans, glm::vec3 s, GLuint tex, GLuint shader, Material mat, bool glInit);
+	Object(glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string dir, std::string name, GLuint tex, GLuint shader, bool glInit, bool lighting);
+	Object(glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string dir, std::string name, glm::vec3 rot, glm::vec3 trans, glm::vec3 s, GLuint tex, GLuint shader, bool glInit, bool lighting);
+	Object(glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string dir, std::string name, glm::vec3 rot, glm::vec3 trans, glm::vec3 s, GLuint tex, GLuint shader, Material mat, bool glInit, bool lighting);
 	virtual ~Object();
 
 	void GLInit();
@@ -44,11 +45,12 @@ public:
 	void SetShader(GLuint id);
 	void SetTexture(GLuint tex);
 	void SetMaterial(Material mat);
+	void SetLighting(bool newValue);
 	GLuint GetShaderID();
 	GLuint GetTextureID();
 	Material GetMaterial();
-
-	bool IsGLInitialized();
+	bool GetHasLighting();
+	bool GetGLInitialized();
 
 	virtual std::string GetType() override;
 };

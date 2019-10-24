@@ -3,6 +3,9 @@
 #include "glm/gtx/euler_angles.hpp"
 #include "primitives/ShapeGenerator.h"
 #include <iostream>
+#include <unordered_map>
+
+static std::unordered_map<std::string, ShapeData> meshCache;
 
 Mesh::Mesh()
 	: directory(""), fileName("Error"), rotation(0.0f, 0.0f, 0.0f), translation(0.0f, 0.0f, 0.0f), shape(), minExtents(0.0f, 0.0f, 0.0f), maxExtents(0.0f, 0.0f, 0.0f), scale(1.0f, 1.0f, 1.0f), objectType(type::cubeModel)
@@ -11,48 +14,120 @@ Mesh::Mesh()
 }
 
 Mesh::Mesh(glm::vec3 min, glm::vec3 max, type type, std::string dir, std::string name)
-	: directory(directory), fileName(fileName), rotation(0.0f, 0.0f, 0.0f), translation(0.0f, 0.0f, 0.0f), minExtents(min), maxExtents(max), scale(1.0f, 1.0f, 1.0f), objectType(type)
+	: directory(dir), fileName(name), rotation(0.0f, 0.0f, 0.0f), translation(0.0f, 0.0f, 0.0f), minExtents(min), maxExtents(max), scale(1.0f, 1.0f, 1.0f), objectType(type)
 {
 	if (type == type::cubeModel) {
-		shape = ShapeGenerator::makeCube(minExtents, maxExtents);
+		if (meshCache.find("default::type::cube") != meshCache.end()) {
+			shape = meshCache["default::type::cube"];
+		}
+		else {
+			meshCache["default::type::cube"] = ShapeGenerator::makeCube(minExtents, maxExtents);
+			shape = meshCache["default::type::cube"];
+		}
 	}
 	else if (type == type::blankModel) {
-		shape = ShapeGenerator::loadShape(dir + name, minExtents, maxExtents);
+		if (meshCache.find(dir + fileName) != meshCache.end()) {
+			shape = meshCache[dir + fileName];
+		}
+		else {
+			meshCache[dir + fileName] = ShapeGenerator::loadShape(dir + name, minExtents, maxExtents);
+			shape = meshCache[dir + fileName];
+		}
 	}
 	else if (type == type::texturedModel) {
-		shape = ShapeGenerator::loadTexturedShape(dir, name, minExtents, maxExtents);
+		if (meshCache.find(dir + fileName) != meshCache.end()) {
+			shape = meshCache[dir + fileName];
+		}
+		else {
+			meshCache[dir + fileName] = ShapeGenerator::loadTexturedShape(dir, name, minExtents, maxExtents);
+			shape = meshCache[dir + fileName];
+		}
 	}
 	else if (type == type::skyBox) {
-		shape = ShapeGenerator::makeSkybox(minExtents, maxExtents);
+		if (meshCache.find("default::type::skyBox") != meshCache.end()) {
+			shape = meshCache["default::type::skyBox"];
+		}
+		else {
+			meshCache["default::type::skyBox"] = ShapeGenerator::makeSkybox(minExtents, maxExtents);
+			shape = meshCache["default::type::skyBox"];
+		}
 	}
 	else if (type == type::cubeInvertedLighting) {
-		shape = ShapeGenerator::makeInvertedLightingCube(minExtents, maxExtents);
+		if (meshCache.find("default::type::cubeInvertedLighting") != meshCache.end()) {
+			shape = meshCache["default::type::cubeInvertedLighting"];
+		}
+		else {
+			meshCache["default::type::cubeInvertedLighting"] = ShapeGenerator::makeInvertedLightingCube(minExtents, maxExtents);
+			shape = meshCache["default::type::cubeInvertedLighting"];
+		}
 	}
 	else {
-		shape = ShapeGenerator::makeTriangle(minExtents, maxExtents);
+		if (meshCache.find("default::type::triangle") != meshCache.end()) {
+			shape = meshCache["default::type::triangle"];
+		}
+		else {
+			meshCache["default::type::triangle"] = ShapeGenerator::makeTriangle(minExtents, maxExtents);
+			shape = meshCache["default::type::triangle"];
+		}
 	}
 }
 
 Mesh::Mesh(glm::vec3 min, glm::vec3 max, type type, std::string dir, std::string name, glm::vec3 rot, glm::vec3 trans, glm::vec3 s)
-	: directory(directory), fileName(fileName), rotation(rot), translation(trans), minExtents(min), maxExtents(max), scale(s), objectType(type)
+	: directory(dir), fileName(name), rotation(rot), translation(trans), minExtents(min), maxExtents(max), scale(s), objectType(type)
 {
 	if (type == type::cubeModel) {
-		shape = ShapeGenerator::makeCube(minExtents, maxExtents);
+		if (meshCache.find("default::type::cube") != meshCache.end()) {
+			shape = meshCache["default::type::cube"];
+		}
+		else {
+			meshCache["default::type::cube"] = ShapeGenerator::makeCube(minExtents, maxExtents);
+			shape = meshCache["default::type::cube"];
+		}
 	}
 	else if (type == type::blankModel) {
-		shape = ShapeGenerator::loadShape(dir + name, minExtents, maxExtents);
+		if (meshCache.find(dir + fileName) != meshCache.end()) {
+			shape = meshCache[dir + fileName];
+		}
+		else {
+			meshCache[dir + fileName] = ShapeGenerator::loadShape(dir + name, minExtents, maxExtents);
+			shape = meshCache[dir + fileName];
+		}
 	}
 	else if (type == type::texturedModel) {
-		shape = ShapeGenerator::loadTexturedShape(dir, name, minExtents, maxExtents);
+		if (meshCache.find(dir + fileName) != meshCache.end()) {
+			shape = meshCache[dir + fileName];
+		}
+		else {
+			meshCache[dir + fileName] = ShapeGenerator::loadTexturedShape(dir, name, minExtents, maxExtents);
+			shape = meshCache[dir + fileName];
+		}
 	}
 	else if (type == type::skyBox) {
-		shape = ShapeGenerator::makeSkybox(minExtents, maxExtents);
+		if (meshCache.find("default::type::skyBox") != meshCache.end()) {
+			shape = meshCache["default::type::skyBox"];
+		}
+		else {
+			meshCache["default::type::skyBox"] = ShapeGenerator::makeSkybox(minExtents, maxExtents);
+			shape = meshCache["default::type::skyBox"];
+		}
 	}
 	else if (type == type::cubeInvertedLighting) {
-		shape = ShapeGenerator::makeInvertedLightingCube(minExtents, maxExtents);
+		if (meshCache.find("default::type::cubeInvertedLighting") != meshCache.end()) {
+			shape = meshCache["default::type::cubeInvertedLighting"];
+		}
+		else {
+			meshCache["default::type::cubeInvertedLighting"] = ShapeGenerator::makeInvertedLightingCube(minExtents, maxExtents);
+			shape = meshCache["default::type::cubeInvertedLighting"];
+		}
 	}
 	else {
-		shape = ShapeGenerator::makeTriangle(minExtents, maxExtents);
+		if (meshCache.find("default::type::triangle") != meshCache.end()) {
+			shape = meshCache["default::type::triangle"];
+		}
+		else {
+			meshCache["default::type::triangle"] = ShapeGenerator::makeTriangle(minExtents, maxExtents);
+			shape = meshCache["default::type::triangle"];
+		}
 	}
 }
 
@@ -229,6 +304,16 @@ ShapeData Mesh::GetShape()
 	return shape;
 }
 
+std::string Mesh::GetModelFileName()
+{
+	return fileName;
+}
+
+std::string Mesh::GetModelFileDirectory()
+{
+	return directory;
+}
+
 void Mesh::SetShape(ShapeData newShape)
 {
 	shape = newShape;
@@ -256,4 +341,12 @@ std::string Mesh::GetModelType()
 std::string Mesh::GetType()
 {
 	return "Mesh";
+}
+
+void Mesh::CleanUpCache()
+{
+	for (auto it : meshCache) {
+		it.second.cleanUp();
+	}
+	meshCache.erase(meshCache.begin(), meshCache.end());
 }
