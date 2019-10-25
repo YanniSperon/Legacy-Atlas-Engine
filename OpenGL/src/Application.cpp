@@ -838,7 +838,7 @@ int main(void)
 		sentences.push_back(new Sentence(textShader, arial24pt, "  C:Camera      V:Move      R:Rotate", 1.0f, glm::vec2(175.0f, 980.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
 		sentences.push_back(new Sentence(textShader, arial24pt, "E:Scale      F:Fullscreen      T:Texture", 1.0f, glm::vec2(175.0f, 930.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
 		sentences.push_back(new Sentence(textShader, arial24pt, "[: Change Selection Left                       K: Change Texture Left", 1.0f, glm::vec2(50.0f, 880.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
-		sentences.push_back(new Sentence(textShader, arial24pt, "]: Change Selection Right                   L: Change Texture Right", 1.0f, glm::vec2(50.0f, 830.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
+		sentences.push_back(new Sentence(textShader, arial24pt, "]: Change Selection Right                   L: Change Texture Right", 1.0f, glm::vec2(59.0f, 830.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
 
 		bool loadFile = true;
 		if (loadFile) {

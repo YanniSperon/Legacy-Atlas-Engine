@@ -157,6 +157,7 @@
     <ClCompile Include="src\physics\BoundingSphere.cpp" />
     <ClCompile Include="src\physics\AABBCollidable.cpp" />
     <ClCompile Include="src\physics\IntersectData.cpp" />
+    <ClCompile Include="src\rendering\gui\Text.cpp" />
     <ClCompile Include="src\rendering\Light.cpp" />
     <ClCompile Include="src\rendering\Loader.cpp" />
     <ClCompile Include="src\rendering\Object.cpp" />
@@ -309,6 +310,7 @@
     <ClInclude Include="src\physics\BoundingSphere.h" />
     <ClInclude Include="src\physics\AABBCollidable.h" />
     <ClInclude Include="src\physics\IntersectData.h" />
+    <ClInclude Include="src\rendering\gui\Text.h" />
     <ClInclude Include="src\rendering\Light.h" />
     <ClInclude Include="src\rendering\Loader.h" />
     <ClInclude Include="src\rendering\Object.h" />
