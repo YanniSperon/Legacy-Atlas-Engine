@@ -127,3 +127,8 @@ void Font::RenderText(Shader& s, std::string text, GLfloat x, GLfloat y, GLfloat
 	glBindVertexArray(0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
+
+std::map<GLchar, Character> Font::GetGlyphs()
+{
+	return Characters;
+}

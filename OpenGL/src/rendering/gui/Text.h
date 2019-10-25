@@ -21,5 +21,5 @@ private:
 	std::vector<CharInSentence> text;
 public:
 	Text();
-	Text(std::string text, float x, float y, float scale, glm::vec3 color);
+	Text(Font* font, std::string text, float x, float y, float scale, glm::vec3 color);
 };
