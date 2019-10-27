@@ -819,11 +819,11 @@ int main(void)
 		//preloadedObjectsOnScene.push_back(new Object(glm::vec3(-5.0f, -5.0f, -5.0f), glm::vec3(5.0f, 5.0f, 5.0f), type::blankModel, "res/models/", "tank.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 10.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), whiteTex, shader.GetShaderID(), Material(glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(0.5f, 0.5f, 0.5f), 32.0f), true, true));
 		//unsigned int j = 0;
 		//unsigned int k = 0;
-		//for (unsigned int i = 0; i < 10000; i++) {
-		//	j++;
-		//	objectsOnScene.push_back(new Object(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), type::cubeModel, "", "", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(j, 10.0f, k), glm::vec3(1.0f, 1.0f, 1.0f), whiteTex, shader.GetShaderID(), Material(glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(0.5f, 0.5f, 0.5f), 32.0f), true, true));
-		//	if (i % 100 == 0) {
-		//		k++;
+		//for (unsigned int i = 0; i < 100; i++) {
+		//	j += 5;
+		//	objectsOnScene.push_back(new Object(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), type::blankModel, "res/models/", "tank.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(j, 10.0f, k), glm::vec3(1.0f, 1.0f, 1.0f), whiteTex, shader.GetShaderID(), Material(glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(0.5f, 0.5f, 0.5f), 32.0f), true, true));
+		//	if (i % 10 == 0) {
+		//		k += 5;
 		//		j = 0;
 		//	}
 		//}
@@ -831,14 +831,23 @@ int main(void)
 		preloadedGui.push_back(new Object2D(glm::vec2(-262.5f, -262.5f), glm::vec2(-12.5f, -12.5f), 0.0f, glm::vec2(1920.0f, 1080.0f), glm::vec2(1.0f, 1.0f), redTex, shader2D.GetShaderID(), glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f)));
 		preloadedGui.push_back(new Object2D(glm::vec2(-275.0f, -275.0f), glm::vec2(0.0f, 0.0f), 0.0f, glm::vec2(1920.0f, 1080.0f), glm::vec2(1.0f, 1.0f), whiteTex, shader2D.GetShaderID(), glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f)));
 		preloadedGui.push_back(new Object2D(glm::vec2(0.0f, 0.0f), glm::vec2(720.0f, 270.0f), 0.0f, glm::vec2(25.0f, 800.0f), glm::vec2(1.0f, 1.0f), whitetransparentTex, shader2D.GetShaderID(), glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f)));
-		sentences.push_back(new Sentence(textShader, timesnewroman32pt, "Editor Type: ", 1.0f, glm::vec2(1500.0f, 150.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
-		sentences.push_back(new Sentence(textShader, timesnewroman32pt, "Mode: ", 1.0f, glm::vec2(1500.0f, 100.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
-		sentences.push_back(new Sentence(textShader, arial24pt, "Mini-Map", 1.0f, glm::vec2(1700.0f, 1000.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
-		sentences.push_back(new Sentence(textShader, arial24pt, "Keybinds:", 1.0f, glm::vec2(337.5f, 1030.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
-		sentences.push_back(new Sentence(textShader, arial24pt, "  C:Camera      V:Move      R:Rotate", 1.0f, glm::vec2(175.0f, 980.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
-		sentences.push_back(new Sentence(textShader, arial24pt, "E:Scale      F:Fullscreen      T:Texture", 1.0f, glm::vec2(175.0f, 930.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
-		sentences.push_back(new Sentence(textShader, arial24pt, "[: Change Selection Left                       K: Change Texture Left", 1.0f, glm::vec2(50.0f, 880.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
-		sentences.push_back(new Sentence(textShader, arial24pt, "]: Change Selection Right                   L: Change Texture Right", 1.0f, glm::vec2(59.0f, 830.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
+		//sentences.push_back(new Sentence(textShader, timesnewroman32pt, "Editor Type: ", 1.0f, glm::vec2(1500.0f, 150.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
+		//sentences.push_back(new Sentence(textShader, timesnewroman32pt, "Mode: ", 1.0f, glm::vec2(1500.0f, 100.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
+		//sentences.push_back(new Sentence(textShader, arial24pt, "Mini-Map", 1.0f, glm::vec2(1700.0f, 1000.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
+		//sentences.push_back(new Sentence(textShader, arial24pt, "Keybinds:", 1.0f, glm::vec2(337.5f, 1030.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
+		//sentences.push_back(new Sentence(textShader, arial24pt, "  C:Camera      V:Move      R:Rotate", 1.0f, glm::vec2(175.0f, 980.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
+		//sentences.push_back(new Sentence(textShader, arial24pt, "E:Scale      F:Fullscreen      T:Texture", 1.0f, glm::vec2(175.0f, 930.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
+		//sentences.push_back(new Sentence(textShader, arial24pt, "[: Change Selection Left                       K: Change Texture Left", 1.0f, glm::vec2(50.0f, 880.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
+		//sentences.push_back(new Sentence(textShader, arial24pt, "]: Change Selection Right                   L: Change Texture Right", 1.0f, glm::vec2(59.0f, 830.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
+		
+		sentences.push_back(new Sentence(timesnewroman32pt, "Editor Type: ", 1.0f, glm::vec2(1500.0f, 150.0f), glm::vec3(0.0f, 0.0f, 0.0f), textShader.GetShaderID()));
+		//sentences.push_back(new Sentence(timesnewroman32pt, "Mode: ", 1.0f, glm::vec2(1500.0f, 100.0f), glm::vec3(0.0f, 0.0f, 0.0f), textShader.GetShaderID()));
+		//sentences.push_back(new Sentence(arial24pt, "Mini-Map", 1.0f, glm::vec2(1700.0f, 1000.0f), glm::vec3(0.0f, 0.0f, 0.0f), textShader.GetShaderID()));
+		//sentences.push_back(new Sentence(arial24pt, "Keybinds:", 1.0f, glm::vec2(337.5f, 1030.0f), glm::vec3(0.0f, 0.0f, 0.0f), textShader.GetShaderID()));
+		//sentences.push_back(new Sentence(arial24pt, "  C:Camera      V:Move      R:Rotate", 1.0f, glm::vec2(175.0f, 980.0f), glm::vec3(0.0f, 0.0f, 0.0f), textShader.GetShaderID()));
+		//sentences.push_back(new Sentence(arial24pt, "E:Scale      F:Fullscreen      T:Texture", 1.0f, glm::vec2(175.0f, 930.0f), glm::vec3(0.0f, 0.0f, 0.0f), textShader.GetShaderID()));
+		//sentences.push_back(new Sentence(arial24pt, "[: Change Selection Left                       K: Change Texture Left", 1.0f, glm::vec2(50.0f, 880.0f), glm::vec3(0.0f, 0.0f, 0.0f), textShader.GetShaderID()));
+		//sentences.push_back(new Sentence(arial24pt, "]: Change Selection Right                   L: Change Texture Right", 1.0f, glm::vec2(59.0f, 830.0f), glm::vec3(0.0f, 0.0f, 0.0f), textShader.GetShaderID()));
 
 		bool loadFile = true;
 		if (loadFile) {
@@ -1310,37 +1319,37 @@ int main(void)
 					}
 				}
 				///////////////////////////////////////////////////////////////////////////
-				sentences[0]->SetText("HP: " + std::to_string(HP) + "%");
-				if (currentMode == Mode::cam) {
-					sentences[0]->SetText("Mode: Camera");
-				}
-				else if (currentMode == Mode::output) {
-					sentences[0]->SetText("Mode: Output");
-				}
-				else if (currentMode == Mode::rotate) {
-					sentences[0]->SetText("Mode: Rotate");
-				}
-				else if (currentMode == Mode::scale) {
-					sentences[0]->SetText("Mode: Scale");
-				}
-				else if (currentMode == Mode::texture) {
-					sentences[0]->SetText("Mode: Texture");
-				}
-				else if (currentMode == Mode::translate) {
-					sentences[0]->SetText("Mode: Translate");
-				}
-				if (currentEditorType == EditorType::overlay) {
-					sentences[1]->SetText("Editor Type: Overlay");
-				}
-				else if (currentEditorType == EditorType::scene) {
-					sentences[1]->SetText("Editor Type: Scene");
-				}
-				else if (currentEditorType == EditorType::text) {
-					sentences[1]->SetText("Editor Type: Text");
-				}
-				else if (currentEditorType == EditorType::light) {
-					sentences[1]->SetText("Editor Type: Light");
-				}
+				//sentences[0]->SetText("HP: " + std::to_string(HP) + "%");
+				//if (currentMode == Mode::cam) {
+				//	sentences[0]->SetText("Mode: Camera");
+				//}
+				//else if (currentMode == Mode::output) {
+				//	sentences[0]->SetText("Mode: Output");
+				//}
+				//else if (currentMode == Mode::rotate) {
+				//	sentences[0]->SetText("Mode: Rotate");
+				//}
+				//else if (currentMode == Mode::scale) {
+				//	sentences[0]->SetText("Mode: Scale");
+				//}
+				//else if (currentMode == Mode::texture) {
+				//	sentences[0]->SetText("Mode: Texture");
+				//}
+				//else if (currentMode == Mode::translate) {
+				//	sentences[0]->SetText("Mode: Translate");
+				//}
+				//if (currentEditorType == EditorType::overlay) {
+				//	sentences[1]->SetText("Editor Type: Overlay");
+				//}
+				//else if (currentEditorType == EditorType::scene) {
+				//	sentences[1]->SetText("Editor Type: Scene");
+				//}
+				//else if (currentEditorType == EditorType::text) {
+				//	sentences[1]->SetText("Editor Type: Text");
+				//}
+				//else if (currentEditorType == EditorType::light) {
+				//	sentences[1]->SetText("Editor Type: Light");
+				//}
 				///////////////////////////////////////////////////////////////////////////
 			}
 			///////////////////////////////////////////////////////////////////////////

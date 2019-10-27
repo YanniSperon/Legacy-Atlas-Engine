@@ -104,7 +104,8 @@ void SimpleRenderer::Flush(Camera* camera, int width, int height, float FOV)
 	while (!renderQueueText.empty())
 	{
 		Sentence* renderable = renderQueueText.front();
-		renderable->GetFont().RenderText(renderable->GetShader(), renderable->GetText(), renderable->GetPosition().x, renderable->GetPosition().y, renderable->GetScale(), renderable->GetColor(), orthographicMatrix);
+		//renderable->GetFont().RenderText(renderable->GetShader(), renderable->GetText(), renderable->GetPosition().x, renderable->GetPosition().y, renderable->GetScale(), renderable->GetColor(), orthographicMatrix);
+		renderable->Draw(projectionMatrix);
 		renderQueueText.pop_front();
 	}
 	glEnable(GL_DEPTH_TEST);
@@ -166,7 +167,8 @@ void SimpleRenderer::Flush(Camera* camera, int width, int height, float FOV, Lig
 	while (!renderQueueText.empty())
 	{
 		Sentence* renderable = renderQueueText.front();
-		renderable->GetFont().RenderText(renderable->GetShader(), renderable->GetText(), renderable->GetPosition().x, renderable->GetPosition().y, renderable->GetScale(), renderable->GetColor(), orthographicMatrix);
+		//renderable->GetFont().RenderText(renderable->GetShader(), renderable->GetText(), renderable->GetPosition().x, renderable->GetPosition().y, renderable->GetScale(), renderable->GetColor(), orthographicMatrix);
+		renderable->Draw(projectionMatrix);
 		renderQueueText.pop_front();
 	}
 	glEnable(GL_DEPTH_TEST);
@@ -217,7 +219,8 @@ void SimpleRenderer::SimpleFlush(Camera* camera, int width, int height, float FO
 	while (!renderQueueText.empty())
 	{
 		Sentence* renderable = renderQueueText.front();
-		renderable->GetFont().RenderText(renderable->GetShader(), renderable->GetText(), renderable->GetPosition().x, renderable->GetPosition().y, renderable->GetScale(), renderable->GetColor(), orthographicMatrix);
+		//renderable->GetFont().RenderText(renderable->GetShader(), renderable->GetText(), renderable->GetPosition().x, renderable->GetPosition().y, renderable->GetScale(), renderable->GetColor(), orthographicMatrix);
+		renderable->Draw(projectionMatrix);
 		renderQueueText.pop_front();
 	}
 	glEnable(GL_DEPTH_TEST);
@@ -288,7 +291,8 @@ void SimpleRenderer::SimpleFlush(Camera* camera, int width, int height, float FO
 	while (!renderQueueText.empty())
 	{
 		Sentence* renderable = renderQueueText.front();
-		renderable->GetFont().RenderText(renderable->GetShader(), renderable->GetText(), renderable->GetPosition().x, renderable->GetPosition().y, renderable->GetScale(), renderable->GetColor(), orthographicMatrix);
+		//renderable->GetFont().RenderText(renderable->GetShader(), renderable->GetText(), renderable->GetPosition().x, renderable->GetPosition().y, renderable->GetScale(), renderable->GetColor(), orthographicMatrix);
+		renderable->Draw(projectionMatrix);
 		renderQueueText.pop_front();
 	}
 	glEnable(GL_DEPTH_TEST);
