@@ -118,6 +118,16 @@ ShapeData2D Mesh2D::GetShape()
 	return shape;
 }
 
+glm::vec2 Mesh2D::GetMinExtents()
+{
+	return minExtents;
+}
+
+glm::vec2 Mesh2D::GetMaxExtents()
+{
+	return maxExtents;
+}
+
 glm::vec2 Mesh2D::GetMinTexCoords()
 {
 	return minTexCoords;
@@ -131,4 +141,9 @@ glm::vec2 Mesh2D::GetMaxTexCoords()
 void Mesh2D::SetShape(ShapeData2D newShape)
 {
 	shape = newShape;
+}
+
+std::string Mesh2D::GetType()
+{
+	return "Mesh2D";
 }

@@ -83,12 +83,12 @@ Font::~Font()
 	glDeleteVertexArrays(1, &VAO);
 }
 
-void Font::RenderText(Shader& s, std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color, glm::mat4 projection)
+void Font::RenderText(Shader* s, std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color, glm::mat4 projection)
 {
 	// Activate corresponding render state	
-	s.Bind();
-	s.SetUniform3f("textColor", color.x, color.y, color.z);
-	s.SetUniformMat4f("projection", projection);
+	s->Bind();
+	s->SetUniform3f("textColor", color.x, color.y, color.z);
+	s->SetUniformMat4f("projection", projection);
 	glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(VAO);
 

@@ -30,6 +30,8 @@
 #include "Search.h"
 #include "Light.h"
 #include "Console.h"
+#include "Overlay.h"
+#include "Button.h"
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
@@ -121,7 +123,10 @@ static bool downPressed = false;
 static bool escapePressed = false;
 static bool spacePressed = false;
 
-static bool enableLooking = true;
+static bool leftClicked = false;
+static bool rightClicked = false;
+
+static bool isPaused = false;
 
 static double mouseXPos = 0.0;
 static double mouseYPos = 0.0;
@@ -602,13 +607,17 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
 
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
 		if (!escapePressed) {
-			if (enableLooking) {
-				enableLooking = false;
+			if (!isPaused) {
+				oldMouseX = mouseXPos;
+				oldMouseY = mouseYPos;
+				isPaused = true;
 				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 				glfwSetCursorPos(window, (double)(currentWidth / 2), (double)(currentHeight / 2));
 			}
 			else {
-				enableLooking = true;
+				mouseXPos = oldMouseX;
+				mouseYPos = oldMouseY;
+				isPaused = false;
 				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 				glfwSetCursorPos(window, mouseXPos, mouseYPos);
 			}
@@ -630,9 +639,9 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
 }
 static void cursorPositionCallback(GLFWwindow* window, double xpos, double ypos)
 {
-	if (enableLooking) {
-		mouseXPos = xpos;
-		mouseYPos = ypos;
+	mouseXPos = xpos;
+	mouseYPos = ypos;
+	if (!isPaused) {
 		if (ypos * mouseSensitivity > 89.0f) {
 			double newMouseY = 89.0f / mouseSensitivity;
 			glfwSetCursorPos(window, xpos, newMouseY);
@@ -656,7 +665,24 @@ static void framebufferSizeCallback(GLFWwindow* window, int width, int height)
 		glViewport(0, 0, width, height);
 	}
 }
+static void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
+{
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+		leftClicked = true;
+		printf("Left clicked at (%f, %f)\n", mouseXPos, mouseYPos);
+	}
+	else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
+		leftClicked = false;
+	}
 
+	if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
+		rightClicked = true;
+		printf("Right clicked at (%f, %f)\n", mouseXPos, mouseYPos);
+	}
+	else if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE) {
+		rightClicked = false;
+	}
+}
 int main(void)
 {
 	Console::Setup();
@@ -726,6 +752,7 @@ int main(void)
 		}
 		glfwSetCursorPosCallback(window, cursorPositionCallback);
 		glfwSetKeyCallback(window, keyCallback);
+		glfwSetMouseButtonCallback(window, mouseButtonCallback);
 		glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
 		/////////////////////////////////////////////////////////////////////////////////////////////////////
 		const char* attackSFXFilename = "res/audio/sfx/attack.wav";
@@ -798,13 +825,8 @@ int main(void)
 		textures.push_back(pauseMenuTex);
 		textures.push_back(0);
 
-
-
 		std::vector<Object*> objectsOnScene;
 		std::vector<Object*> preloadedObjectsOnScene;
-		std::vector<Object2D*> gui;
-		std::vector<Object2D*> preloadedGui;
-		std::vector<Sentence*> sentences;
 
 		Object2D pausemenu = Object2D(glm::vec2(0.0f, 0.0f), glm::vec2(1920.0f, 1080.0f), 0.0f, glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f), pauseMenuTex, shader2D.GetShaderID(), glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f));
 		Mode currentMode(cam);
@@ -814,49 +836,35 @@ int main(void)
 
 		preloadedObjectsOnScene.push_back(new Object(glm::vec3(-50.0f, -50.0f, -50.0f), glm::vec3(50.0f, 50.0f, 50.0f), type::skyBox, "", "", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), skyboxTex, basic.GetShaderID(), true, false));
 		preloadedObjectsOnScene.push_back(new Object(glm::vec3(-5.0f, -5.0f, -5.0f), glm::vec3(5.0f, 5.0f, 5.0f), type::blankModel, "res/models/", "plane.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -3.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), whiteTex, shader.GetShaderID(), Material(glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(0.5f, 0.5f, 0.5f), 32.0f), true, true));
-		//preloadedObjectsOnScene.push_back(new Object(glm::vec3(-5.0f, -5.0f, -5.0f), glm::vec3(5.0f, 5.0f, 5.0f), type::blankModel, "res/models/", "sphere.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), whiteTex, shader.GetShaderID(), Material(glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(0.5f, 0.5f, 0.5f), 32.0f), true, true));
-		//preloadedObjectsOnScene.push_back(new Object(glm::vec3(-5.0f, -5.0f, -5.0f), glm::vec3(5.0f, 5.0f, 5.0f), type::blankModel, "res/models/", "sphere.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), whiteTex, shader.GetShaderID(), Material(glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(0.5f, 0.5f, 0.5f), 32.0f), true, true));
-		//preloadedObjectsOnScene.push_back(new Object(glm::vec3(-5.0f, -5.0f, -5.0f), glm::vec3(5.0f, 5.0f, 5.0f), type::blankModel, "res/models/", "sphere.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(4.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), whiteTex, shader.GetShaderID(), Material(glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(0.5f, 0.5f, 0.5f), 32.0f), true, true));
-		//preloadedObjectsOnScene.push_back(new Object(glm::vec3(-5.0f, -5.0f, -5.0f), glm::vec3(5.0f, 5.0f, 5.0f), type::blankModel, "res/models/", "sphere.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(6.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), whiteTex, shader.GetShaderID(), Material(glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(0.5f, 0.5f, 0.5f), 32.0f), true, true));
-		//preloadedObjectsOnScene.push_back(new Object(glm::vec3(-5.0f, -5.0f, -5.0f), glm::vec3(5.0f, 5.0f, 5.0f), type::blankModel, "res/models/", "sphere.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(8.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), whiteTex, shader.GetShaderID(), Material(glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(0.5f, 0.5f, 0.5f), 32.0f), true, true));
-		//objectsOnScene.push_back(new Object(glm::vec3(-5.0f, -5.0f, -5.0f), glm::vec3(5.0f, 5.0f, 5.0f), type::texturedModel, "res/models/", "test.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(15.0f, 0.0f, 15.0f), glm::vec3(1.0f, 1.0f, 1.0f), redTex, shader.GetShaderID(), Material(glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(0.5f, 0.5f, 0.5f), 32.0f), true, true));
-		//objectsOnScene.push_back(new Object(glm::vec3(-5.0f, -5.0f, -5.0f), glm::vec3(5.0f, 5.0f, 5.0f), type::texturedModel, "res/models/", "box.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-5.0f, 0.0f, -5.0f), glm::vec3(1.0f, 1.0f, 1.0f), boxTex, shader.GetShaderID(), Material(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), 32.0f), true, true));
-		//preloadedObjectsOnScene.push_back(new Object(glm::vec3(-5.0f, -5.0f, -5.0f), glm::vec3(5.0f, 5.0f, 5.0f), type::blankModel, "res/models/", "tank.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 10.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), whiteTex, shader.GetShaderID(), Material(glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(0.5f, 0.5f, 0.5f), 32.0f), true, true));
-		//unsigned int j = 0;
-		//unsigned int k = 0;
-		//for (unsigned int i = 0; i < 100; i++) {
-		//	j += 5;
-		//	objectsOnScene.push_back(new Object(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), type::blankModel, "res/models/", "tank.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(j, 10.0f, k), glm::vec3(1.0f, 1.0f, 1.0f), whiteTex, shader.GetShaderID(), Material(glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(0.5f, 0.5f, 0.5f), 32.0f), true, true));
-		//	if (i % 10 == 0) {
-		//		k += 5;
-		//		j = 0;
-		//	}
-		//}
-		preloadedGui.push_back(new Object2D(glm::vec2(-25.0f, -25.0f), glm::vec2(25.0f, 25.0f), 0.0f, glm::vec2(1920.0f / 2.0f, 1080.0f / 2.0f), glm::vec2(1.0f, 1.0f), tex2D, shader2D.GetShaderID(), cursorCoords.min, cursorCoords.max));
-		preloadedGui.push_back(new Object2D(glm::vec2(-262.5f, -262.5f), glm::vec2(-12.5f, -12.5f), 0.0f, glm::vec2(1920.0f, 1080.0f), glm::vec2(1.0f, 1.0f), redTex, shader2D.GetShaderID(), glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f)));
-		preloadedGui.push_back(new Object2D(glm::vec2(-275.0f, -275.0f), glm::vec2(0.0f, 0.0f), 0.0f, glm::vec2(1920.0f, 1080.0f), glm::vec2(1.0f, 1.0f), whiteTex, shader2D.GetShaderID(), glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f)));
-		preloadedGui.push_back(new Object2D(glm::vec2(0.0f, 0.0f), glm::vec2(720.0f, 270.0f), 0.0f, glm::vec2(25.0f, 800.0f), glm::vec2(1.0f, 1.0f), whitetransparentTex, shader2D.GetShaderID(), glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f)));
-		sentences.push_back(new Sentence(textShader, timesnewroman32pt, "Editor Type: ", 1.0f, glm::vec2(1500.0f, 150.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
-		sentences.push_back(new Sentence(textShader, timesnewroman32pt, "Mode: ", 1.0f, glm::vec2(1500.0f, 100.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
-		sentences.push_back(new Sentence(textShader, arial24pt, "Mini-Map", 1.0f, glm::vec2(1700.0f, 1000.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
-		sentences.push_back(new Sentence(textShader, arial24pt, "Keybinds:", 1.0f, glm::vec2(337.5f, 1030.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
-		sentences.push_back(new Sentence(textShader, arial24pt, "  C:Camera      V:Move      R:Rotate", 1.0f, glm::vec2(175.0f, 980.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
-		sentences.push_back(new Sentence(textShader, arial24pt, "E:Scale      F:Fullscreen      T:Texture", 1.0f, glm::vec2(175.0f, 930.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
-		sentences.push_back(new Sentence(textShader, arial24pt, "[: Change Selection Left                       K: Change Texture Left", 1.0f, glm::vec2(50.0f, 880.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
-		sentences.push_back(new Sentence(textShader, arial24pt, "]: Change Selection Right                   L: Change Texture Right", 1.0f, glm::vec2(59.0f, 830.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
 		
-		//sentences.push_back(new Sentence(timesnewroman32pt, "Editor Type: ", 1.0f, glm::vec2(1500.0f, 150.0f), glm::vec3(0.0f, 0.0f, 0.0f), textShader.GetShaderID()));
-		//sentences.push_back(new Sentence(timesnewroman32pt, "Mode: ", 1.0f, glm::vec2(1500.0f, 100.0f), glm::vec3(0.0f, 0.0f, 0.0f), textShader.GetShaderID()));
-		//sentences.push_back(new Sentence(arial24pt, "Mini-Map", 1.0f, glm::vec2(1700.0f, 1000.0f), glm::vec3(0.0f, 0.0f, 0.0f), textShader.GetShaderID()));
-		//sentences.push_back(new Sentence(arial24pt, "Keybinds:", 1.0f, glm::vec2(337.5f, 1030.0f), glm::vec3(0.0f, 0.0f, 0.0f), textShader.GetShaderID()));
-		//sentences.push_back(new Sentence(arial24pt, "  C:Camera      V:Move      R:Rotate", 1.0f, glm::vec2(175.0f, 980.0f), glm::vec3(0.0f, 0.0f, 0.0f), textShader.GetShaderID()));
-		//sentences.push_back(new Sentence(arial24pt, "E:Scale      F:Fullscreen      T:Texture", 1.0f, glm::vec2(175.0f, 930.0f), glm::vec3(0.0f, 0.0f, 0.0f), textShader.GetShaderID()));
-		//sentences.push_back(new Sentence(arial24pt, "[: Change Selection Left                       K: Change Texture Left", 1.0f, glm::vec2(50.0f, 880.0f), glm::vec3(0.0f, 0.0f, 0.0f), textShader.GetShaderID()));
-		//sentences.push_back(new Sentence(arial24pt, "]: Change Selection Right                   L: Change Texture Right", 1.0f, glm::vec2(59.0f, 830.0f), glm::vec3(0.0f, 0.0f, 0.0f), textShader.GetShaderID()));
+		
+		
+		Overlay pauseMenuOverlay;
+		pauseMenuOverlay.AddObject2D(new Object2D(glm::vec2(0.0f, 0.0f), glm::vec2(1920.0f, 1080.0f), 0.0f, glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f), pauseMenuTex, shader2D.GetShaderID(), glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f)));
+		pauseMenuOverlay.AddButton(new Button(glm::vec2(-262.5f, -262.5f), glm::vec2(-12.5f, -12.5f), 0.0f, glm::vec2(1920.0f, 1080.0f), glm::vec2(1.0f, 1.0f), redTex, shader2D.GetShaderID(), glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f),
+			[]()
+			{
+				Console::Log("Test printing from lambda");
+			} // lamda expression
+		));
+		Overlay defaultOverlay;
+		defaultOverlay.AddObject2D(new Object2D(glm::vec2(-25.0f, -25.0f), glm::vec2(25.0f, 25.0f), 0.0f, glm::vec2(1920.0f / 2.0f, 1080.0f / 2.0f), glm::vec2(1.0f, 1.0f), tex2D, shader2D.GetShaderID(), cursorCoords.min, cursorCoords.max));
+		defaultOverlay.AddObject2D(new Object2D(glm::vec2(-262.5f, -262.5f), glm::vec2(-12.5f, -12.5f), 0.0f, glm::vec2(1920.0f, 1080.0f), glm::vec2(1.0f, 1.0f), redTex, shader2D.GetShaderID(), glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f)));
+		defaultOverlay.AddObject2D(new Object2D(glm::vec2(-275.0f, -275.0f), glm::vec2(0.0f, 0.0f), 0.0f, glm::vec2(1920.0f, 1080.0f), glm::vec2(1.0f, 1.0f), whiteTex, shader2D.GetShaderID(), glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f)));
+		defaultOverlay.AddObject2D(new Object2D(glm::vec2(0.0f, 0.0f), glm::vec2(720.0f, 270.0f), 0.0f, glm::vec2(25.0f, 800.0f), glm::vec2(1.0f, 1.0f), whitetransparentTex, shader2D.GetShaderID(), glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f)));
+
+		defaultOverlay.AddText(new Sentence(&textShader, &timesnewroman32pt, "Editor Type: ", 1.0f, glm::vec2(1500.0f, 150.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
+		defaultOverlay.AddText(new Sentence(&textShader, &timesnewroman32pt, "Mode: ", 1.0f, glm::vec2(1500.0f, 100.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
+		defaultOverlay.AddText(new Sentence(&textShader, &arial24pt, "Mini-Map", 1.0f, glm::vec2(1700.0f, 1000.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
+		defaultOverlay.AddText(new Sentence(&textShader, &arial24pt, "Keybinds:", 1.0f, glm::vec2(337.5f, 1030.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
+		defaultOverlay.AddText(new Sentence(&textShader, &arial24pt, "  C:Camera      V:Move      R:Rotate", 1.0f, glm::vec2(175.0f, 980.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
+		defaultOverlay.AddText(new Sentence(&textShader, &arial24pt, "E:Scale      F:Fullscreen      T:Texture", 1.0f, glm::vec2(175.0f, 930.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
+		defaultOverlay.AddText(new Sentence(&textShader, &arial24pt, "[: Change Selection Left                       K: Change Texture Left", 1.0f, glm::vec2(50.0f, 880.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
+		defaultOverlay.AddText(new Sentence(&textShader, &arial24pt, "]: Change Selection Right                   L: Change Texture Right", 1.0f, glm::vec2(59.0f, 830.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
 
 		bool loadFile = true;
 		if (loadFile) {
-			IO::LoadFile(gui, "res/other/", "gui.gui");
+			//IO::LoadFile(gui, "res/other/", "gui.gui");
 			IO::LoadFile(objectsOnScene, "res/other/", "level.lvl");
 		}
 
@@ -903,8 +911,8 @@ int main(void)
 
 		GLuint selectedObject = objectsOnScene.size() - 1;
 		GLuint selectedObjectTexture = 0;// Search::LinearSearchVector(textures, objectsOnScene[selectedObject]->GetTextureID());
-		GLuint selectedGUIComponent = gui.size() - 1;
-		GLuint selectedGUIComponentTexture = 0;//Search::LinearSearchVector(textures, gui[selectedGUIComponent]->GetTextureID());
+
+
 
 		while (!glfwWindowShouldClose(window))
 		{
@@ -922,13 +930,17 @@ int main(void)
 				glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0, 0, currentWidth, currentHeight, GLFW_DONT_CARE);
 			}
 			///////////////////////////////////////////////////////////////////////////
-			if (!enableLooking) {
+			if (isPaused) {
 				editorEnabled = false;
-				renderer.Submit2D(&pausemenu);
 				currentMode = Mode::cam;
+
+				pauseMenuOverlay.Submit(&renderer);
+				pauseMenuOverlay.CheckTouches(mouseXPos, mouseYPos, currentWidth, currentHeight, leftClicked);
 			}
 			else {
 				editorEnabled = true;
+
+				defaultOverlay.Submit(&renderer);
 			}
 			///////////////////////////////////////////////////////////////////////////
 			if (editorEnabled) {
@@ -944,15 +956,12 @@ int main(void)
 					currentEditorType = EditorType::scene;
 				}
 				else if (twoPressed) {
-					currentEditorType = EditorType::overlay;
-				}
-				else if (threePressed) {
 					currentEditorType = EditorType::text;
 				}
-				else if (fourPressed) {
+				else if (threePressed) {
 					currentEditorType = EditorType::light;
 				}
-				if ((objectsOnScene.size() > 0 && currentEditorType == EditorType::scene) || (gui.size() > 0 && currentEditorType == EditorType::overlay) || (currentEditorType == EditorType::light)) {
+				if ((objectsOnScene.size() > 0 && currentEditorType == EditorType::scene) || (currentEditorType == EditorType::light)) {
 					if (cPressed) {
 						currentMode = Mode::cam;
 					}
@@ -1134,121 +1143,6 @@ int main(void)
 						}
 					}
 				}
-				else if (currentEditorType == EditorType::overlay) {
-					if (currentMode == Mode::scale) {
-						if (wPressed) {
-							gui[selectedGUIComponent]->ScaleAdd2f(0.0f, movementSpeed * deltaTime);
-						}
-						if (sPressed) {
-							gui[selectedGUIComponent]->ScaleAdd2f(0.0f, -movementSpeed * deltaTime);
-						}
-						if (aPressed) {
-							gui[selectedGUIComponent]->ScaleAdd2f(-movementSpeed * deltaTime, 0.0f);
-						}
-						if (dPressed) {
-							gui[selectedGUIComponent]->ScaleAdd2f(movementSpeed * deltaTime, 0.0f);
-						}
-					}
-					else if (currentMode == Mode::translate) {
-						if (wPressed) {
-							gui[selectedGUIComponent]->TranslateAdd2f(0.0f, movementSpeed * deltaTime * 10.0f);
-						}
-						if (sPressed) {
-							gui[selectedGUIComponent]->TranslateAdd2f(0.0f, -movementSpeed * deltaTime * 10.0f);
-						}
-						if (aPressed) {
-							gui[selectedGUIComponent]->TranslateAdd2f(-movementSpeed * deltaTime * 10.0f, 0.0f);
-						}
-						if (dPressed) {
-							gui[selectedGUIComponent]->TranslateAdd2f(movementSpeed * deltaTime * 10.0f, 0.0f);
-						}
-					}
-					else if (currentMode == Mode::rotate) {
-						if (wPressed) {
-							gui[selectedGUIComponent]->RotateAdd1f(movementSpeed * deltaTime);
-						}
-						if (sPressed) {
-							gui[selectedGUIComponent]->RotateAdd1f(-movementSpeed * deltaTime);
-						}
-					}
-					else if (currentMode == Mode::texture) {
-						if (kPressed) {
-							if (textureChangeTimer.HasFinished()) {
-								if (selectedGUIComponentTexture > 0) {
-									selectedGUIComponentTexture--;
-									textureChangeTimer.Reset(0.5f);
-									textureChangeTimer.Start();
-								}
-							}
-						}
-						if (lPressed) {
-							if (textureChangeTimer.HasFinished()) {
-								if (selectedGUIComponentTexture < textures.size() - 1) {
-									selectedGUIComponentTexture++;
-									textureChangeTimer.Reset(0.5f);
-									textureChangeTimer.Start();
-								}
-							}
-						}
-						if (selectedGUIComponent >= 0 && selectedGUIComponent < gui.size()) {
-							gui[selectedGUIComponent]->SetTexture(textures[selectedGUIComponentTexture]);
-						}
-					}
-					else if (currentMode == Mode::output) {
-						if (sPressed) {
-							IO::SaveToFile(gui, "res/other/", "level.lvl");
-							currentMode = Mode::cam;
-						}
-					}
-					if (leftBracketPressed) {
-						if (selectionChangeTimer.HasFinished()) {
-							if (selectedGUIComponent > 0) {
-								selectedGUIComponent--;
-								selectedGUIComponentTexture = Search::LinearSearchVector(textures, gui[selectedGUIComponent]->GetTextureID());
-								selectionChangeTimer.Reset(0.5f);
-								selectionChangeTimer.Start();
-							}
-						}
-					}
-					if (rightBracketPressed) {
-						if (selectionChangeTimer.HasFinished()) {
-							if (selectedGUIComponent < gui.size() - 1) {
-								selectedGUIComponent++;
-								selectedGUIComponentTexture = Search::LinearSearchVector(textures, gui[selectedGUIComponent]->GetTextureID());
-								selectionChangeTimer.Reset(0.5f);
-								selectionChangeTimer.Start();
-							}
-						}
-					}
-					if (nPressed) {
-						if (spawnTimer.HasFinished()) {
-							gui.push_back(new Object2D(glm::vec2(-50.0f, -50.0f), glm::vec2(50.0f, 50.0f), 0.0f, glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f), sphereCowTex, shader2D.GetShaderID(), glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f)));
-							selectedGUIComponent = gui.size() - 1;
-							selectedGUIComponentTexture = 0;
-							spawnTimer.Reset(0.5f);
-							spawnTimer.Start();
-						}
-					}
-					if (backspacePressed) {
-						if (spawnTimer.HasFinished()) {
-							if (gui.size() > 0) {
-								delete gui[selectedGUIComponent];
-								gui.erase(gui.begin() + selectedGUIComponent);
-								if (selectedGUIComponent > 0) {
-									selectedGUIComponent--;
-								}
-								if (objectsOnScene.size() >= 0) {
-									selectedGUIComponentTexture = Search::LinearSearchVector(textures, light->GetTextureID());
-								}
-								else {
-									selectedGUIComponentTexture = 0;
-								}
-								spawnTimer.Reset(0.5f);
-								spawnTimer.Start();
-							}
-						}
-					}
-				}
 				else if (currentEditorType == EditorType::light) {
 					if (currentMode == Mode::scale) {
 						if (wPressed) {
@@ -1332,36 +1226,35 @@ int main(void)
 					}
 				}
 				///////////////////////////////////////////////////////////////////////////
-				sentences[0]->SetText("HP: " + std::to_string(HP) + "%");
 				if (currentMode == Mode::cam) {
-					sentences[0]->SetText("Mode: Camera");
+					defaultOverlay.SetText(0, "Mode: Camera");
 				}
 				else if (currentMode == Mode::output) {
-					sentences[0]->SetText("Mode: Output");
+					defaultOverlay.SetText(0, "Mode: Output");
 				}
 				else if (currentMode == Mode::rotate) {
-					sentences[0]->SetText("Mode: Rotate");
+					defaultOverlay.SetText(0, "Mode: Rotate");
 				}
 				else if (currentMode == Mode::scale) {
-					sentences[0]->SetText("Mode: Scale");
+					defaultOverlay.SetText(0, "Mode: Scale");
 				}
 				else if (currentMode == Mode::texture) {
-					sentences[0]->SetText("Mode: Texture");
+					defaultOverlay.SetText(0, "Mode: Texture");
 				}
 				else if (currentMode == Mode::translate) {
-					sentences[0]->SetText("Mode: Translate");
+					defaultOverlay.SetText(0, "Mode: Translate");
 				}
 				if (currentEditorType == EditorType::overlay) {
-					sentences[1]->SetText("Editor Type: Overlay");
+					defaultOverlay.SetText(1, "Editor Type: Overlay");
 				}
 				else if (currentEditorType == EditorType::scene) {
-					sentences[1]->SetText("Editor Type: Scene");
+					defaultOverlay.SetText(1, "Editor Type: Scene");
 				}
 				else if (currentEditorType == EditorType::text) {
-					sentences[1]->SetText("Editor Type: Text");
+					defaultOverlay.SetText(1, "Editor Type: Text");
 				}
 				else if (currentEditorType == EditorType::light) {
-					sentences[1]->SetText("Editor Type: Light");
+					defaultOverlay.SetText(1, "Editor Type: Light");
 				}
 				///////////////////////////////////////////////////////////////////////////
 			}
@@ -1383,18 +1276,6 @@ int main(void)
 			///////////////////////////////////////////////////////////////////////////
 			for (unsigned int i = 0; i < objectsOnScene.size(); i++) {
 				renderer.Submit3D(objectsOnScene[i], camPos);
-			}
-			///////////////////////////////////////////////////////////////////////////
-			for (unsigned int i = 0; i < preloadedGui.size(); i++) {
-				renderer.Submit2D(preloadedGui[i]);
-			}
-			///////////////////////////////////////////////////////////////////////////
-			for (unsigned int i = 0; i < gui.size(); i++) {
-				renderer.Submit2D(gui[i]);
-			}
-			///////////////////////////////////////////////////////////////////////////
-			for (unsigned int i = 0; i < sentences.size(); i++) {
-				renderer.SubmitText(sentences[i]);
 			}
 			///////////////////////////////////////////////////////////////////////////
 			//if (hasVR) {
@@ -1426,7 +1307,6 @@ int main(void)
 			glfwPollEvents();
 			///////////////////////////////////////////////////////////////////////////
 		}
-		IO::SaveToFile(gui, "res/other/", "gui.gui");
 		IO::SaveToFile(objectsOnScene, "res/other/", "level.lvl");
 		config.WriteConfig("res/other/", "config.cfg");
 		Mesh::CleanUpCache();

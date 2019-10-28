@@ -1,6 +1,12 @@
 #include "Sentence.h"
+#include "Console.h"
 
-Sentence::Sentence(Shader& shdr, Font& f, std::string t, float s, glm::vec2 pos, glm::vec3 col)
+Sentence::Sentence()
+	: shader(new Shader()), font(new Font())
+{
+}
+
+Sentence::Sentence(Shader* shdr, Font* f, std::string t, float s, glm::vec2 pos, glm::vec3 col)
 	: shader(shdr), font(f), text(t), scale(s), position(pos), color(col)
 {
 
@@ -11,22 +17,22 @@ Sentence::~Sentence()
 
 }
 
-Shader& Sentence::GetShader()
+Shader* Sentence::GetShader()
 {
 	return shader;
 }
 
-void Sentence::SetShader(Shader& shdr)
+void Sentence::SetShader(Shader* shdr)
 {
 	shader = shdr;
 }
 
-Font& Sentence::GetFont()
+Font* Sentence::GetFont()
 {
 	return font;
 }
 
-void Sentence::SetFont(Font& f)
+void Sentence::SetFont(Font* f)
 {
 	font = f;
 }

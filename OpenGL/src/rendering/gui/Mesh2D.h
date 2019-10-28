@@ -37,7 +37,11 @@ public:
 	float GetRotation();
 	glm::vec2 GetScale();
 	ShapeData2D GetShape();
+	glm::vec2 GetMinExtents();
+	glm::vec2 GetMaxExtents();
 	glm::vec2 GetMinTexCoords();
 	glm::vec2 GetMaxTexCoords();
 	void SetShape(ShapeData2D newShape);
+
+	virtual std::string GetType();
 };

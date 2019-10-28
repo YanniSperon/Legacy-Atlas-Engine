@@ -1,4 +1,5 @@
 #include "Object2D.h"
+#include "Console.h"
 
 Object2D::Object2D()
 	: Mesh2D(), vertexBufferID(0), indexBufferID(0), numIndices(0), texID(0), shaderID(0)
@@ -85,4 +86,9 @@ GLuint Object2D::GetShaderID()
 GLuint Object2D::GetTextureID()
 {
 	return texID;
+}
+
+std::string Object2D::GetType()
+{
+	return "Object2D";
 }

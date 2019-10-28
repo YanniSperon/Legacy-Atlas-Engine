@@ -149,9 +149,11 @@
   <ItemGroup>
     <ClCompile Include="src\other\Console.cpp" />
     <ClCompile Include="src\other\Search.cpp" />
+    <ClCompile Include="src\rendering\gui\Button.cpp" />
     <ClCompile Include="src\rendering\gui\Font.cpp" />
     <ClCompile Include="src\rendering\gui\Mesh2D.cpp" />
     <ClCompile Include="src\rendering\gui\Object2D.cpp" />
+    <ClCompile Include="src\rendering\gui\Overlay.cpp" />
     <ClCompile Include="src\rendering\gui\Sentence.cpp" />
     <ClCompile Include="src\other\IO.cpp" />
     <ClCompile Include="src\physics\AxisAlignedBoundingBox.cpp" />
@@ -301,10 +303,11 @@
   <ItemGroup>
     <ClInclude Include="src\other\Console.h" />
     <ClInclude Include="src\other\Search.h" />
+    <ClInclude Include="src\rendering\gui\Button.h" />
     <ClInclude Include="src\rendering\gui\Font.h" />
-    <ClInclude Include="src\rendering\gui\GUI.h" />
     <ClInclude Include="src\rendering\gui\Mesh2D.h" />
     <ClInclude Include="src\rendering\gui\Object2D.h" />
+    <ClInclude Include="src\rendering\gui\Overlay.h" />
     <ClInclude Include="src\rendering\gui\Sentence.h" />
     <ClInclude Include="src\leveleditor\LevelEditor.h" />
     <ClInclude Include="src\other\IO.h" />

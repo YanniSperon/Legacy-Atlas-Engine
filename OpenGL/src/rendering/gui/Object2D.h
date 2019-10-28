@@ -22,4 +22,6 @@ public:
 	void SetTexture(GLuint tex);
 	GLuint GetShaderID();
 	GLuint GetTextureID();
+
+	virtual std::string GetType() override;
 };

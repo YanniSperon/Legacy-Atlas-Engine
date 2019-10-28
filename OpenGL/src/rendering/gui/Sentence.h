@@ -3,21 +3,22 @@
 
 class Sentence {
 private:
-	Shader& shader;
-	Font& font;
+	Shader* shader;
+	Font* font;
 	std::string text;
 	float scale;
 	glm::vec2 position;
 	glm::vec3 color;
 public:
-	Sentence(Shader& shdr, Font& f, std::string t, float s, glm::vec2 pos, glm::vec3 col);
+	Sentence();
+	Sentence(Shader* shdr, Font* f, std::string t, float s, glm::vec2 pos, glm::vec3 col);
 	~Sentence();
 
-	Shader& GetShader();
-	void SetShader(Shader& shdr);
+	Shader* GetShader();
+	void SetShader(Shader* shdr);
 
-	Font& GetFont();
-	void SetFont(Font& f);
+	Font* GetFont();
+	void SetFont(Font* f);
 
 	std::string GetText();
 	void SetText(std::string newText);
