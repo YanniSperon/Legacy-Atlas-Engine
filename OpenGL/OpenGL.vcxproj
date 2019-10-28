@@ -147,6 +147,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\other\Console.cpp" />
     <ClCompile Include="src\other\Search.cpp" />
     <ClCompile Include="src\rendering\gui\Font.cpp" />
     <ClCompile Include="src\rendering\gui\Mesh2D.cpp" />
@@ -298,6 +299,7 @@
     <None Include="src\vendor\glm\gtx\wrap.inl" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\other\Console.h" />
     <ClInclude Include="src\other\Search.h" />
     <ClInclude Include="src\rendering\gui\Font.h" />
     <ClInclude Include="src\rendering\gui\GUI.h" />

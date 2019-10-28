@@ -1,16 +1,16 @@
-Object: 0
+Object: 2
 type: Object
 modelType: texturedModel
-translation.x: -6.39634
+translation.x: 4.92908
 translation.y: 0
-translation.z: -4.17538
+translation.z: -4.31093
 rotation.x: 0
 rotation.y: 0
 rotation.z: 0
 scale.x: 1
-scale.y: 1
+scale.y: 1.76608
 scale.z: 1
-texture: 16
+texture: 5
 shader: 1
 ambient.r: 1
 ambient.g: 1
@@ -24,5 +24,5 @@ specular.b: 1
 shininess: 32
 hasLighting: true
 modelFileDir: res/models/
-modelFileName: box.obj
+modelFileName: textured1024.obj
 

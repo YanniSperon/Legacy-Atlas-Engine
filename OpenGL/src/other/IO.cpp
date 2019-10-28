@@ -7,6 +7,7 @@
 #include "PhysicsBody.h"
 #include <future>
 #include <chrono>
+#include <Console.h>
 
 static std::mutex meshLoaderMutex;
 
@@ -14,7 +15,7 @@ static void LoadData(std::vector<Object*>& vec, std::string filePath)
 {
 	std::ifstream objDataStream(filePath);
 	if (!objDataStream.is_open()) {
-		printf("Error loading object at path: \"%s\"", filePath.c_str());
+		Console::Err("Error loading object at path\"" + filePath + "\"");
 	}
 	else {
 		glm::vec3 translation(0.0f, 0.0f, 0.0f);
@@ -70,7 +71,7 @@ static void LoadData(std::vector<Object*>& vec, std::string filePath)
 					objectType = type::texturedModel;
 				}
 				else {
-					printf("unrecognized string: %s\n", value.c_str());
+					Console::Warn("Unrecognized string \"" + value + "\" when loading file \"" + filePath + "\"");
 					objectType = type::cubeModel;
 				}
 			}
@@ -310,7 +311,7 @@ void IO::LoadFile(std::vector<Object*>& vec, const std::string dir, const std::s
 	std::ifstream f(dir + fileName);
 
 	if (!f.is_open()) {
-		printf("File: \"%s%s\" does not exist or could not be loaded.\n", dir.c_str(), fileName.c_str());
+		Console::Err("File: \"" + dir + fileName + "\" does not exist or could not be loaded");
 	}
 
 	std::vector<std::string> filepaths;
@@ -465,7 +466,7 @@ void IO::LoadFile(std::vector<Object2D*>& vec, const std::string dir, const std:
 	std::ifstream f(dir + fileName);
 
 	if (!f.is_open()) {
-		printf("File: \"%s%s\" does not exist or could not be loaded.\n", dir.c_str(), fileName.c_str());
+		Console::Err("File: \"" + dir + fileName + "\" does not exist or could not be loaded");
 	}
 
 	glm::vec2 translation;
@@ -537,7 +538,7 @@ void IO::LoadFile(std::vector<Object2D*>& vec, const std::string dir, const std:
 
 void IO::SaveToFile(std::vector<Object2D*>& vec, const std::string dir, const std::string fileName)
 {
-	printf("Saving to file: %s%s\n", dir.c_str(), fileName.c_str());
+	Console::Log("Saving to file: \"" + dir + fileName + "\"");
 	std::ofstream outfile(dir + fileName);
 	outfile << "Total Size: " << vec.size() << "\n\n";
 	for (unsigned int i = 0; i < vec.size(); i++) {
