@@ -1,8 +1,8 @@
-# Install script for directory: C:/Users/Yanni/source/repos/Level-Editor/OpenGL/src/vendor/glm
+# Install script for directory: C:/Dev/Visual Studio/C++ Projects/Level Editor/OpenGL/src/vendor/glm
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "C:/Users/Yanni/Source/Repos/Level-Editor/OpenGL/src/vendor/glm/out/install/x64-Debug")
+  set(CMAKE_INSTALL_PREFIX "C:/Dev/Visual Studio/C++ Projects/Level Editor/OpenGL/src/vendor/glm/out/install/x64-Debug")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -40,5 +40,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "C:/Users/Yanni/source/repos/Level-Editor/OpenGL/src/vendor/glm/out/build/x64-Debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "C:/Dev/Visual Studio/C++ Projects/Level Editor/OpenGL/src/vendor/glm/out/build/x64-Debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
