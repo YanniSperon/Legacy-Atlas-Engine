@@ -3,8 +3,9 @@
 #include <GLFW/glfw3.h>
 
 class InputHandler {
-	void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
-	static void cursorPositionCallback(GLFWwindow* window, double xpos, double ypos)
+public:
+	static void KeyCallback(KeyboardInput* input, GLFWwindow* window, int key, int scancode, int action, int mods);
+	/*static void cursorPositionCallback(GLFWwindow* window, double xpos, double ypos)
 	{
 		mouseXPos = xpos;
 		mouseYPos = ypos;
@@ -23,5 +24,5 @@ class InputHandler {
 				camera.LookAt(xpos, ypos);
 			}
 		}
-	}
+	}*/
 };

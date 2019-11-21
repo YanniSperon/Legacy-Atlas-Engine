@@ -1,13 +1,20 @@
 #include "InputHandler.h"
 
-void InputHandler::keyCallback(KeyboardInput* input, GLFWwindow* window, int key, int scancode, int action, int mods)
+void InputHandler::KeyCallback(KeyboardInput* input, GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	if (key == GLFW_KEY_A) {
 		if (action == GLFW_PRESS) {
-			input->aPressed = true;
+			if (input->aPressed || input->aHeld) {
+				input->aHeld = true;
+				input->aPressed = false;
+			}
+			else {
+				input->aPressed = true;
+			}
 		}
 		else if (action == GLFW_RELEASE) {
 			input->aPressed = false;
+			input->aHeld = false;
 		}
 	} else if (key == GLFW_KEY_B) {
 		if (action == GLFW_PRESS) {
