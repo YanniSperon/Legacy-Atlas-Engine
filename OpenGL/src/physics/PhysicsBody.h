@@ -2,40 +2,42 @@
 #include "Object.h"
 #include "glm/glm.hpp"
 
-struct Position {
-	glm::vec3 translation, rotation, scale, linearVel, force, angularVel, torque, gravitationalForce;
-	float mass, momentOfInertia;
-};
+namespace Engine {
+	struct Position {
+		glm::vec3 translation, rotation, scale, linearVel, force, angularVel, torque, gravitationalForce;
+		float mass, momentOfInertia;
+	};
 
-class PhysicsBody : public Object {
-private:
-	float mass;
-	glm::vec3 gravitationalForce;
-	glm::vec3 linearVelocity;
-	glm::vec3 angularVelocity;
-	glm::vec3 force;
-	glm::vec3 torque;
-	float momentOfInertia;
-public:
-	PhysicsBody();
-	PhysicsBody(glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string dir, std::string name, glm::vec3 rotation, glm::vec3 translation, glm::vec3 s, GLuint tex, GLuint shader, Material mat, float m, glm::vec3 linearVel, glm::vec3 angularVel, glm::vec3 f, glm::vec3 t, float MOI, glm::vec3 gravity, bool glInit, bool lighting);
+	class PhysicsBody : public Engine::Object {
+	private:
+		float mass;
+		glm::vec3 gravitationalForce;
+		glm::vec3 linearVelocity;
+		glm::vec3 angularVelocity;
+		glm::vec3 force;
+		glm::vec3 torque;
+		float momentOfInertia;
+	public:
+		PhysicsBody();
+		PhysicsBody(glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string dir, std::string name, glm::vec3 rotation, glm::vec3 translation, glm::vec3 s, GLuint tex, GLuint shader, Material mat, float m, glm::vec3 linearVel, glm::vec3 angularVel, glm::vec3 f, glm::vec3 t, float MOI, glm::vec3 gravity, bool glInit, bool lighting);
 
-	void Update(float delta);
-	Position UpdateValues(float deltaT, Position oldPosition);
+		void Update(float delta);
+		Position UpdateValues(float deltaT, Position oldPosition);
 
-	void Stop();
+		void Stop();
 
-	glm::vec3 GetLinearAcceleration();
-	glm::vec3 GetLinearAccelerationWithoutGravity();
-	float GetMass();
-	glm::vec3 GetGravitationalForce();
-	glm::vec3 GetLinearVelocity();
-	glm::vec3 GetAngularVelocity();
-	glm::vec3 GetForce();
-	glm::vec3 GetTorque();
-	float GetMomentOfInertia();
+		glm::vec3 GetLinearAcceleration();
+		glm::vec3 GetLinearAccelerationWithoutGravity();
+		float GetMass();
+		glm::vec3 GetGravitationalForce();
+		glm::vec3 GetLinearVelocity();
+		glm::vec3 GetAngularVelocity();
+		glm::vec3 GetForce();
+		glm::vec3 GetTorque();
+		float GetMomentOfInertia();
 
-	inline const glm::vec3& GetVelocity() const { return linearVelocity; }
+		inline const glm::vec3& GetVelocity() const { return linearVelocity; }
 
-	virtual std::string GetType() override;
-};
+		virtual std::string GetType() override;
+	};
+}

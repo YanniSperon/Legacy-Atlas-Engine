@@ -3,16 +3,18 @@
 #include "glm/glm.hpp"
 #include "IntersectData.h"
 
-class AxisAlignedBoundingBox {
-private:
-	const glm::vec3 minExtents;
-	const glm::vec3 maxExtents;
-public:
-	AxisAlignedBoundingBox();
-	AxisAlignedBoundingBox(const glm::vec3& minCorner, const glm::vec3& maxCorner);
+namespace Engine {
+	class AxisAlignedBoundingBox {
+	private:
+		const glm::vec3 minExtents;
+		const glm::vec3 maxExtents;
+	public:
+		AxisAlignedBoundingBox();
+		AxisAlignedBoundingBox(const glm::vec3& minCorner, const glm::vec3& maxCorner);
 
-	IntersectData IntersectAxisAlignedBoundingBox(const AxisAlignedBoundingBox& other) const;
+		IntersectData IntersectAxisAlignedBoundingBox(const AxisAlignedBoundingBox& other) const;
 
-	inline const glm::vec3& GetMinExtents() const { return minExtents; }
-	inline const glm::vec3& GetMaxExtents() const { return maxExtents; }
-};
+		inline const glm::vec3& GetMinExtents() const { return minExtents; }
+		inline const glm::vec3& GetMaxExtents() const { return maxExtents; }
+	};
+}

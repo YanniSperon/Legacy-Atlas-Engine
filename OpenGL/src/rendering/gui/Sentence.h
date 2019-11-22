@@ -1,34 +1,38 @@
 #pragma once
+
 #include "Font.h"
 
-class Sentence {
-private:
-	Shader* shader;
-	Font* font;
-	std::string text;
-	float scale;
-	glm::vec2 position;
-	glm::vec3 color;
-public:
-	Sentence();
-	Sentence(Shader* shdr, Font* f, std::string t, float s, glm::vec2 pos, glm::vec3 col);
-	~Sentence();
+namespace Engine {
 
-	Shader* GetShader();
-	void SetShader(Shader* shdr);
+	class Sentence {
+	private:
+		Shader* shader;
+		Font* font;
+		std::string text;
+		float scale;
+		glm::vec2 position;
+		glm::vec3 color;
+	public:
+		Sentence();
+		Sentence(Shader* shdr, Font* f, std::string t, float s, glm::vec2 pos, glm::vec3 col);
+		~Sentence();
 
-	Font* GetFont();
-	void SetFont(Font* f);
+		Shader* GetShader();
+		void SetShader(Shader* shdr);
 
-	std::string GetText();
-	void SetText(std::string newText);
+		Font* GetFont();
+		void SetFont(Font* f);
 
-	float GetScale();
-	void SetScale(float s);
+		std::string GetText();
+		void SetText(std::string newText);
 
-	glm::vec2 GetPosition();
-	void SetPosition(glm::vec2 newPos);
+		float GetScale();
+		void SetScale(float s);
 
-	glm::vec3 GetColor();
-	void SetColor(glm::vec3 newColor);
-};
+		glm::vec2 GetPosition();
+		void SetPosition(glm::vec2 newPos);
+
+		glm::vec3 GetColor();
+		void SetColor(glm::vec3 newColor);
+	};
+}

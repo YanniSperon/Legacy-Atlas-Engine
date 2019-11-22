@@ -1,17 +1,18 @@
 #pragma once
+namespace LevelEditor {
+	enum Mode
+	{
+		scale, translate, rotate, cam, texture, output
+	};
 
-enum Mode
-{
-	scale, translate, rotate, cam, texture, output
-};
+	enum EditorType
+	{
+		text, overlay, scene, light
+	};
 
-enum EditorType
-{
-	text, overlay, scene, light
-};
-
-struct Texture
-{
-	std::string name;
-	unsigned int id;
-};
+	struct Texture
+	{
+		std::string name;
+		unsigned int id;
+	};
+}

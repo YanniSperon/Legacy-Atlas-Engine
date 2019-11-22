@@ -4,60 +4,63 @@
 #include "primitives/ShapeData.h"
 #include <string>
 
-enum type
-{
-	cubeModel, blankModel, texturedModel, skyBox, cubeInvertedLighting
-};
+namespace Engine {
 
-class Mesh {
-private:
-	std::string directory;
-	std::string fileName;
-	glm::vec3 rotation;
-	glm::vec3 translation;
-	glm::vec3 scale;
-	ShapeData shape;
-	glm::vec3 minExtents;
-	glm::vec3 maxExtents;
-	type objectType;
-public:
-	Mesh();
-	Mesh(glm::vec3 min, glm::vec3 max, type type, std::string dir, std::string name);
-	Mesh(glm::vec3 min, glm::vec3 max, type type, std::string dir, std::string name, glm::vec3 rot, glm::vec3 trans, glm::vec3 s);
-	~Mesh();
+	enum type
+	{
+		cubeModel, blankModel, texturedModel, skyBox, cubeInvertedLighting
+	};
 
-	glm::mat4 GetModelTransformMatrix();
-	void RotateX(float x);
-	void RotateY(float y);
-	void RotateZ(float z);
-	void Rotate3f(float x, float y, float z);
-	void RotateVec3(glm::vec3 rot);
-	void RotateAdd3f(float x, float y, float z);
-	void RotateAddVec3(glm::vec3 rot);
-	void TranslateX(float x);
-	void TranslateY(float y);
-	void TranslateZ(float z);
-	void Translate3f(float x, float y, float z);
-	void TranslateVec3(glm::vec3 trans);
-	void TranslateAdd3f(float x, float y, float z);
-	void TranslateAddVec3(glm::vec3 trans);
-	void ScaleX(float x);
-	void ScaleY(float y);
-	void ScaleZ(float z);
-	void Scale3f(float x, float y, float z);
-	void ScaleVec3(glm::vec3 s);
-	void ScaleAdd3f(float x, float y, float z);
-	void ScaleAddVec3(glm::vec3 s);
-	glm::vec3 GetTranslation();
-	glm::vec3 GetRotation();
-	glm::vec3 GetScale();
-	ShapeData GetShape();
-	std::string GetModelFileName();
-	std::string GetModelFileDirectory();
-	void SetShape(ShapeData newShape);
+	class Mesh {
+	private:
+		std::string directory;
+		std::string fileName;
+		glm::vec3 rotation;
+		glm::vec3 translation;
+		glm::vec3 scale;
+		ShapeData shape;
+		glm::vec3 minExtents;
+		glm::vec3 maxExtents;
+		type objectType;
+	public:
+		Mesh();
+		Mesh(glm::vec3 min, glm::vec3 max, type type, std::string dir, std::string name);
+		Mesh(glm::vec3 min, glm::vec3 max, type type, std::string dir, std::string name, glm::vec3 rot, glm::vec3 trans, glm::vec3 s);
+		~Mesh();
 
-	std::string GetModelType();
-	virtual std::string GetType();
+		glm::mat4 GetModelTransformMatrix();
+		void RotateX(float x);
+		void RotateY(float y);
+		void RotateZ(float z);
+		void Rotate3f(float x, float y, float z);
+		void RotateVec3(glm::vec3 rot);
+		void RotateAdd3f(float x, float y, float z);
+		void RotateAddVec3(glm::vec3 rot);
+		void TranslateX(float x);
+		void TranslateY(float y);
+		void TranslateZ(float z);
+		void Translate3f(float x, float y, float z);
+		void TranslateVec3(glm::vec3 trans);
+		void TranslateAdd3f(float x, float y, float z);
+		void TranslateAddVec3(glm::vec3 trans);
+		void ScaleX(float x);
+		void ScaleY(float y);
+		void ScaleZ(float z);
+		void Scale3f(float x, float y, float z);
+		void ScaleVec3(glm::vec3 s);
+		void ScaleAdd3f(float x, float y, float z);
+		void ScaleAddVec3(glm::vec3 s);
+		glm::vec3 GetTranslation();
+		glm::vec3 GetRotation();
+		glm::vec3 GetScale();
+		ShapeData GetShape();
+		std::string GetModelFileName();
+		std::string GetModelFileDirectory();
+		void SetShape(ShapeData newShape);
 
-	static void CleanUpCache();
-};
+		std::string GetModelType();
+		virtual std::string GetType();
+
+		static void CleanUpCache();
+	};
+}

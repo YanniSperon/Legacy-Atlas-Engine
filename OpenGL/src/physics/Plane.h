@@ -3,17 +3,19 @@
 #include "glm/glm.hpp"
 #include "BoundingSphere.h"
 
-class Plane {
-private:
-	const glm::vec3 normal;
-	const float distance;
-public:
-	Plane();
-	Plane(const glm::vec3& norm, float dist);
+namespace Engine {
+	class Plane {
+	private:
+		const glm::vec3 normal;
+		const float distance;
+	public:
+		Plane();
+		Plane(const glm::vec3& norm, float dist);
 
-	Plane Normalized() const;
-	IntersectData IntersectSphere(const BoundingSphere& other) const;
+		Plane Normalized() const;
+		IntersectData IntersectSphere(const BoundingSphere& other) const;
 
-	inline const glm::vec3& GetNormal() const { return normal; }
-	inline float GetDistance() const { return distance; }
-};
+		inline const glm::vec3& GetNormal() const { return normal; }
+		inline float GetDistance() const { return distance; }
+	};
+}
