@@ -1,5 +1,7 @@
 #pragma once
+
 namespace Engine {
+
 	struct KeyboardInput {
 		bool aPressed;
 		bool bPressed;

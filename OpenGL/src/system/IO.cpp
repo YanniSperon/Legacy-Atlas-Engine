@@ -1,10 +1,11 @@
 #include "IO.h"
-#include <iostream>
-#include <fstream>
 #include "Light.h"
 #include "Mesh.h"
 #include "AABBCollidable.h"
 #include "PhysicsBody.h"
+#include "Global.h"
+#include <iostream>
+#include <fstream>
 #include <future>
 #include <chrono>
 #include <System.h>

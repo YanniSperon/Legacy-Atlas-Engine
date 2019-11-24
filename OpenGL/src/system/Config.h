@@ -19,6 +19,7 @@ namespace Engine {
 		bool vsync;
 		MouseMode mouseMode;
 	public:
+		Config();
 		Config(std::string name);
 		Config(std::string dir, std::string name);
 		~Config();

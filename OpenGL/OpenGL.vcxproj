@@ -148,6 +148,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Global.cpp" />
+    <ClCompile Include="src\GlobalVariables.cpp" />
     <ClCompile Include="src\input\InputHandler.cpp" />
     <ClCompile Include="src\system\System.cpp" />
     <ClCompile Include="src\other\Search.cpp" />
@@ -301,6 +302,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Global.h" />
+    <ClInclude Include="src\GlobalVariables.h" />
     <ClInclude Include="src\input\Input.h" />
     <ClInclude Include="src\input\InputHandler.h" />
     <ClInclude Include="src\system\Callbacks.h" />

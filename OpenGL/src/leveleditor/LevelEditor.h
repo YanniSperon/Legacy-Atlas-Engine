@@ -1,5 +1,7 @@
 #pragma once
+
 namespace LevelEditor {
+
 	enum Mode
 	{
 		scale, translate, rotate, cam, texture, output

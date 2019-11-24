@@ -61,7 +61,6 @@ using namespace Engine;
 int main(void)
 {
 	Global::Initialize();
-	System::Setup();
 	GLFWwindow* window;
 
 	if (!glfwInit()) {
