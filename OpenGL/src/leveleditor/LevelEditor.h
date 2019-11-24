@@ -4,7 +4,7 @@ namespace LevelEditor {
 
 	enum Mode
 	{
-		scale, translate, rotate, cam, texture, output
+		scale, translate, rotate, cam, texture
 	};
 
 	enum EditorType

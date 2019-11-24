@@ -8,7 +8,9 @@
 namespace Engine {
 
 	class GlobalVariables {
-	private:
+	public:
+		GlobalVariables();
+
 		std::chrono::steady_clock::time_point systemStartTime;
 
 		Config config;
@@ -36,8 +38,6 @@ namespace Engine {
 
 		KeyboardInput keyIn;
 		MouseInput mouseIn;
-	public:
-		GlobalVariables();
 	};
 
 }

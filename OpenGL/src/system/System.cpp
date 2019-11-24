@@ -9,7 +9,7 @@ namespace Engine {
 	void System::Log(std::string text)
 	{
 		auto currentTime = std::chrono::high_resolution_clock::now();
-		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(currentTime - Global::systemStartTime);
+		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(currentTime - Global::Variables.systemStartTime);
 		auto hours = std::chrono::duration_cast<std::chrono::hours>(duration);
 		auto minutes = std::chrono::duration_cast<std::chrono::minutes>(duration - hours);
 		auto seconds = std::chrono::duration_cast<std::chrono::seconds>(duration - hours - minutes);
@@ -28,7 +28,7 @@ namespace Engine {
 	void System::Warn(std::string text)
 	{
 		auto currentTime = std::chrono::high_resolution_clock::now();
-		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(currentTime - Global::systemStartTime);
+		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(currentTime - Global::Variables.systemStartTime);
 		auto hours = std::chrono::duration_cast<std::chrono::hours>(duration);
 		auto minutes = std::chrono::duration_cast<std::chrono::minutes>(duration - hours);
 		auto seconds = std::chrono::duration_cast<std::chrono::seconds>(duration - hours - minutes);
@@ -48,7 +48,7 @@ namespace Engine {
 	void System::Err(std::string text)
 	{
 		auto currentTime = std::chrono::high_resolution_clock::now();
-		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(currentTime - Global::systemStartTime);
+		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(currentTime - Global::Variables.systemStartTime);
 		auto hours = std::chrono::duration_cast<std::chrono::hours>(duration);
 		auto minutes = std::chrono::duration_cast<std::chrono::minutes>(duration - hours);
 		auto seconds = std::chrono::duration_cast<std::chrono::seconds>(duration - hours - minutes);

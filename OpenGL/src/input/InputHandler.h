@@ -8,11 +8,11 @@ namespace Engine {
 
 	class InputHandler {
 	public:
-		static void KeyCallback(KeyboardInput* input, GLFWwindow* window, int key, int scancode, int action, int mods);
+		static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
-		static void StartInput();
+		static void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
 
-		static void EndInput();
+		static void ProcessEvents(KeyboardInput* keyIn, MouseInput* mouseIn);
 
 		static void Flush(KeyboardInput* keyIn, MouseInput* mouseIn);
 	};

@@ -3,5 +3,7 @@
 #include "GlobalVariables.h"
 
 namespace Engine {
-	extern GlobalVariables variables;
+	namespace Global {
+		extern GlobalVariables Variables;
+	}
 }
