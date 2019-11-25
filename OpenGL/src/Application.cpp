@@ -570,11 +570,11 @@ int main(void)
 			///////////////////////////////////////////////////////////////////////////
 			renderer.SimpleFlush(&Global::Variables.camera, Global::Variables.currentWidth, Global::Variables.currentHeight, Global::Variables.FOV, light);
 			///////////////////////////////////////////////////////////////////////////
-			if (Global::Variables.mouseIn.middleClicked) {
+			if (Global::Variables.keyIn.leftAltPressed) {
 				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 				Global::Variables.enableMouseMove = false;
 			}
-			if (Global::Variables.mouseIn.middleReleased) {
+			if (Global::Variables.keyIn.leftAltReleased) {
 				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 				Global::Variables.enableMouseMove = true;
 			}
