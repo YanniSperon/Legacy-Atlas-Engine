@@ -15,9 +15,7 @@ extern "C"
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <chrono>
 #include <thread>
-#include <map>
 
 #include "Shader.h"
 #include "Mesh.h"
@@ -422,7 +420,7 @@ int main(void)
 						}
 					}
 					if (Global::Variables.keyIn.rightBracketPressed) {
-						if (selectedObject < objectsOnScene.size() - 1) {
+						if (selectedObject < objectsOnScene.size() - 2) {
 							selectedObject++;
 							selectedObjectTexture = Search::LinearSearchVector(textures, objectsOnScene[selectedObject]->GetTextureID());
 						}
