@@ -3,7 +3,7 @@
 #include "glm/glm.hpp"
 #include "IntersectData.h"
 
-namespace Engine {
+namespace Atlas {
 	class AxisAlignedBoundingBox {
 	private:
 		const glm::vec3 minExtents;

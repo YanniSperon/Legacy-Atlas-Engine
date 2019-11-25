@@ -1,4 +1,4 @@
-Object: 0
+Object: 6
 type: AABBCollidable
 modelType: cubeModel
 translation.x: 0
@@ -7,9 +7,9 @@ translation.z: 0
 rotation.x: 0
 rotation.y: 0
 rotation.z: 0
-scale.x: 1
-scale.y: 1
-scale.z: 1
+scale.x: 0.000374857
+scale.y: 8.55378e-05
+scale.z: 1.46326
 texture: 3
 shader: 1
 ambient.r: 1

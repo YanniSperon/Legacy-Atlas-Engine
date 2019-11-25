@@ -2,7 +2,7 @@
 #include "ft2build.h"
 #include FT_FREETYPE_H
 
-namespace Engine {
+namespace Atlas {
 
 	Font::Font()
 		: VAO(0), VBO(0)

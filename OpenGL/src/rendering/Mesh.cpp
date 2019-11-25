@@ -5,7 +5,7 @@
 #include <iostream>
 #include <unordered_map>
 
-namespace Engine {
+namespace Atlas {
 
 	static std::unordered_map<std::string, ShapeData> meshCache;
 

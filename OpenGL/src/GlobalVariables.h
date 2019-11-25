@@ -5,7 +5,7 @@
 #include "Input.h"
 #include <chrono>
 
-namespace Engine {
+namespace Atlas {
 
 	class GlobalVariables {
 	public:
@@ -38,6 +38,10 @@ namespace Engine {
 
 		KeyboardInput keyIn;
 		MouseInput mouseIn;
+		
+		bool enableMouseClick;
+		bool enableMouseMove;
+		bool enableKeyboard;
 	};
 
 }

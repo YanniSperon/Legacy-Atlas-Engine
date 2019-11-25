@@ -1,6 +1,6 @@
 #include "GlobalVariables.h"
 
-namespace Engine {
+namespace Atlas {
 
 	GlobalVariables::GlobalVariables()
 	{
@@ -29,5 +29,9 @@ namespace Engine {
 
 		keyIn = KeyboardInput();
 		mouseIn = MouseInput();
+
+		enableMouseClick = true;
+		enableMouseMove = true;
+		enableKeyboard = true;
 	}
 }

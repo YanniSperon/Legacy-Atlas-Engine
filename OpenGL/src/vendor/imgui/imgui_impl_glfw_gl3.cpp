@@ -49,6 +49,7 @@
 #define GLFW_EXPOSE_NATIVE_WGL
 #include <GLFW/glfw3native.h>
 #endif
+#include "InputHandler.h"
 
 // GLFW data
 static GLFWwindow*  g_Window = NULL;
@@ -195,32 +196,43 @@ static void ImGui_ImplGlfwGL3_SetClipboardText(void* user_data, const char* text
     glfwSetClipboardString((GLFWwindow*)user_data, text);
 }
 
-void ImGui_ImplGlfw_MouseButtonCallback(GLFWwindow*, int button, int action, int /*mods*/)
+void ImGui_ImplGlfw_MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 {
-    if (action == GLFW_PRESS && button >= 0 && button < 3)
-        g_MouseJustPressed[button] = true;
+	if (action == GLFW_PRESS && button >= 0 && button < 3)
+		g_MouseJustPressed[button] = true;
+
+	if (!ImGui::GetIO().WantCaptureMouse) {
+		Atlas::InputHandler::MouseButtonCallback(window, button, action, mods);
+	}
 }
 
 void ImGui_ImplGlfw_ScrollCallback(GLFWwindow*, double xoffset, double yoffset)
 {
     ImGuiIO& io = ImGui::GetIO();
-    io.MouseWheelH += (float)xoffset;
-    io.MouseWheel += (float)yoffset;
+	io.MouseWheelH += (float)xoffset;
+	io.MouseWheel += (float)yoffset;
+	if (!io.WantCaptureMouse) {
+		// add atlas::inputhandler::scroll callback here
+	}
 }
 
-void ImGui_ImplGlfw_KeyCallback(GLFWwindow*, int key, int, int action, int mods)
+void ImGui_ImplGlfw_KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     ImGuiIO& io = ImGui::GetIO();
-    if (action == GLFW_PRESS)
-        io.KeysDown[key] = true;
-    if (action == GLFW_RELEASE)
-        io.KeysDown[key] = false;
+	if (action == GLFW_PRESS)
+		io.KeysDown[key] = true;
+	if (action == GLFW_RELEASE)
+		io.KeysDown[key] = false;
+	
+	(void)mods; // Modifiers are not reliable across systems
+	io.KeyCtrl = io.KeysDown[GLFW_KEY_LEFT_CONTROL] || io.KeysDown[GLFW_KEY_RIGHT_CONTROL];
+	io.KeyShift = io.KeysDown[GLFW_KEY_LEFT_SHIFT] || io.KeysDown[GLFW_KEY_RIGHT_SHIFT];
+	io.KeyAlt = io.KeysDown[GLFW_KEY_LEFT_ALT] || io.KeysDown[GLFW_KEY_RIGHT_ALT];
+	io.KeySuper = io.KeysDown[GLFW_KEY_LEFT_SUPER] || io.KeysDown[GLFW_KEY_RIGHT_SUPER];
 
-    (void)mods; // Modifiers are not reliable across systems
-    io.KeyCtrl = io.KeysDown[GLFW_KEY_LEFT_CONTROL] || io.KeysDown[GLFW_KEY_RIGHT_CONTROL];
-    io.KeyShift = io.KeysDown[GLFW_KEY_LEFT_SHIFT] || io.KeysDown[GLFW_KEY_RIGHT_SHIFT];
-    io.KeyAlt = io.KeysDown[GLFW_KEY_LEFT_ALT] || io.KeysDown[GLFW_KEY_RIGHT_ALT];
-    io.KeySuper = io.KeysDown[GLFW_KEY_LEFT_SUPER] || io.KeysDown[GLFW_KEY_RIGHT_SUPER];
+	if (!io.WantCaptureKeyboard) {
+		Atlas::InputHandler::KeyCallback(window, key, scancode, action, mods);
+	}
 }
 
 void ImGui_ImplGlfw_CharCallback(GLFWwindow*, unsigned int c)

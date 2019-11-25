@@ -9,7 +9,7 @@
 
 #define NUM_ARRAY_ELEMENTS(a) sizeof(a) / sizeof(*a);
 
-namespace Engine {
+namespace Atlas {
 
 	ShapeData ShapeGenerator::makeTriangle(glm::vec3& min, glm::vec3& max) {
 		float minX = INFINITY;

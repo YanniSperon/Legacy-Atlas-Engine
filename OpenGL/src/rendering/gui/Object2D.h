@@ -2,7 +2,7 @@
 
 #include "Mesh2D.h"
 
-namespace Engine {
+namespace Atlas {
 	class Object2D : public Mesh2D {
 	private:
 		GLuint vertexBufferID;

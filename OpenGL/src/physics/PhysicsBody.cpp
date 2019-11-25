@@ -1,6 +1,6 @@
 #include "PhysicsBody.h"
 
-namespace Engine {
+namespace Atlas {
 	PhysicsBody::PhysicsBody()
 		: Object(), mass(0.0f), linearVelocity(0.0f, 0.0f, 0.0f), force(0.0f, 0.0f, 0.0f), angularVelocity(0.0f, 0.0f, 0.0f), torque(0.0f, 0.0f, 0.0f), momentOfInertia(0.0f), gravitationalForce(0.0f)
 	{

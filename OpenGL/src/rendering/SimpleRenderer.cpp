@@ -2,7 +2,7 @@
 #include "glm/gtx/quaternion.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
-namespace Engine {
+namespace Atlas {
 
 	int GetUniformLocation(const std::string& name, GLuint shaderID)
 	{

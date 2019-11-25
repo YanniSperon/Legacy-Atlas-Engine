@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Engine {
+namespace Atlas {
 	class IntersectData {
 	private:
 		const bool doesIntersect;

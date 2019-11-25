@@ -1,7 +1,7 @@
 #include "Sentence.h"
 #include "System.h"
 
-namespace Engine {
+namespace Atlas {
 	Sentence::Sentence()
 		: shader(new Shader()), font(new Font()), scale(0.0f)
 	{

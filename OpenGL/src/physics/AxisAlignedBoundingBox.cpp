@@ -1,6 +1,6 @@
 #include "AxisAlignedBoundingBox.h"
 
-namespace Engine {
+namespace Atlas {
 	glm::vec3 Max(const glm::vec3 first, const glm::vec3 second) {
 		glm::vec3 answer;
 		if (first.x > second.x) {

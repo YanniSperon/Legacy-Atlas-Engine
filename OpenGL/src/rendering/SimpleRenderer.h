@@ -3,7 +3,7 @@
 #include <deque>
 #include "Renderer.h"
 
-namespace Engine {
+namespace Atlas {
 
 	class SimpleRenderer : public Renderer {
 	private:

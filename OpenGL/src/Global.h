@@ -2,7 +2,7 @@
 
 #include "GlobalVariables.h"
 
-namespace Engine {
+namespace Atlas {
 	namespace Global {
 		extern GlobalVariables Variables;
 	}

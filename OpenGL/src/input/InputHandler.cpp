@@ -2,8 +2,10 @@
 #include "Global.h"
 #include "System.h"
 #include <vector>
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw_gl3.h"
 
-namespace Engine {
+namespace Atlas {
 
 	static std::vector<int> keyButtons;
 	static std::vector<int> keyActions;
@@ -12,13 +14,17 @@ namespace Engine {
 
 	void InputHandler::KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 	{
-		keyButtons.push_back(key);
-		keyActions.push_back(action);
+		if (Global::Variables.enableMouseClick) {
+			keyButtons.push_back(key);
+			keyActions.push_back(action);
+		}
 	}
 
 	void InputHandler::MouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
-		mouseButtons.push_back(button);
-		mouseActions.push_back(action);
+		if (Global::Variables.enableKeyboard) {
+			mouseButtons.push_back(button);
+			mouseActions.push_back(action);
+		}
 	}
 
 	void InputHandler::ProcessEvents(KeyboardInput* keyIn, MouseInput* mouseIn)
@@ -828,6 +834,30 @@ namespace Engine {
 						mouseIn->rightReleased = true;
 					}
 				}
+				else if (mouseButtons[i] == GLFW_MOUSE_BUTTON_MIDDLE) {
+					if (mouseActions[i] == GLFW_PRESS) {
+						mouseIn->middleClicked = true;
+						mouseIn->middleHeld = false;
+						mouseIn->middleReleased = false;
+					}
+					else if (mouseActions[i] == GLFW_RELEASE) {
+						mouseIn->middleClicked = false;
+						mouseIn->middleHeld = false;
+						mouseIn->middleReleased = true;
+					}
+				}
+				else if (mouseButtons[i] == GLFW_MOUSE_BUTTON_4) {
+					if (mouseActions[i] == GLFW_PRESS) {
+						mouseIn->mb4Clicked = true;
+						mouseIn->mb4Held = false;
+						mouseIn->mb4Released = false;
+					}
+					else if (mouseActions[i] == GLFW_RELEASE) {
+						mouseIn->mb4Clicked = false;
+						mouseIn->mb4Held = false;
+						mouseIn->mb4Released = true;
+					}
+				}
 			}
 		}
 		else {
@@ -1351,5 +1381,39 @@ namespace Engine {
 		if (keyIn->spaceReleased) {
 			keyIn->spaceReleased = false;
 		}
+
+
+		if (mouseIn->rightClicked) {
+			mouseIn->rightClicked = false;
+			mouseIn->rightHeld = true;
+		}
+		if (mouseIn->rightReleased) {
+			mouseIn->rightReleased = false;
+		}
+
+		if (mouseIn->leftClicked) {
+			mouseIn->leftClicked = false;
+			mouseIn->leftHeld = true;
+		}
+		if (mouseIn->leftReleased) {
+			mouseIn->leftReleased = false;
+		}
+
+		if (mouseIn->middleClicked) {
+			mouseIn->middleClicked = false;
+			mouseIn->middleHeld = true;
+		}
+		if (mouseIn->middleReleased) {
+			mouseIn->middleReleased = false;
+		}
+
+		if (mouseIn->mb4Clicked) {
+			mouseIn->mb4Clicked = false;
+			mouseIn->mb4Held = true;
+		}
+		if (mouseIn->mb4Released) {
+			mouseIn->mb4Released = false;
+		}
+
 	}
 }

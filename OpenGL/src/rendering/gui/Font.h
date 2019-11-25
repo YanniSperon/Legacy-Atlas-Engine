@@ -5,7 +5,7 @@
 #include "Shader.h"
 #include <map>
 
-namespace Engine {
+namespace Atlas {
 
 	struct Character {
 		GLuint     TextureID;  // ID handle of the glyph texture

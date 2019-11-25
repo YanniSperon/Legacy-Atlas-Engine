@@ -3,7 +3,7 @@
 #include "AxisAlignedBoundingBox.h"
 #include "PhysicsBody.h"
 
-namespace Engine {
+namespace Atlas {
 
 	class AABBCollidable : public AxisAlignedBoundingBox, public PhysicsBody {
 	private:

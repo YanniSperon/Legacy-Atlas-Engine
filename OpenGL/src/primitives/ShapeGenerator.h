@@ -3,7 +3,7 @@
 #include "ShapeData.h"
 #include <string>
 
-namespace Engine {
+namespace Atlas {
 
 	class ShapeGenerator {
 	public:

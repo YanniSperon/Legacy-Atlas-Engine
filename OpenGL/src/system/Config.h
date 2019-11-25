@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 
-namespace Engine {
+namespace Atlas {
 
 	enum MouseMode {
 		raw = 0, default = 1

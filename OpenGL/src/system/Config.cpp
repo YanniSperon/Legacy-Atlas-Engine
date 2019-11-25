@@ -4,7 +4,7 @@
 #include <sstream>
 #include <string>
 
-namespace Engine {
+namespace Atlas {
 	Config::Config()
 		: fullscreen(false), forceFullscreen(false), vr(false), initialHeight(720), initialWidth(1280), mouseSensitivity(0.15f), FOV(90.0f), vsync(1), mouseMode(default)
 	{

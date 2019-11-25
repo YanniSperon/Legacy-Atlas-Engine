@@ -1,7 +1,7 @@
 #include "Timer.h"
 #include <iostream>
 
-namespace Engine {
+namespace Atlas {
 	Timer::Timer(float lengthInSeconds)
 		: currentTime(0.0f), lengthTime(lengthInSeconds), isRunning(false)
 	{

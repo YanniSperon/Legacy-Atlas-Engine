@@ -2,7 +2,7 @@
 
 #include "Object.h"
 
-namespace Engine {
+namespace Atlas {
 
 	struct LightIntensity {
 		glm::vec3 ambient, diffuse, specular;

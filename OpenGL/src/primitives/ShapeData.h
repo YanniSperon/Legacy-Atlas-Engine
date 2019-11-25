@@ -3,7 +3,7 @@
 #include <GL/glew.h>
 #include "Vertex.h"
 
-namespace Engine {
+namespace Atlas {
 
 	struct ShapeData
 	{

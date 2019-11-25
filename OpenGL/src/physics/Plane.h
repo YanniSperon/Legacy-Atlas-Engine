@@ -3,7 +3,7 @@
 #include "glm/glm.hpp"
 #include "BoundingSphere.h"
 
-namespace Engine {
+namespace Atlas {
 	class Plane {
 	private:
 		const glm::vec3 normal;

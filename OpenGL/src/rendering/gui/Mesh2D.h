@@ -4,7 +4,7 @@
 #include "glm/glm.hpp"
 #include "ShapeData.h"
 
-namespace Engine {
+namespace Atlas {
 	class Mesh2D {
 	private:
 		glm::vec2 translation;

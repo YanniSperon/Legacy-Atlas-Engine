@@ -1,6 +1,6 @@
 #include "BoundingSphere.h"
 
-namespace Engine {
+namespace Atlas {
 	BoundingSphere::BoundingSphere()
 		: center(0.0f, 0.0f, 0.0f), radius(1.0f)
 	{

@@ -2,7 +2,7 @@
 #include "Config.h"
 #include "glm/gtc/matrix_transform.hpp"
 
-namespace Engine {
+namespace Atlas {
 	Camera::Camera()
 		: hasControls(false), movementSpeed(0.1f), viewDirection(0.0f, 0.0f, -1.0f), upDirection(0.0f, 1.0f, 0.0f), cameraTranslation(0.0f, 0.0f, 0.0f), oldMouseX(0.0), oldMouseY(0.0), mouseSensitivity(0.0f)
 	{

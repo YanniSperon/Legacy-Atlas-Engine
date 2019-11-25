@@ -3,7 +3,7 @@
 #include "GLFW/glfw3.h"
 #include "stb_image/stb_image.h"
 
-namespace Engine {
+namespace Atlas {
 
 	GLuint Loader::LoadTexture(const std::string texDir, const std::string texName, GLint textureWrapS, GLint textureWrapT, GLint textureMinFilter, GLint textureMaxFilter)
 	{

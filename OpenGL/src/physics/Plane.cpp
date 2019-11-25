@@ -1,6 +1,6 @@
 #include "Plane.h"
 
-namespace Engine {
+namespace Atlas {
 	Plane::Plane()
 		: normal(0.0f, 0.0f, 0.0f), distance(0.0f)
 	{

@@ -4,7 +4,7 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "stb_image/stb_image.h"
 
-namespace Engine {
+namespace Atlas {
 
 	Object::Object()
 		: Mesh(), vertexBufferID(0), indexBufferID(0), numIndices(0), texID(0), shaderID(0), material(), glInitialized(false), hasLighting(true)

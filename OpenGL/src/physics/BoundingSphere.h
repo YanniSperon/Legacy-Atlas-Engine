@@ -2,7 +2,7 @@
 #include "glm/glm.hpp"
 #include "IntersectData.h"
 
-namespace Engine {
+namespace Atlas {
 	class BoundingSphere {
 	private:
 		const glm::vec3 center;

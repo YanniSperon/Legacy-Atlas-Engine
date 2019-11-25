@@ -2,7 +2,7 @@
 
 #include "Font.h"
 
-namespace Engine {
+namespace Atlas {
 
 	class Sentence {
 	private:

@@ -2,13 +2,13 @@
 #include "Object.h"
 #include "glm/glm.hpp"
 
-namespace Engine {
+namespace Atlas {
 	struct Position {
 		glm::vec3 translation, rotation, scale, linearVel, force, angularVel, torque, gravitationalForce;
 		float mass, momentOfInertia;
 	};
 
-	class PhysicsBody : public Engine::Object {
+	class PhysicsBody : public Atlas::Object {
 	private:
 		float mass;
 		glm::vec3 gravitationalForce;

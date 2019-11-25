@@ -4,7 +4,7 @@
 #include "primitives/ShapeData.h"
 #include "Shader.h"
 
-namespace Engine {
+namespace Atlas {
 
 	struct Material {
 		glm::vec3 ambient, diffuse, specular;

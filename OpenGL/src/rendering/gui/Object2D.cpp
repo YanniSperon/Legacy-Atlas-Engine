@@ -1,7 +1,7 @@
 #include "Object2D.h"
 #include "System.h"
 
-namespace Engine {
+namespace Atlas {
 	Object2D::Object2D()
 		: Mesh2D(), vertexBufferID(0), indexBufferID(0), numIndices(0), texID(0), shaderID(0)
 	{

@@ -1,6 +1,6 @@
 #include "IntersectData.h"
 
-namespace Engine {
+namespace Atlas {
 	IntersectData::IntersectData()
 		: doesIntersect(false), distance(0.0f)
 	{

@@ -10,7 +10,7 @@
 #include <chrono>
 #include <System.h>
 
-namespace Engine {
+namespace Atlas {
 
 	static std::mutex meshLoaderMutex;
 

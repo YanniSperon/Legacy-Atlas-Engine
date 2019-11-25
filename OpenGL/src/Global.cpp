@@ -1,6 +1,6 @@
 #include "Global.h"
 
-namespace Engine {
+namespace Atlas {
 	namespace Global {
 		GlobalVariables Variables = GlobalVariables();
 	}

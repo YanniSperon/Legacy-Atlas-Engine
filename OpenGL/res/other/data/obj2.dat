@@ -9,8 +9,8 @@ rotation.y: 0
 rotation.z: 0
 scale.x: 1
 scale.y: 1.76608
-scale.z: 1.09769
-texture: 5
+scale.z: 6.46835
+texture: 3
 shader: 1
 ambient.r: 1
 ambient.g: 1

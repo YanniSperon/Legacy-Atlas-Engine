@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Engine {
+namespace Atlas {
 
 	struct KeyboardInput {
 		bool aPressed;
@@ -405,6 +405,14 @@ namespace Engine {
 		bool rightHeld;
 		bool rightReleased;
 
+		bool middleClicked;
+		bool middleHeld;
+		bool middleReleased;
+
+		bool mb4Clicked;
+		bool mb4Held;
+		bool mb4Released;
+
 		double mouseXPos;
 		double mouseYPos;
 
@@ -416,6 +424,14 @@ namespace Engine {
 			rightClicked = false;
 			rightHeld = false;
 			rightReleased = false;
+
+			middleClicked = false;
+			middleHeld = false;
+			middleReleased = false;
+
+			mb4Clicked = false;
+			mb4Held = false;
+			mb4Released = false;
 
 			mouseXPos = 0.0;
 			mouseYPos = 0.0;

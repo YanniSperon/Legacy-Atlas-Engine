@@ -3,7 +3,7 @@
 #include "glm/glm.hpp"
 #include "Mesh.h"
 
-namespace Engine {
+namespace Atlas {
 
 	class Camera {
 	public:

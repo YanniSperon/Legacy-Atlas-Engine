@@ -1,7 +1,7 @@
 #pragma once
 #include "glm/glm.hpp"
 
-namespace Engine {
+namespace Atlas {
 	struct Vertex {
 		glm::vec3 position;
 		glm::vec2 texCoord;

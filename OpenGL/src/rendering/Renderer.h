@@ -10,7 +10,7 @@
 #include "Sentence.h"
 #include "Light.h"
 
-namespace Engine {
+namespace Atlas {
 
 	class Renderer {
 	public:

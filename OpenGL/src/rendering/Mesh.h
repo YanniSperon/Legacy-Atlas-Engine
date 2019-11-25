@@ -4,7 +4,7 @@
 #include "primitives/ShapeData.h"
 #include <string>
 
-namespace Engine {
+namespace Atlas {
 
 	enum type
 	{

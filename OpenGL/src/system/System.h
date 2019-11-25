@@ -1,7 +1,8 @@
 #pragma once
 #include <string>
+#include <vector>
 
-namespace Engine {
+namespace Atlas {
 	class System {
 	public:
 		static void Log(std::string text);

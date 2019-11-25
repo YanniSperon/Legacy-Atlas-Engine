@@ -4,7 +4,7 @@
 #include <string>
 #include <sstream>
 
-namespace Engine {
+namespace Atlas {
 
 	Shader::Shader()
 	{

@@ -1,6 +1,6 @@
 #include "AABBCollidable.h"
 
-namespace Engine {
+namespace Atlas {
 	AABBCollidable::AABBCollidable()
 		: AxisAlignedBoundingBox(), PhysicsBody()
 	{

@@ -54,7 +54,9 @@ extern "C"
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw_gl3.h"
 
-using namespace Engine;
+
+
+using namespace Atlas;
 
 
 
@@ -126,8 +128,6 @@ int main(void)
 		}
 		glfwSetCursorPosCallback(window, Callbacks::cursorPositionCallback);
 		glfwSetFramebufferSizeCallback(window, Callbacks::framebufferSizeCallback);
-		glfwSetMouseButtonCallback(window, InputHandler::MouseButtonCallback);
-		glfwSetKeyCallback(window, InputHandler::KeyCallback);
 
 		/////////////////////////////////////////////////////////////////////////////////////////////////////
 		//const char* attackSFXFilename = "res/audio/sfx/attack.wav";
@@ -155,6 +155,10 @@ int main(void)
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_FRONT);
 		glFrontFace(GL_CW);
+
+		bool EnableDebug = true;
+		bool EnableSpawnMenu = true;
+		bool EnableConsole = true;
 
 		SimpleRenderer renderer;
 
@@ -239,7 +243,10 @@ int main(void)
 		LevelEditor::EditorType currentEditorType(LevelEditor::scene);
 
 		ImGui::CreateContext();
-		ImGui_ImplGlfwGL3_Init(window, false);
+
+		ImGuiIO& io = ImGui::GetIO(); (void)io;
+
+		ImGui_ImplGlfwGL3_Init(window, true);
 		ImGui::StyleColorsDark();
 
 		glm::vec3 camPos(0.0f, 0.0f, 0.0f);
@@ -252,12 +259,8 @@ int main(void)
 		double deltaT = 0, nowTime = 0;
 		engine->setSoundVolume(1);
 
-		
-
 		GLuint selectedObject = objectsOnScene.size() - 1;
-		GLuint selectedObjectTexture = 0;// Search::LinearSearchVector(textures, objectsOnScene[selectedObject]->GetTextureID());
-
-
+		GLuint selectedObjectTexture = 0;
 
 		while (!glfwWindowShouldClose(window))
 		{
@@ -267,6 +270,7 @@ int main(void)
 			lastTime = nowTime;
 			///////////////////////////////////////////////////////////////////////////
 			glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+
 			ImGui_ImplGlfwGL3_NewFrame();
 			///////////////////////////////////////////////////////////////////////////
 			InputHandler::ProcessEvents(&Global::Variables.keyIn, &Global::Variables.mouseIn);
@@ -276,20 +280,11 @@ int main(void)
 			if ((Global::Variables.keyIn.leftControlHeld && Global::Variables.keyIn.fHeld) || (Global::Variables.keyIn.leftControlPressed && Global::Variables.keyIn.fPressed)) {
 				glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0, 0, Global::Variables.currentWidth, Global::Variables.currentHeight, GLFW_DONT_CARE);
 			}
-
-			if ((Global::Variables.keyIn.leftControlHeld && Global::Variables.keyIn.qHeld) || (Global::Variables.keyIn.leftControlPressed && Global::Variables.keyIn.qPressed)) {
+			else if ((Global::Variables.keyIn.leftControlHeld && Global::Variables.keyIn.qHeld) || (Global::Variables.keyIn.leftControlPressed && Global::Variables.keyIn.qPressed)) {
 				glfwSetWindowShouldClose(window, GLFW_TRUE);
 			}
-			if ((Global::Variables.keyIn.leftControlHeld && Global::Variables.keyIn.sHeld) || (Global::Variables.keyIn.leftControlPressed && Global::Variables.keyIn.sPressed)) {
+			else if ((Global::Variables.keyIn.leftControlHeld && Global::Variables.keyIn.sHeld) || (Global::Variables.keyIn.leftControlPressed && Global::Variables.keyIn.sPressed)) {
 				IO::SaveToFile(objectsOnScene, "res/other/", "level.lvl");
-			}
-			///////////////////////////////////////////////////////////////////////////
-			if (Global::Variables.isPaused) {
-				editorEnabled = false;
-				currentMode = LevelEditor::Mode::cam;
-			}
-			else {
-				editorEnabled = true;
 			}
 			///////////////////////////////////////////////////////////////////////////
 			if (editorEnabled) {
@@ -441,10 +436,10 @@ int main(void)
 						if (objectsOnScene.size() > 0) {
 							delete objectsOnScene[selectedObject];
 							objectsOnScene.erase(objectsOnScene.begin() + selectedObject);
-							if (selectedObject > 0) {
-								selectedObject--;
-							}
-							if (objectsOnScene.size() >= 0) {
+
+							selectedObject--;
+
+							if (objectsOnScene.size() > 0) {
 								selectedObjectTexture = Search::LinearSearchVector(textures, objectsOnScene[selectedObject]->GetTextureID());
 							}
 							else {
@@ -575,16 +570,72 @@ int main(void)
 			///////////////////////////////////////////////////////////////////////////
 			renderer.SimpleFlush(&Global::Variables.camera, Global::Variables.currentWidth, Global::Variables.currentHeight, Global::Variables.FOV, light);
 			///////////////////////////////////////////////////////////////////////////
-			InputHandler::Flush(&Global::Variables.keyIn, &Global::Variables.mouseIn);
-			///////////////////////////////////////////////////////////////////////////
+			if (Global::Variables.mouseIn.middleClicked) {
+				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+				Global::Variables.enableMouseMove = false;
+			}
+			if (Global::Variables.mouseIn.middleReleased) {
+				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+				Global::Variables.enableMouseMove = true;
+			}
+
 			{
+				ImGui::Begin("File");
+				ImGui::Checkbox("Enable Debug", &EnableDebug);
+				ImGui::Checkbox("Enable Spawn Menu", &EnableSpawnMenu);
+				ImGui::Separator();
+				if (ImGui::Button("Save")) {
+					IO::SaveToFile(objectsOnScene, "res/other/", "level.lvl");
+				}
+				if (ImGui::Button("Close")) {
+					glfwSetWindowShouldClose(window, GLFW_TRUE);
+				}
+				ImGui::End();
+			}
+
+			if (EnableDebug) {
+				ImGui::Begin("Debug");
 				ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+				ImGui::Checkbox("Enable Console", &EnableConsole);
+				ImGui::End();
+			}
+
+			if (EnableSpawnMenu) {
+				static char InputString[128] = "res/models/";
+				static glm::vec3 InputRotation = glm::vec3(0.0f, 0.0f, 0.0f);
+				static glm::vec3 InputTranslation = glm::vec3(0.0f, 0.0f, 0.0f);
+				static glm::vec3 InputScale = glm::vec3(0.0f, 0.0f, 0.0f);
+				static int InputTexture = 0;
+				ImGui::Begin("Spawn Menu");
+				ImGui::InputText("Model Path", InputString, IM_ARRAYSIZE(InputString));
+				ImGui::Separator();
+				ImGui::InputFloat3("Rotation", &InputRotation[0]);
+				ImGui::InputFloat3("Translation", &InputTranslation[0]);
+				ImGui::InputFloat3("Scale", &InputScale[0]);
+				ImGui::Separator();
+				ImGui::InputInt("Texture", &InputTexture);
+				ImGui::Separator();
+				if (ImGui::Button("Spawn")) {
+					printf("Spawning\n");
+				}
+				ImGui::End();
+			}
+
+			if (EnableConsole) {
+				ImGui::Begin("Console");
+				ImGui::TextColored(ImVec4(1, 1, 0, 1), "Console");
+				ImGui::BeginChild("Log");
+				
+				ImGui::EndChild();
+				ImGui::End();
 			}
 			///////////////////////////////////////////////////////////////////////////
 			ImGui::Render();
 			ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
-			glfwSwapBuffers(window);
 			glfwPollEvents();
+			glfwSwapBuffers(window);
+			///////////////////////////////////////////////////////////////////////////
+			InputHandler::Flush(&Global::Variables.keyIn, &Global::Variables.mouseIn);
 			///////////////////////////////////////////////////////////////////////////
 		}
 		IO::SaveToFile(objectsOnScene, "res/other/", "level.lvl");

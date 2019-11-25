@@ -3,7 +3,7 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtx/euler_angles.hpp"
 
-namespace Engine {
+namespace Atlas {
 	Mesh2D::Mesh2D()
 		: rotation(0.0f), translation(0.0f, 0.0f), scale(0.0f, 0.0f), minExtents(0.0f, 0.0f), maxExtents(0.0f, 0.0f), minTexCoords(0.0f, 0.0f), maxTexCoords(1.0f, 1.0f)
 	{

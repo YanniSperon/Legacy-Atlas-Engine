@@ -6,7 +6,7 @@
 #include "Object2D.h"
 #include "Sentence.h"
 
-namespace Engine {
+namespace Atlas {
 
 	class IO {
 	public:

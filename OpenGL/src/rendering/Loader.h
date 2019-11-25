@@ -4,7 +4,7 @@
 #include "glm/glm.hpp"
 #include <string>
 
-namespace Engine {
+namespace Atlas {
 
 	struct TexCoords {
 		glm::vec2 min;
