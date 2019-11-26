@@ -33,5 +33,7 @@ namespace Atlas {
 		enableMouseClick = true;
 		enableMouseMove = true;
 		enableKeyboard = true;
+
+		consoleLog = std::vector<std::string>();
 	}
 }

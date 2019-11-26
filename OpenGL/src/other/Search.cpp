@@ -7,5 +7,5 @@ GLuint Search::LinearSearchVector(std::vector<GLuint>& vec, GLuint value)
 			return i;
 		}
 	}
-	return -1;
+	return 0;
 }

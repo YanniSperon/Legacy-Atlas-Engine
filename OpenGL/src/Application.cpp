@@ -66,6 +66,8 @@ int main(void)
 		return -1;
 	}
 
+	glfwWindowHint(GLFW_DECORATED, false);
+
 	if (Global::Variables.fullscreen) {
 		window = glfwCreateWindow(Global::Variables.initialWidth, Global::Variables.initialHeight, "Atlas", glfwGetPrimaryMonitor(), NULL);
 	}
@@ -109,14 +111,19 @@ int main(void)
 		vr_pointer = VR_Init(&eError, vr::VRApplication_Scene); // VRApplication_Background OR VRApplication_Scene OR VRApplication_Overlay OR VRApplication_Utility
 		if (eError != vr::VRInitError_None)
 		{
-			Global::Variables.hasVR = false;
 			vr_pointer = NULL;
 			std::string error = VR_GetVRInitErrorAsEnglishDescription(eError);
 			System::Err("Unable to init VR runtime: \"" + error + "\"");
 		}
 	}
 
-	printf("Vendor: %s\nModel: %s\nVersion: %s\n", glGetString(GL_VENDOR), glGetString(GL_RENDERER), glGetString(GL_VERSION));
+	for (int i = 0; i < 10; i++) {
+		Global::Variables.consoleLog.push_back("");
+	}
+	
+	System::Log("Vendor: " + std::string((char*)glGetString(GL_VENDOR)));
+	System::Log("Model: " + std::string((char*)glGetString(GL_RENDERER)));
+	System::Log("Version: " + std::string((char*)glGetString(GL_VERSION)));
 
 	{
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -149,7 +156,7 @@ int main(void)
 		glEnable(GL_BLEND);
 		glBlendEquation(GL_FUNC_ADD);
 		glEnable(GL_DEPTH_TEST);
-		
+
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_FRONT);
 		glFrontFace(GL_CW);
@@ -157,6 +164,21 @@ int main(void)
 		bool EnableDebug = true;
 		bool EnableSpawnMenu = true;
 		bool EnableConsole = true;
+		bool EnableInfoPage = true;
+		bool ShouldToggleVSync = false;
+		bool GUIEnabled = true;
+
+		bool InputModelHasTexture = false;
+		char InputStringDirectory[128] = "res/models/";
+		char InputStringName[128] = "";
+		glm::vec3 InputRotation = glm::vec3(0.0f, 0.0f, 0.0f);
+		glm::vec3 InputTranslation = glm::vec3(0.0f, 0.0f, 0.0f);
+		glm::vec3 InputScale = glm::vec3(1.0f, 1.0f, 1.0f);
+		glm::vec3 InputAmbient = glm::vec3(0.5f, 0.5f, 0.5f);
+		glm::vec3 InputDiffuse = glm::vec3(0.5f, 0.5f, 0.5f);
+		glm::vec3 InputSpecular = glm::vec3(0.5f, 0.5f, 0.5f);
+		int InputShininess = 32;
+		int InputTexture = 0;
 
 		SimpleRenderer renderer;
 
@@ -206,7 +228,6 @@ int main(void)
 		std::vector<Object*> objectsOnScene;
 		std::vector<Object*> preloadedObjectsOnScene;
 
-		Object2D pausemenu = Object2D(glm::vec2(0.0f, 0.0f), glm::vec2(1920.0f, 1080.0f), 0.0f, glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f), pauseMenuTex, shader2D.GetShaderID(), glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f));
 		LevelEditor::Mode currentMode(LevelEditor::cam);
 
 		Font arial24pt = Font("res/fonts/arial/", "arial.ttf", 24);
@@ -214,18 +235,13 @@ int main(void)
 
 		preloadedObjectsOnScene.push_back(new Object(glm::vec3(-50.0f, -50.0f, -50.0f), glm::vec3(50.0f, 50.0f, 50.0f), type::skyBox, "", "", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), skyboxTex, basic.GetShaderID(), true, false));
 		preloadedObjectsOnScene.push_back(new Object(glm::vec3(-5.0f, -5.0f, -5.0f), glm::vec3(5.0f, 5.0f, 5.0f), type::blankModel, "res/models/", "plane.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -3.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), whiteTex, shader.GetShaderID(), Material(glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(0.5f, 0.5f, 0.5f), 32.0f), true, true));
-		
-
 
 		bool loadFile = true;
 		if (loadFile) {
-			//IO::LoadFile(gui, "res/other/", "gui.gui");
 			IO::LoadFile(objectsOnScene, "res/other/", "level.lvl");
 		}
 
-
-
-		Light* light = new Light(LightIntensity(glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(1.0f, 1.0f, 1.0f)), glm::vec3(-0.1f, -0.1f, -0.1f), glm::vec3(0.1f, 0.1f, 0.1f), type::cubeInvertedLighting, "", "", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 5.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), yellowTex, shader.GetShaderID(), Material(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), 32.0f), true, true);
+		Light* light = new Light(LightIntensity(glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(1.0f, 1.0f, 1.0f)), glm::vec3(-0.1f, -0.1f, -0.1f), glm::vec3(0.1f, 0.1f, 0.1f), type::cubeInvertedLighting, "", "", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 5.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), yellowTex, shader.GetShaderID(), Material(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), 32.0f), true, false);
 
 		//GLuint leftEyeFrameBuffer;
 		//glGenFramebuffers(1, &leftEyeFrameBuffer);
@@ -250,25 +266,33 @@ int main(void)
 		glm::vec3 camPos(0.0f, 0.0f, 0.0f);
 		glfwSetCursorPos(window, 0.0, 0.0);
 
-		bool editorEnabled = true;
+		bool EditorEnabled = true;
 
 		float timeConstant = 1.0f;
 		double lastTime = glfwGetTime();
 		double deltaT = 0, nowTime = 0;
 		engine->setSoundVolume(1);
 
-		GLuint selectedObject = objectsOnScene.size() - 1;
+		GLuint selectedObject;
+		if (objectsOnScene.size() > 0) {
+			selectedObject = objectsOnScene.size() - 1;
+		}
+		else {
+			selectedObject = 0;
+		}
 		GLuint selectedObjectTexture = 0;
 
 		while (!glfwWindowShouldClose(window))
 		{
+			///////////////////////////////////////////////////////////////////////////
+			glfwPollEvents();
 			///////////////////////////////////////////////////////////////////////////
 			nowTime = glfwGetTime();
 			deltaT = (nowTime - lastTime);
 			lastTime = nowTime;
 			///////////////////////////////////////////////////////////////////////////
 			glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-
+			///////////////////////////////////////////////////////////////////////////
 			ImGui_ImplGlfwGL3_NewFrame();
 			///////////////////////////////////////////////////////////////////////////
 			InputHandler::ProcessEvents(&Global::Variables.keyIn, &Global::Variables.mouseIn);
@@ -277,6 +301,7 @@ int main(void)
 			///////////////////////////////////////////////////////////////////////////
 			if ((Global::Variables.keyIn.leftControlHeld && Global::Variables.keyIn.fHeld) || (Global::Variables.keyIn.leftControlPressed && Global::Variables.keyIn.fPressed)) {
 				glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0, 0, Global::Variables.currentWidth, Global::Variables.currentHeight, GLFW_DONT_CARE);
+				//glfwSetWindowMonitor(window, NULL, 0, 0, Global::Variables.currentWidth, Global::Variables.currentHeight, GLFW_DONT_CARE);
 			}
 			else if ((Global::Variables.keyIn.leftControlHeld && Global::Variables.keyIn.qHeld) || (Global::Variables.keyIn.leftControlPressed && Global::Variables.keyIn.qPressed)) {
 				glfwSetWindowShouldClose(window, GLFW_TRUE);
@@ -285,16 +310,15 @@ int main(void)
 				IO::SaveToFile(objectsOnScene, "res/other/", "level.lvl");
 			}
 			///////////////////////////////////////////////////////////////////////////
-			if (editorEnabled) {
+			if (EditorEnabled) {
 				if (Global::Variables.keyIn.onePressed) {
 					currentEditorType = LevelEditor::EditorType::scene;
 				}
-				else if (Global::Variables.keyIn.twoPressed) {
-					currentEditorType = LevelEditor::EditorType::text;
-				}
-				else if (Global::Variables.keyIn.threePressed) {
+
+				if (Global::Variables.keyIn.twoPressed) {
 					currentEditorType = LevelEditor::EditorType::light;
 				}
+
 				if ((objectsOnScene.size() > 0 && currentEditorType == LevelEditor::EditorType::scene) || (currentEditorType == LevelEditor::EditorType::light)) {
 					if (Global::Variables.keyIn.cPressed) {
 						currentMode = LevelEditor::Mode::cam;
@@ -416,26 +440,33 @@ int main(void)
 					if (Global::Variables.keyIn.leftBracketPressed) {
 						if (selectedObject > 0) {
 							selectedObject--;
-							selectedObjectTexture = Search::LinearSearchVector(textures, objectsOnScene[selectedObject]->GetTextureID());
+							selectedObjectTexture = Search::LinearSearchVector(textures, objectsOnScene[selectedObject]->GetTextureID());;
 						}
 					}
 					if (Global::Variables.keyIn.rightBracketPressed) {
-						if (selectedObject < objectsOnScene.size() - 2) {
+						if (selectedObject < objectsOnScene.size() - 1) {
 							selectedObject++;
-							selectedObjectTexture = Search::LinearSearchVector(textures, objectsOnScene[selectedObject]->GetTextureID());
+							selectedObjectTexture = Search::LinearSearchVector(textures, objectsOnScene[selectedObject]->GetTextureID());;
 						}
 					}
 					if (Global::Variables.keyIn.nPressed) {
+						System::Log("Object created!");
 						objectsOnScene.push_back(new AABBCollidable(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), type::cubeModel, "", "", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), sphereCowTex, shader.GetShaderID(), Material(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), 32.0f), 1.0f, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), 1.0f, glm::vec3(0.0f, 0.0f, 0.0f), true, true));
 						selectedObject = objectsOnScene.size() - 1;
-						selectedObjectTexture = 0;
+						selectedObjectTexture = Search::LinearSearchVector(textures, sphereCowTex);;
 					}
 					if (Global::Variables.keyIn.backspacePressed) {
 						if (objectsOnScene.size() > 0) {
+							System::Log("Object deleted!");
 							delete objectsOnScene[selectedObject];
 							objectsOnScene.erase(objectsOnScene.begin() + selectedObject);
 
-							selectedObject--;
+							if (selectedObject > 0) {
+								selectedObject--;
+							}
+							else {
+								selectedObject = 0;
+							}
 
 							if (objectsOnScene.size() > 0) {
 								selectedObjectTexture = Search::LinearSearchVector(textures, objectsOnScene[selectedObject]->GetTextureID());
@@ -468,22 +499,22 @@ int main(void)
 						}
 					}
 					else if (currentMode == LevelEditor::Mode::translate) {
-						if (Global::Variables.keyIn.wPressed) {
+						if (Global::Variables.keyIn.wHeld) {
 							light->TranslateAdd3f(0.0f, 0.0f, -Global::Variables.movementSpeed * deltaTime);
 						}
-						if (Global::Variables.keyIn.sPressed) {
+						if (Global::Variables.keyIn.sHeld) {
 							light->TranslateAdd3f(0.0f, 0.0f, Global::Variables.movementSpeed * deltaTime);
 						}
-						if (Global::Variables.keyIn.aPressed) {
+						if (Global::Variables.keyIn.aHeld) {
 							light->TranslateAdd3f(-Global::Variables.movementSpeed * deltaTime, 0.0f, 0.0f);
 						}
-						if (Global::Variables.keyIn.dPressed) {
+						if (Global::Variables.keyIn.dHeld) {
 							light->TranslateAdd3f(Global::Variables.movementSpeed * deltaTime, 0.0f, 0.0f);
 						}
-						if (Global::Variables.keyIn.spacePressed) {
+						if (Global::Variables.keyIn.spaceHeld) {
 							light->TranslateAdd3f(0.0f, Global::Variables.movementSpeed * deltaTime, 0.0f);
 						}
-						if (Global::Variables.keyIn.leftControlPressed) {
+						if (Global::Variables.keyIn.leftControlHeld) {
 							light->TranslateAdd3f(0.0f, -Global::Variables.movementSpeed * deltaTime, 0.0f);
 						}
 					}
@@ -535,7 +566,6 @@ int main(void)
 			Global::Variables.camera.BringWith(preloadedObjectsOnScene[0]);
 			///////////////////////////////////////////////////////////////////////////
 			glm::mat4 viewMatrix = Global::Variables.camera.GetViewTransformMatrix();
-			///////////////////////////////////////////////////////////////////////////
 			for (unsigned int i = 0; i < preloadedObjectsOnScene.size(); i++) {
 				if (i == 0) {
 					renderer.SubmitForceRender3D(preloadedObjectsOnScene[i]);
@@ -544,7 +574,6 @@ int main(void)
 					renderer.Submit3D(preloadedObjectsOnScene[i], camPos);
 				}
 			}
-			///////////////////////////////////////////////////////////////////////////
 			for (unsigned int i = 0; i < objectsOnScene.size(); i++) {
 				renderer.Submit3D(objectsOnScene[i], camPos);
 			}
@@ -568,69 +597,119 @@ int main(void)
 			///////////////////////////////////////////////////////////////////////////
 			renderer.SimpleFlush(&Global::Variables.camera, Global::Variables.currentWidth, Global::Variables.currentHeight, Global::Variables.FOV, light);
 			///////////////////////////////////////////////////////////////////////////
-			if (Global::Variables.keyIn.leftAltPressed) {
-				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-				Global::Variables.enableMouseMove = false;
-			}
-			if (Global::Variables.keyIn.leftAltReleased) {
-				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-				Global::Variables.enableMouseMove = true;
-			}
-
-			{
-				ImGui::Begin("File");
-				ImGui::Checkbox("Enable Debug", &EnableDebug);
-				ImGui::Checkbox("Enable Spawn Menu", &EnableSpawnMenu);
-				ImGui::Separator();
-				if (ImGui::Button("Save")) {
-					IO::SaveToFile(objectsOnScene, "res/other/", "level.lvl");
+			if (GUIEnabled) {
+				if (Global::Variables.keyIn.leftAltPressed) {
+					glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+					Global::Variables.enableMouseMove = false;
 				}
-				if (ImGui::Button("Close")) {
-					glfwSetWindowShouldClose(window, GLFW_TRUE);
+				if (Global::Variables.keyIn.leftAltReleased) {
+					glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+					Global::Variables.enableMouseMove = true;
 				}
-				ImGui::End();
-			}
-
-			if (EnableDebug) {
-				ImGui::Begin("Debug");
-				ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-				ImGui::Checkbox("Enable Console", &EnableConsole);
-				ImGui::End();
-			}
-
-			if (EnableSpawnMenu) {
-				static char InputString[128] = "res/models/";
-				static glm::vec3 InputRotation = glm::vec3(0.0f, 0.0f, 0.0f);
-				static glm::vec3 InputTranslation = glm::vec3(0.0f, 0.0f, 0.0f);
-				static glm::vec3 InputScale = glm::vec3(0.0f, 0.0f, 0.0f);
-				static int InputTexture = 0;
-				ImGui::Begin("Spawn Menu");
-				ImGui::InputText("Model Path", InputString, IM_ARRAYSIZE(InputString));
-				ImGui::Separator();
-				ImGui::InputFloat3("Rotation", &InputRotation[0]);
-				ImGui::InputFloat3("Translation", &InputTranslation[0]);
-				ImGui::InputFloat3("Scale", &InputScale[0]);
-				ImGui::Separator();
-				ImGui::InputInt("Texture", &InputTexture);
-				ImGui::Separator();
-				if (ImGui::Button("Spawn")) {
-					printf("Spawning\n");
+				if (Global::Variables.keyIn.tildePressed) {
+					EnableConsole = !EnableConsole;
 				}
-				ImGui::End();
-			}
+				//if (ShouldToggleVSync) {
+				//	glfwSwapInterval(Global::Variables.VSyncPreference);
+				//}
 
-			if (EnableConsole) {
-				ImGui::Begin("Console");
-				ImGui::TextColored(ImVec4(1, 1, 0, 1), "Console");
-				ImGui::BeginChild("Log");
-				
-				ImGui::EndChild();
-				ImGui::End();
+				{
+					ImGui::Begin("File", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+					ImGui::Checkbox("Enable Debug", &EnableDebug);
+					ImGui::Checkbox("Enable Spawn Menu", &EnableSpawnMenu);
+					ImGui::Checkbox("Enable Info Page", &EnableInfoPage);
+					//ImGui::Separator();
+					//ImGui::Checkbox("Enable VSync", &Global::Variables.VSyncPreference);
+					ImGui::Separator();
+					if (ImGui::Button("Save")) {
+						IO::SaveToFile(objectsOnScene, "res/other/", "level.lvl");
+					}
+					if (ImGui::Button("Close")) {
+						glfwSetWindowShouldClose(window, GLFW_TRUE);
+					}
+					ImGui::End();
+				}
+
+				if (EnableDebug) {
+					ImGui::Begin("Debug", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+					ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+					ImGui::Separator();
+					ImGui::Checkbox("Enable Console", &EnableConsole);
+					ImGui::End();
+				}
+
+				if (EnableSpawnMenu) {
+					ImGui::Begin("Spawn Menu", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+					ImGui::Checkbox("Textured Model", &InputModelHasTexture);
+					ImGui::Separator();
+					ImGui::SliderInt("Texture", &InputTexture, 0, (textures.size() - 1));
+					ImGui::Separator();
+					ImGui::InputText("Model Directory", InputStringDirectory, IM_ARRAYSIZE(InputStringDirectory));
+					ImGui::InputText("Model Name", InputStringName, IM_ARRAYSIZE(InputStringName));
+					ImGui::Separator();
+					ImGui::Text("Position");
+					ImGui::InputFloat3("Rotation", &InputRotation[0]);
+					ImGui::InputFloat3("Translation", &InputTranslation[0]);
+					ImGui::InputFloat3("Scale", &InputScale[0]);
+					ImGui::Separator();
+					ImGui::Text("Lighting");
+					ImGui::InputFloat3("Ambient", &InputAmbient[0]);
+					ImGui::InputFloat3("Diffuse", &InputDiffuse[0]);
+					ImGui::InputFloat3("Specular", &InputSpecular[0]);
+					ImGui::SliderInt("Shininess", &InputShininess, 0, 512);
+					ImGui::Separator();
+					if (ImGui::Button("Spawn")) {
+						System::Log("Spawned object with model \"" + std::string(InputStringDirectory) + std::string(InputStringName) + "\" at (" + std::to_string(InputTranslation.x) + ", " + std::to_string(InputTranslation.y) + ", " + std::to_string(InputTranslation.z) + ")");
+						if (InputModelHasTexture) {
+							objectsOnScene.push_back(new Object(glm::vec3(-5.0f, -5.0f, -5.0f), glm::vec3(5.0f, 5.0f, 5.0f), type::texturedModel, std::string(InputStringDirectory), std::string(InputStringName), InputRotation, InputTranslation, InputScale, textures[InputTexture], shader.GetShaderID(), Material(InputAmbient, InputDiffuse, InputSpecular, ((float)InputShininess)), true, true));
+						}
+						else {
+							objectsOnScene.push_back(new Object(glm::vec3(-5.0f, -5.0f, -5.0f), glm::vec3(5.0f, 5.0f, 5.0f), type::blankModel, std::string(InputStringDirectory), std::string(InputStringName), InputRotation, InputTranslation, InputScale, textures[InputTexture], shader.GetShaderID(), Material(InputAmbient, InputDiffuse, InputSpecular, ((float)InputShininess)), true, true));
+						}
+						selectedObject = objectsOnScene.size() - 1;
+						selectedObjectTexture = textures[InputTexture];
+					}
+					ImGui::End();
+				}
+
+				if (EnableInfoPage) {
+					ImGui::Begin("Info", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+					ImGui::Text("Current Editor Type: ");
+					ImGui::SameLine();
+					if (currentEditorType == LevelEditor::EditorType::light) {
+						ImGui::Text("Light");
+					}
+					else if (currentEditorType == LevelEditor::EditorType::scene) {
+						ImGui::Text("Scene");
+					}
+					ImGui::Separator();
+					ImGui::Text("Current Editing Mode: ");
+					ImGui::SameLine();
+					if (currentMode == LevelEditor::Mode::cam) {
+						ImGui::Text("Camera");
+					}
+					else if (currentMode == LevelEditor::Mode::rotate) {
+						ImGui::Text("Rotate");
+					}
+					else if (currentMode == LevelEditor::Mode::scale) {
+						ImGui::Text("Scale");
+					}
+					else if (currentMode == LevelEditor::Mode::texture) {
+						ImGui::Text("Texture");
+					}
+					else if (currentMode == LevelEditor::Mode::translate) {
+						ImGui::Text("Translate");
+					}
+					ImGui::End();
+				}
+
+				if (EnableConsole) {
+					System::DrawConsole();
+				}
 			}
 			///////////////////////////////////////////////////////////////////////////
 			ImGui::Render();
 			ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
-			glfwPollEvents();
 			glfwSwapBuffers(window);
 			///////////////////////////////////////////////////////////////////////////
 			InputHandler::Flush(&Global::Variables.keyIn, &Global::Variables.mouseIn);

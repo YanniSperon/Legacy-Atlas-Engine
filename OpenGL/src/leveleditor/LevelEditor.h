@@ -9,7 +9,7 @@ namespace LevelEditor {
 
 	enum EditorType
 	{
-		text, overlay, scene, light
+		scene, light
 	};
 
 	struct Texture

@@ -4,12 +4,15 @@
 #include "Camera.h"
 #include "Input.h"
 #include <chrono>
+#include <vector>
 
 namespace Atlas {
 
 	class GlobalVariables {
 	public:
 		GlobalVariables();
+		
+		std::vector<std::string> consoleLog;
 
 		std::chrono::steady_clock::time_point systemStartTime;
 
