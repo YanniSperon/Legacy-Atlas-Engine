@@ -32,12 +32,16 @@ namespace Atlas {
 		GLsizei numIndices;
 		Material material;
 		bool glInitialized;
+		std::string textureDirectory;
+		std::string textureName;
+		std::string shaderDirectory;
+		std::string shaderName;
 		bool hasLighting;
 	public:
 		Object();
-		Object(glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string dir, std::string name, GLuint tex, GLuint shader, bool glInit, bool lighting);
-		Object(glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string dir, std::string name, glm::vec3 rot, glm::vec3 trans, glm::vec3 s, GLuint tex, GLuint shader, bool glInit, bool lighting);
-		Object(glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string dir, std::string name, glm::vec3 rot, glm::vec3 trans, glm::vec3 s, GLuint tex, GLuint shader, Material mat, bool glInit, bool lighting);
+		Object(glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderFileName, bool glInit, bool lighting);
+		Object(glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderFileName, bool glInit, bool lighting, glm::vec3 rot, glm::vec3 trans, glm::vec3 s);
+		Object(glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderFileName, bool glInit, bool lighting, glm::vec3 rot, glm::vec3 trans, glm::vec3 s, Material mat);
 		virtual ~Object();
 
 		void GLInit();
@@ -48,12 +52,16 @@ namespace Atlas {
 		void SetShader(GLuint id);
 		void SetTexture(GLuint tex);
 		void SetMaterial(Material mat);
-		void SetLighting(bool newValue);
 		GLuint GetShaderID();
 		GLuint GetTextureID();
+		std::string GetTextureDirectory();
+		std::string GetTextureName();
+		std::string GetShaderDirectory();
+		std::string GetShaderName();
 		Material GetMaterial();
-		bool GetHasLighting();
 		bool GetGLInitialized();
+		bool GetHasLighting();
+		void SetHasLighting(bool newValue);
 
 		virtual std::string GetType() override;
 	};

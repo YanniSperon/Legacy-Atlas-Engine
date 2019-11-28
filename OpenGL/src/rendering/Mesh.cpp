@@ -2,12 +2,11 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtx/euler_angles.hpp"
 #include "primitives/ShapeGenerator.h"
+#include "Global.h"
 #include <iostream>
 #include <unordered_map>
 
 namespace Atlas {
-
-	static std::unordered_map<std::string, ShapeData> meshCache;
 
 	Mesh::Mesh()
 		: directory(""), fileName("Error"), rotation(0.0f, 0.0f, 0.0f), translation(0.0f, 0.0f, 0.0f), shape(), minExtents(0.0f, 0.0f, 0.0f), maxExtents(0.0f, 0.0f, 0.0f), scale(1.0f, 1.0f, 1.0f), objectType(type::cubeModel)
@@ -19,57 +18,59 @@ namespace Atlas {
 		: directory(dir), fileName(name), rotation(0.0f, 0.0f, 0.0f), translation(0.0f, 0.0f, 0.0f), minExtents(min), maxExtents(max), scale(1.0f, 1.0f, 1.0f), objectType(type)
 	{
 		if (type == type::cubeModel) {
-			if (meshCache.find("default::type::cube") != meshCache.end()) {
-				shape = meshCache["default::type::cube"];
+			if (Global::Variables.meshCache.find("default::type::cube") != Global::Variables.meshCache.end()) {
+				shape = Global::Variables.meshCache["default::type::cube"];
 			}
 			else {
-				meshCache["default::type::cube"] = ShapeGenerator::makeCube(minExtents, maxExtents);
-				shape = meshCache["default::type::cube"];
+				Global::Variables.meshCache["default::type::cube"] = ShapeGenerator::makeCube(minExtents, maxExtents);
+				shape = Global::Variables.meshCache["default::type::cube"];
 			}
 		}
-		else if (type == type::blankModel) {
-			if (meshCache.find(dir + fileName) != meshCache.end()) {
-				shape = meshCache[dir + fileName];
+		else if (type == type::normalModel) {
+			try {
+				if (Global::Variables.meshCache.find(dir + fileName) != Global::Variables.meshCache.end()) {
+					shape = Global::Variables.meshCache[dir + fileName];
+				}
+				else {
+					Global::Variables.meshCache[dir + fileName] = ShapeGenerator::loadShape(dir + name, minExtents, maxExtents);
+					shape = Global::Variables.meshCache[dir + fileName];
+				}
 			}
-			else {
-				meshCache[dir + fileName] = ShapeGenerator::loadShape(dir + name, minExtents, maxExtents);
-				shape = meshCache[dir + fileName];
-			}
-		}
-		else if (type == type::texturedModel) {
-			if (meshCache.find(dir + fileName) != meshCache.end()) {
-				shape = meshCache[dir + fileName];
-			}
-			else {
-				meshCache[dir + fileName] = ShapeGenerator::loadTexturedShape(dir, name, minExtents, maxExtents);
-				shape = meshCache[dir + fileName];
+			catch (const std::exception & e) {
+				if (Global::Variables.meshCache.find(dir + fileName) != Global::Variables.meshCache.end()) {
+					shape = Global::Variables.meshCache[dir + fileName];
+				}
+				else {
+					Global::Variables.meshCache[dir + fileName] = ShapeGenerator::loadTexturedShape(dir, name, minExtents, maxExtents);
+					shape = Global::Variables.meshCache[dir + fileName];
+				}
 			}
 		}
 		else if (type == type::skyBox) {
-			if (meshCache.find("default::type::skyBox") != meshCache.end()) {
-				shape = meshCache["default::type::skyBox"];
+			if (Global::Variables.meshCache.find("default::type::skyBox") != Global::Variables.meshCache.end()) {
+				shape = Global::Variables.meshCache["default::type::skyBox"];
 			}
 			else {
-				meshCache["default::type::skyBox"] = ShapeGenerator::makeSkybox(minExtents, maxExtents);
-				shape = meshCache["default::type::skyBox"];
+				Global::Variables.meshCache["default::type::skyBox"] = ShapeGenerator::makeSkybox(minExtents, maxExtents);
+				shape = Global::Variables.meshCache["default::type::skyBox"];
 			}
 		}
 		else if (type == type::cubeInvertedLighting) {
-			if (meshCache.find("default::type::cubeInvertedLighting") != meshCache.end()) {
-				shape = meshCache["default::type::cubeInvertedLighting"];
+			if (Global::Variables.meshCache.find("default::type::cubeInvertedLighting") != Global::Variables.meshCache.end()) {
+				shape = Global::Variables.meshCache["default::type::cubeInvertedLighting"];
 			}
 			else {
-				meshCache["default::type::cubeInvertedLighting"] = ShapeGenerator::makeInvertedLightingCube(minExtents, maxExtents);
-				shape = meshCache["default::type::cubeInvertedLighting"];
+				Global::Variables.meshCache["default::type::cubeInvertedLighting"] = ShapeGenerator::makeInvertedLightingCube(minExtents, maxExtents);
+				shape = Global::Variables.meshCache["default::type::cubeInvertedLighting"];
 			}
 		}
 		else {
-			if (meshCache.find("default::type::triangle") != meshCache.end()) {
-				shape = meshCache["default::type::triangle"];
+			if (Global::Variables.meshCache.find("default::type::triangle") != Global::Variables.meshCache.end()) {
+				shape = Global::Variables.meshCache["default::type::triangle"];
 			}
 			else {
-				meshCache["default::type::triangle"] = ShapeGenerator::makeTriangle(minExtents, maxExtents);
-				shape = meshCache["default::type::triangle"];
+				Global::Variables.meshCache["default::type::triangle"] = ShapeGenerator::makeTriangle(minExtents, maxExtents);
+				shape = Global::Variables.meshCache["default::type::triangle"];
 			}
 		}
 	}
@@ -78,57 +79,59 @@ namespace Atlas {
 		: directory(dir), fileName(name), rotation(rot), translation(trans), minExtents(min), maxExtents(max), scale(s), objectType(type)
 	{
 		if (type == type::cubeModel) {
-			if (meshCache.find("default::type::cube") != meshCache.end()) {
-				shape = meshCache["default::type::cube"];
+			if (Global::Variables.meshCache.find("default::type::cube") != Global::Variables.meshCache.end()) {
+				shape = Global::Variables.meshCache["default::type::cube"];
 			}
 			else {
-				meshCache["default::type::cube"] = ShapeGenerator::makeCube(minExtents, maxExtents);
-				shape = meshCache["default::type::cube"];
+				Global::Variables.meshCache["default::type::cube"] = ShapeGenerator::makeCube(minExtents, maxExtents);
+				shape = Global::Variables.meshCache["default::type::cube"];
 			}
 		}
-		else if (type == type::blankModel) {
-			if (meshCache.find(dir + fileName) != meshCache.end()) {
-				shape = meshCache[dir + fileName];
+		else if (type == type::normalModel) {
+			try {
+				if (Global::Variables.meshCache.find(dir + fileName) != Global::Variables.meshCache.end()) {
+					shape = Global::Variables.meshCache[dir + fileName];
+				}
+				else {
+					Global::Variables.meshCache[dir + fileName] = ShapeGenerator::loadShape(dir + name, minExtents, maxExtents);
+					shape = Global::Variables.meshCache[dir + fileName];
+				}
 			}
-			else {
-				meshCache[dir + fileName] = ShapeGenerator::loadShape(dir + name, minExtents, maxExtents);
-				shape = meshCache[dir + fileName];
-			}
-		}
-		else if (type == type::texturedModel) {
-			if (meshCache.find(dir + fileName) != meshCache.end()) {
-				shape = meshCache[dir + fileName];
-			}
-			else {
-				meshCache[dir + fileName] = ShapeGenerator::loadTexturedShape(dir, name, minExtents, maxExtents);
-				shape = meshCache[dir + fileName];
+			catch (const std::exception & e) {
+				if (Global::Variables.meshCache.find(dir + fileName) != Global::Variables.meshCache.end()) {
+					shape = Global::Variables.meshCache[dir + fileName];
+				}
+				else {
+					Global::Variables.meshCache[dir + fileName] = ShapeGenerator::loadTexturedShape(dir, name, minExtents, maxExtents);
+					shape = Global::Variables.meshCache[dir + fileName];
+				}
 			}
 		}
 		else if (type == type::skyBox) {
-			if (meshCache.find("default::type::skyBox") != meshCache.end()) {
-				shape = meshCache["default::type::skyBox"];
+			if (Global::Variables.meshCache.find("default::type::skyBox") != Global::Variables.meshCache.end()) {
+				shape = Global::Variables.meshCache["default::type::skyBox"];
 			}
 			else {
-				meshCache["default::type::skyBox"] = ShapeGenerator::makeSkybox(minExtents, maxExtents);
-				shape = meshCache["default::type::skyBox"];
+				Global::Variables.meshCache["default::type::skyBox"] = ShapeGenerator::makeSkybox(minExtents, maxExtents);
+				shape = Global::Variables.meshCache["default::type::skyBox"];
 			}
 		}
 		else if (type == type::cubeInvertedLighting) {
-			if (meshCache.find("default::type::cubeInvertedLighting") != meshCache.end()) {
-				shape = meshCache["default::type::cubeInvertedLighting"];
+			if (Global::Variables.meshCache.find("default::type::cubeInvertedLighting") != Global::Variables.meshCache.end()) {
+				shape = Global::Variables.meshCache["default::type::cubeInvertedLighting"];
 			}
 			else {
-				meshCache["default::type::cubeInvertedLighting"] = ShapeGenerator::makeInvertedLightingCube(minExtents, maxExtents);
-				shape = meshCache["default::type::cubeInvertedLighting"];
+				Global::Variables.meshCache["default::type::cubeInvertedLighting"] = ShapeGenerator::makeInvertedLightingCube(minExtents, maxExtents);
+				shape = Global::Variables.meshCache["default::type::cubeInvertedLighting"];
 			}
 		}
 		else {
-			if (meshCache.find("default::type::triangle") != meshCache.end()) {
-				shape = meshCache["default::type::triangle"];
+			if (Global::Variables.meshCache.find("default::type::triangle") != Global::Variables.meshCache.end()) {
+				shape = Global::Variables.meshCache["default::type::triangle"];
 			}
 			else {
-				meshCache["default::type::triangle"] = ShapeGenerator::makeTriangle(minExtents, maxExtents);
-				shape = meshCache["default::type::triangle"];
+				Global::Variables.meshCache["default::type::triangle"] = ShapeGenerator::makeTriangle(minExtents, maxExtents);
+				shape = Global::Variables.meshCache["default::type::triangle"];
 			}
 		}
 	}
@@ -332,11 +335,8 @@ namespace Atlas {
 		else if (objectType == type::skyBox) {
 			return "skyBox";
 		}
-		else if (objectType == type::blankModel) {
-			return "blankModel";
-		}
-		else if (objectType == type::texturedModel) {
-			return "texturedModel";
+		else if (objectType == type::normalModel) {
+			return "normalModel";
 		}
 	}
 
@@ -347,9 +347,9 @@ namespace Atlas {
 
 	void Mesh::CleanUpCache()
 	{
-		for (auto it : meshCache) {
+		for (auto it : Global::Variables.meshCache) {
 			it.second.cleanUp();
 		}
-		meshCache.erase(meshCache.begin(), meshCache.end());
+		Global::Variables.meshCache.erase(Global::Variables.meshCache.begin(), Global::Variables.meshCache.end());
 	}
 }

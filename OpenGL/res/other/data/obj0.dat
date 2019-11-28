@@ -1,6 +1,6 @@
 Object: 0
 type: Object
-modelType: blankModel
+modelType: normalModel
 translation.x: 0
 translation.y: 0
 translation.z: 0
@@ -10,7 +10,7 @@ rotation.z: 0
 scale.x: 1
 scale.y: 1
 scale.z: 1
-texture: 2
+texture: 6
 shader: 1
 ambient.r: 0.5
 ambient.g: 0.5
@@ -21,7 +21,7 @@ diffuse.b: 0.5
 specular.r: 0.5
 specular.g: 0.5
 specular.b: 0.5
-shininess: 512
+shininess: 32
 hasLighting: true
 modelFileDir: res/models/
 modelFileName: tank.obj

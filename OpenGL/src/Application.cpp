@@ -169,8 +169,13 @@ int main(void)
 		bool GUIEnabled = true;
 
 		bool InputModelHasTexture = false;
-		char InputStringDirectory[128] = "res/models/";
-		char InputStringName[128] = "";
+		bool InputShaderHasLighting = true;
+		char InputStringMeshDirectory[128] = "res/models/";
+		char InputStringMeshName[128] = "";
+		char InputStringTextureDirectory[128] = "res/images/textures/3d/";
+		char InputStringTextureName[128] = "";
+		char InputStringShaderDirectory[128] = "res/shaders/";
+		char InputStringShaderName[128] = "Lighting.shader";
 		glm::vec3 InputRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 		glm::vec3 InputTranslation = glm::vec3(0.0f, 0.0f, 0.0f);
 		glm::vec3 InputScale = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -182,49 +187,6 @@ int main(void)
 
 		SimpleRenderer renderer;
 
-		Shader shader("res/shaders/Lighting.shader");
-		Shader basic("res/shaders/Basic.shader");
-		Shader glassShader("res/shaders/Window.shader");
-		Shader shader2D("res/shaders/2D.shader");
-		Shader textShader("res/shaders/Text.shader");
-
-		GLuint new4kTex = Loader::LoadTexture("res/images/textures/", "4krgba.png", GL_REPEAT, GL_REPEAT, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
-		GLuint skyboxTex = Loader::LoadTexture("res/images/other/", "skybox.png", GL_REPEAT, GL_REPEAT, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
-
-		GLuint sphereCowTex = Loader::LoadTexture("res/images/other/", "newcow.png", GL_REPEAT, GL_REPEAT, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
-		GLuint wallTex = Loader::LoadTexture("res/images/textures/", "wall.png", GL_REPEAT, GL_REPEAT, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
-		GLuint texture1024 = Loader::LoadTexture("res/images/textures/", "texture1024.png", GL_REPEAT, GL_REPEAT, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
-		GLuint whiteTex = Loader::LoadTexture("res/images/colors/", "white.png", GL_REPEAT, GL_REPEAT, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
-		GLuint whitetransparentTex = Loader::LoadTexture("res/images/colors/", "whitetransparent.png", GL_REPEAT, GL_REPEAT, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
-		GLuint blueTex = Loader::LoadTexture("res/images/colors/", "blue.png", GL_REPEAT, GL_REPEAT, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
-		GLuint redTex = Loader::LoadTexture("res/images/colors/", "red.png", GL_REPEAT, GL_REPEAT, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
-		GLuint greenTex = Loader::LoadTexture("res/images/colors/", "green.png", GL_REPEAT, GL_REPEAT, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
-		GLuint glassTex = Loader::LoadTexture("res/images/colors/", "glass.png", GL_REPEAT, GL_REPEAT, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
-		GLuint yellowTex = Loader::LoadTexture("res/images/colors/", "yellow.png", GL_REPEAT, GL_REPEAT, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
-		GLuint yellowtransparentTex = Loader::LoadTexture("res/images/colors/", "yellowtransparent.png", GL_REPEAT, GL_REPEAT, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
-		GLuint tex2D = Loader::LoadTexture("res/images/2d/", "2D.png", GL_REPEAT, GL_REPEAT, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
-		GLuint pauseMenuTex = Loader::LoadTexture("res/images/menus/", "pausemenu.png", GL_REPEAT, GL_REPEAT, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
-		GLuint boxTex = Loader::LoadTexture("res/images/textures/", "box.png", GL_REPEAT, GL_REPEAT, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
-		TexCoords cursorCoords = Loader::GetTextureCoordinates(0, 15, 1, 16, 16, 16);
-
-		std::vector<GLuint> textures;
-		textures.push_back(sphereCowTex);
-		textures.push_back(wallTex);
-		textures.push_back(whiteTex);
-		textures.push_back(whitetransparentTex);
-		textures.push_back(blueTex);
-		textures.push_back(redTex);
-		textures.push_back(greenTex);
-		textures.push_back(glassTex);
-		textures.push_back(yellowTex);
-		textures.push_back(yellowtransparentTex);
-		textures.push_back(new4kTex);
-		textures.push_back(skyboxTex);
-		textures.push_back(texture1024);
-		textures.push_back(boxTex);
-		textures.push_back(pauseMenuTex);
-		textures.push_back(0);
-
 		std::vector<Object*> objectsOnScene;
 		std::vector<Object*> preloadedObjectsOnScene;
 
@@ -233,15 +195,15 @@ int main(void)
 		Font arial24pt = Font("res/fonts/arial/", "arial.ttf", 24);
 		Font timesnewroman32pt = Font("res/fonts/times new roman/", "times.ttf", 32);
 
-		preloadedObjectsOnScene.push_back(new Object(glm::vec3(-50.0f, -50.0f, -50.0f), glm::vec3(50.0f, 50.0f, 50.0f), type::skyBox, "", "", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), skyboxTex, basic.GetShaderID(), true, false));
-		preloadedObjectsOnScene.push_back(new Object(glm::vec3(-5.0f, -5.0f, -5.0f), glm::vec3(5.0f, 5.0f, 5.0f), type::blankModel, "res/models/", "plane.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -3.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), whiteTex, shader.GetShaderID(), Material(glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(0.5f, 0.5f, 0.5f), 32.0f), true, true));
+		preloadedObjectsOnScene.push_back(new Object(glm::vec3(-50.0f, -50.0f, -50.0f), glm::vec3(50.0f, 50.0f, 50.0f), type::skyBox, "", "", "res/images/textures/2d/", "skybox.png", "res/shaders/", "Basic.shader", true, false, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f)));
+		preloadedObjectsOnScene.push_back(new Object(glm::vec3(-5.0f, -5.0f, -5.0f), glm::vec3(5.0f, 5.0f, 5.0f), type::normalModel, "res/models/", "plane.obj", "res/images/colors/", "white.png", "res/shaders/", "Lighting.shader", true, true, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -3.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), Material(glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(0.5f, 0.5f, 0.5f), 32.0f)));
 
 		bool loadFile = true;
 		if (loadFile) {
 			IO::LoadFile(objectsOnScene, "res/other/", "level.lvl");
 		}
 
-		Light* light = new Light(LightIntensity(glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(1.0f, 1.0f, 1.0f)), glm::vec3(-0.1f, -0.1f, -0.1f), glm::vec3(0.1f, 0.1f, 0.1f), type::cubeInvertedLighting, "", "", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 5.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), yellowTex, shader.GetShaderID(), Material(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), 32.0f), true, false);
+		Light* light = new Light(LightIntensity(glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(1.0f, 1.0f, 1.0f)), glm::vec3(-0.1f, -0.1f, -0.1f), glm::vec3(0.1f, 0.1f, 0.1f), type::cubeInvertedLighting, "", "", "res/images/colors/", "yellow.png", "res/shaders/", "Lighting.shader", true, true, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 5.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), Material(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), 32.0f));
 
 		//GLuint leftEyeFrameBuffer;
 		//glGenFramebuffers(1, &leftEyeFrameBuffer);
@@ -280,7 +242,6 @@ int main(void)
 		else {
 			selectedObject = 0;
 		}
-		GLuint selectedObjectTexture = 0;
 
 		while (!glfwWindowShouldClose(window))
 		{
@@ -421,39 +382,21 @@ int main(void)
 							objectsOnScene[selectedObject]->RotateAdd3f(0.0f, glm::degrees(-Global::Variables.movementSpeed * deltaTime), 0.0f);
 						}
 					}
-					else if (currentMode == LevelEditor::Mode::texture) {
-						if (Global::Variables.keyIn.kPressed) {
-							if (selectedObjectTexture > 0) {
-								selectedObjectTexture--;
-							}
-						}
-						if (Global::Variables.keyIn.lPressed) {
-							if (selectedObjectTexture < textures.size() - 1) {
-								selectedObjectTexture++;
-							}
-						}
-						if (selectedObject >= 0 && selectedObject < objectsOnScene.size()) {
-							objectsOnScene[selectedObject]->SetTexture(textures[selectedObjectTexture]);
-						}
-					}
 
 					if (Global::Variables.keyIn.leftBracketPressed) {
 						if (selectedObject > 0) {
 							selectedObject--;
-							selectedObjectTexture = Search::LinearSearchVector(textures, objectsOnScene[selectedObject]->GetTextureID());;
 						}
 					}
 					if (Global::Variables.keyIn.rightBracketPressed) {
 						if (selectedObject < objectsOnScene.size() - 1) {
 							selectedObject++;
-							selectedObjectTexture = Search::LinearSearchVector(textures, objectsOnScene[selectedObject]->GetTextureID());;
 						}
 					}
 					if (Global::Variables.keyIn.nPressed) {
-						System::Log("Object created!");
-						objectsOnScene.push_back(new AABBCollidable(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), type::cubeModel, "", "", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), sphereCowTex, shader.GetShaderID(), Material(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), 32.0f), 1.0f, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), 1.0f, glm::vec3(0.0f, 0.0f, 0.0f), true, true));
+						System::Log("Cube created!");
+						objectsOnScene.push_back(new AABBCollidable(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), type::cubeModel, "", "", "res/images/textures/2d/", "newcow.png", "res/shaders/", "Lighting.shader", true, true, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), Material(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), 32.0f), 1.0f, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), 1.0f, glm::vec3(0.0f, 0.0f, 0.0f)));
 						selectedObject = objectsOnScene.size() - 1;
-						selectedObjectTexture = Search::LinearSearchVector(textures, sphereCowTex);;
 					}
 					if (Global::Variables.keyIn.backspacePressed) {
 						if (objectsOnScene.size() > 0) {
@@ -466,13 +409,6 @@ int main(void)
 							}
 							else {
 								selectedObject = 0;
-							}
-
-							if (objectsOnScene.size() > 0) {
-								selectedObjectTexture = Search::LinearSearchVector(textures, objectsOnScene[selectedObject]->GetTextureID());
-							}
-							else {
-								selectedObjectTexture = 0;
 							}
 						}
 					}
@@ -640,12 +576,15 @@ int main(void)
 
 				if (EnableSpawnMenu) {
 					ImGui::Begin("Spawn Menu", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
-					ImGui::Checkbox("Textured Model", &InputModelHasTexture);
+					ImGui::InputText("Texture Directory", InputStringTextureDirectory, IM_ARRAYSIZE(InputStringTextureDirectory));
+					ImGui::InputText("Texture Name", InputStringTextureName, IM_ARRAYSIZE(InputStringTextureName));
 					ImGui::Separator();
-					ImGui::SliderInt("Texture", &InputTexture, 0, (textures.size() - 1));
+					ImGui::InputText("Shader Directory", InputStringShaderDirectory, IM_ARRAYSIZE(InputStringShaderDirectory));
+					ImGui::InputText("Shader Name", InputStringShaderName, IM_ARRAYSIZE(InputStringShaderName));
+					ImGui::Checkbox("Shader Supports Lighting", &InputShaderHasLighting);
 					ImGui::Separator();
-					ImGui::InputText("Model Directory", InputStringDirectory, IM_ARRAYSIZE(InputStringDirectory));
-					ImGui::InputText("Model Name", InputStringName, IM_ARRAYSIZE(InputStringName));
+					ImGui::InputText("Model Directory", InputStringMeshDirectory, IM_ARRAYSIZE(InputStringMeshDirectory));
+					ImGui::InputText("Model Name", InputStringMeshName, IM_ARRAYSIZE(InputStringMeshName));
 					ImGui::Separator();
 					ImGui::Text("Position");
 					ImGui::InputFloat3("Rotation", &InputRotation[0]);
@@ -659,15 +598,9 @@ int main(void)
 					ImGui::SliderInt("Shininess", &InputShininess, 0, 512);
 					ImGui::Separator();
 					if (ImGui::Button("Spawn")) {
-						System::Log("Spawned object with model \"" + std::string(InputStringDirectory) + std::string(InputStringName) + "\" at (" + std::to_string(InputTranslation.x) + ", " + std::to_string(InputTranslation.y) + ", " + std::to_string(InputTranslation.z) + ")");
-						if (InputModelHasTexture) {
-							objectsOnScene.push_back(new Object(glm::vec3(-5.0f, -5.0f, -5.0f), glm::vec3(5.0f, 5.0f, 5.0f), type::texturedModel, std::string(InputStringDirectory), std::string(InputStringName), InputRotation, InputTranslation, InputScale, textures[InputTexture], shader.GetShaderID(), Material(InputAmbient, InputDiffuse, InputSpecular, ((float)InputShininess)), true, true));
-						}
-						else {
-							objectsOnScene.push_back(new Object(glm::vec3(-5.0f, -5.0f, -5.0f), glm::vec3(5.0f, 5.0f, 5.0f), type::blankModel, std::string(InputStringDirectory), std::string(InputStringName), InputRotation, InputTranslation, InputScale, textures[InputTexture], shader.GetShaderID(), Material(InputAmbient, InputDiffuse, InputSpecular, ((float)InputShininess)), true, true));
-						}
+						System::Log("Spawned object with model \"" + std::string(InputStringMeshDirectory) + std::string(InputStringMeshName) + "\" at (" + std::to_string(InputTranslation.x) + ", " + std::to_string(InputTranslation.y) + ", " + std::to_string(InputTranslation.z) + ")");
+						objectsOnScene.push_back(new Object(glm::vec3(-5.0f, -5.0f, -5.0f), glm::vec3(5.0f, 5.0f, 5.0f), type::normalModel, std::string(InputStringMeshDirectory), std::string(InputStringMeshName), std::string(InputStringTextureDirectory), std::string(InputStringTextureName), std::string(InputStringShaderDirectory), std::string(InputStringShaderName), true, InputShaderHasLighting, InputRotation, InputTranslation, InputScale, Material(InputAmbient, InputDiffuse, InputSpecular, ((float)InputShininess))));
 						selectedObject = objectsOnScene.size() - 1;
-						selectedObjectTexture = textures[InputTexture];
 					}
 					ImGui::End();
 				}

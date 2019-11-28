@@ -35,5 +35,11 @@ namespace Atlas {
 		enableKeyboard = true;
 
 		consoleLog = std::vector<std::string>();
+
+		meshCache = std::unordered_map<std::string, ShapeData>();
+		
+		shaderCache = std::unordered_map<std::string, Shader*>();
+
+		textureCache = std::unordered_map<std::string, GLuint>();
 	}
 }

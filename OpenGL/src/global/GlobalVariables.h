@@ -3,7 +3,9 @@
 #include "Config.h"
 #include "Camera.h"
 #include "Input.h"
+#include "Shader.h"
 #include <chrono>
+#include <unordered_map>
 #include <vector>
 
 namespace Atlas {
@@ -45,6 +47,12 @@ namespace Atlas {
 		bool enableMouseClick;
 		bool enableMouseMove;
 		bool enableKeyboard;
+		
+		std::unordered_map<std::string, ShapeData> meshCache;
+
+		std::unordered_map<std::string, Shader*> shaderCache;
+	
+		std::unordered_map<std::string, GLuint> textureCache;
 	};
 
 }

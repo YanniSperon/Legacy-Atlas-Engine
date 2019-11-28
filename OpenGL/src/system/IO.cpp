@@ -24,8 +24,6 @@ namespace Atlas {
 			glm::vec3 translation(0.0f, 0.0f, 0.0f);
 			glm::vec3 rotation(0.0f, 0.0f, 0.0f);
 			glm::vec3 scale(1.0f, 1.0f, 1.0f);
-			GLuint tex(0);
-			GLuint shader(0);
 			glm::vec3 ambient = glm::vec3(0.1f, 0.1f, 0.1f);
 			glm::vec3 diffuse = glm::vec3(0.25f, 0.25f, 0.25f);
 			glm::vec3 specular = glm::vec3(0.25f, 0.25f, 0.25f);
@@ -33,6 +31,10 @@ namespace Atlas {
 			bool hasLighting = true;
 			std::string modelFileDirectory = "";
 			std::string modelFileName = "";
+			std::string textureFileDirectory = "";
+			std::string textureFileName = "";
+			std::string shaderFileDirectory = "";
+			std::string shaderFileName = "";
 			std::string strType = "Invalid";
 			float mass = 1.0f;
 			glm::vec3 linearVelocity(0.0f, 0.0f, 0.0f);
@@ -67,11 +69,8 @@ namespace Atlas {
 					else if (value == "skyBox") {
 						objectType = type::skyBox;
 					}
-					else if (value == "blankModel") {
-						objectType = type::blankModel;
-					}
-					else if (value == "texturedModel") {
-						objectType = type::texturedModel;
+					else if (value == "normalModel") {
+						objectType = type::normalModel;
 					}
 					else {
 						System::Warn("Unrecognized string \"" + value + "\" when loading file \"" + filePath + "\"");
@@ -113,14 +112,6 @@ namespace Atlas {
 				else if (line.find("scale.z: ") != std::string::npos) {
 					std::string value = line.substr(9);
 					scale.z = std::stof(value);
-				}
-				else if (line.find("texture: ") != std::string::npos) {
-					std::string value = line.substr(9);
-					tex = std::stoi(value);
-				}
-				else if (line.find("shader: ") != std::string::npos) {
-					std::string value = line.substr(8);
-					shader = std::stoi(value);
 				}
 				else if (line.find("ambient.r: ") != std::string::npos) {
 					std::string value = line.substr(11);
@@ -178,6 +169,22 @@ namespace Atlas {
 				else if (line.find("modelFileName: ") != std::string::npos) {
 					std::string value = line.substr(15);
 					modelFileName = value;
+				}
+				else if (line.find("textureDir: ") != std::string::npos) {
+					std::string value = line.substr(12);
+					textureFileDirectory = value;
+				}
+				else if (line.find("textureName: ") != std::string::npos) {
+					std::string value = line.substr(13);
+					textureFileName = value;
+				}
+				else if (line.find("shaderDir: ") != std::string::npos) {
+					std::string value = line.substr(11);
+					shaderFileDirectory = value;
+				}
+				else if (line.find("shaderName: ") != std::string::npos) {
+					std::string value = line.substr(12);
+					shaderFileName = value;
 				}
 				else if (line.find("ambientLight.r: ") != std::string::npos) {
 					std::string value = line.substr(16);
@@ -287,19 +294,19 @@ namespace Atlas {
 			Object* value;
 
 			if (strType == "Light") {
-				value = new Light(LightIntensity(lightAmbient, lightDiffuse, lightSpecular), glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), objectType, modelFileDirectory, modelFileName, rotation, translation, scale, tex, shader, Material(ambient, diffuse, specular, shininess), false, hasLighting);
+				value = new Light(LightIntensity(lightAmbient, lightDiffuse, lightSpecular), glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), objectType, modelFileDirectory, modelFileName, textureFileDirectory, textureFileName, shaderFileDirectory, shaderFileName, false, hasLighting, rotation, translation, scale, Material(ambient, diffuse, specular, shininess));
 			}
 			else if (strType == "PhysicsBody") {
-				value = new PhysicsBody(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), objectType, modelFileDirectory, modelFileName, rotation, translation, scale, tex, shader, Material(ambient, diffuse, specular, shininess), mass, linearVelocity, angularVelocity, force, torque, momentOfInertia, gravity, false, hasLighting);
+				value = new PhysicsBody(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), objectType, modelFileDirectory, modelFileName, textureFileDirectory, textureFileName, shaderFileDirectory, shaderFileName, false, hasLighting, rotation, translation, scale, Material(ambient, diffuse, specular, shininess), mass, linearVelocity, angularVelocity, force, torque, momentOfInertia, gravity);
 			}
 			else if (strType == "AABBCollidable") {
-				value = new AABBCollidable(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), objectType, modelFileDirectory, modelFileName, rotation, translation, scale, tex, shader, Material(ambient, diffuse, specular, shininess), mass, linearVelocity, angularVelocity, force, torque, momentOfInertia, gravity, false, hasLighting);
+				value = new AABBCollidable(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), objectType, modelFileDirectory, modelFileName, textureFileDirectory, textureFileName, shaderFileDirectory, shaderFileName, false, hasLighting, rotation, translation, scale, Material(ambient, diffuse, specular, shininess), mass, linearVelocity, angularVelocity, force, torque, momentOfInertia, gravity);
 			}
 			else if (strType == "Object") {
-				value = new Object(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), objectType, modelFileDirectory, modelFileName, rotation, translation, scale, tex, shader, Material(ambient, diffuse, specular, shininess), false, hasLighting);
+				value = new Object(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), objectType, modelFileDirectory, modelFileName, textureFileDirectory, textureFileName, shaderFileDirectory, shaderFileName, false, hasLighting, rotation, translation, scale, Material(ambient, diffuse, specular, shininess));
 			}
 			else if (strType == "Invalid") {
-				value = new Object(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), objectType, modelFileDirectory, modelFileName, rotation, translation, scale, tex, shader, Material(ambient, diffuse, specular, shininess), false, hasLighting);
+				value = new Object(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), objectType, modelFileDirectory, modelFileName, textureFileDirectory, textureFileName, shaderFileDirectory, shaderFileName, false, hasLighting, rotation, translation, scale, Material(ambient, diffuse, specular, shininess));
 			}
 
 			meshLoaderMutex.lock();
@@ -347,8 +354,6 @@ namespace Atlas {
 		glm::vec3 translation = obj->GetTranslation();
 		glm::vec3 rotation = obj->GetRotation();
 		glm::vec3 scale = obj->GetScale();
-		GLuint tex = obj->GetTextureID();
-		GLuint shader = obj->GetShaderID();
 		Material mat = obj->GetMaterial();
 		glm::vec3 ambient = mat.ambient;
 		glm::vec3 diffuse = mat.diffuse;
@@ -364,6 +369,10 @@ namespace Atlas {
 		}
 		std::string modelFileDir = obj->GetModelFileDirectory();
 		std::string modelFileName = obj->GetModelFileName();
+		std::string texDir = obj->GetTextureDirectory();
+		std::string texName = obj->GetTextureName();
+		std::string shaderDir = obj->GetShaderDirectory();
+		std::string shaderName = obj->GetShaderName();
 
 		std::string modelType = obj->GetModelType();
 
@@ -379,8 +388,6 @@ namespace Atlas {
 		objectFile << "scale.x: " << scale.x << "\n";
 		objectFile << "scale.y: " << scale.y << "\n";
 		objectFile << "scale.z: " << scale.z << "\n";
-		objectFile << "texture: " << tex << "\n";
-		objectFile << "shader: " << shader << "\n";
 		objectFile << "ambient.r: " << ambient.r << "\n";
 		objectFile << "ambient.g: " << ambient.g << "\n";
 		objectFile << "ambient.b: " << ambient.b << "\n";
@@ -394,6 +401,10 @@ namespace Atlas {
 		objectFile << "hasLighting: " << hasLighting << "\n";
 		objectFile << "modelFileDir: " << modelFileDir << "\n";
 		objectFile << "modelFileName: " << modelFileName << "\n";
+		objectFile << "textureDir: " << texDir << "\n";
+		objectFile << "textureName: " << texName << "\n";
+		objectFile << "shaderDir: " << shaderDir << "\n";
+		objectFile << "shaderName: " << shaderName << "\n";
 		if (type == "Light") {
 			Light* light = dynamic_cast<Light*>(obj);
 			if (light != nullptr) {

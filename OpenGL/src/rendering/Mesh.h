@@ -8,7 +8,7 @@ namespace Atlas {
 
 	enum type
 	{
-		cubeModel, blankModel, texturedModel, skyBox, cubeInvertedLighting
+		cubeModel, normalModel, skyBox, cubeInvertedLighting
 	};
 
 	class Mesh {

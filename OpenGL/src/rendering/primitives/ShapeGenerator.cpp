@@ -561,22 +561,22 @@ namespace Atlas {
 				indices.push_back(f[1] - 1);
 				indices.push_back(f[2] - 1);
 				indicesSize += 3;
-				positions[f[0] - 1].normal = normals[n[0] - 1];
-				positions[f[1] - 1].normal = normals[n[1] - 1];
-				positions[f[2] - 1].normal = normals[n[2] - 1];
+				positions.at(f[0] - 1).normal = normals.at(n[0] - 1);
+				positions.at(f[1] - 1).normal = normals.at(n[1] - 1);
+				positions.at(f[2] - 1).normal = normals.at(n[2] - 1);
 			}
 		}
 
 		ret.numVertices = positionsSize;
 		ret.vertices = new Vertex[positionsSize];
 		for (unsigned int i = 0; i < positionsSize; i++) {
-			ret.vertices[i] = positions[i];
+			ret.vertices[i] = positions.at(i);
 		}
 
 		ret.numIndices = indicesSize;
 		ret.indices = new GLuint[indicesSize];
 		for (unsigned int k = 0; k < indicesSize; k++) {
-			ret.indices[k] = indices[k];
+			ret.indices[k] = indices.at(k);
 		}
 
 		return ret;
@@ -671,12 +671,12 @@ namespace Atlas {
 				indices.push_back(f[1] - 1);
 				indices.push_back(f[2] - 1);
 				indicesSize += 3;
-				positions[f[0] - 1].texCoord = glm::vec2(tempTex[uv[0] - 1].u, tempTex[uv[0] - 1].v);
-				positions[f[1] - 1].texCoord = glm::vec2(tempTex[uv[1] - 1].u, tempTex[uv[1] - 1].v);
-				positions[f[2] - 1].texCoord = glm::vec2(tempTex[uv[2] - 1].u, tempTex[uv[2] - 1].v);
-				positions[f[0] - 1].normal = normals[n[0] - 1];
-				positions[f[1] - 1].normal = normals[n[1] - 1];
-				positions[f[2] - 1].normal = normals[n[2] - 1];
+				positions.at(f[0] - 1).texCoord = glm::vec2(tempTex.at(uv[0] - 1).u, tempTex.at(uv[0] - 1).v);
+				positions.at(f[1] - 1).texCoord = glm::vec2(tempTex.at(uv[1] - 1).u, tempTex.at(uv[1] - 1).v);
+				positions.at(f[2] - 1).texCoord = glm::vec2(tempTex.at(uv[2] - 1).u, tempTex.at(uv[2] - 1).v);
+				positions.at(f[0] - 1).normal = normals.at(n[0] - 1);
+				positions.at(f[1] - 1).normal = normals.at(n[1] - 1);
+				positions.at(f[2] - 1).normal = normals.at(n[2] - 1);
 			}
 			else if (line[0] == 'v' && line[1] == 't') {
 				float one;
@@ -695,13 +695,13 @@ namespace Atlas {
 		ret.numVertices = positionsSize;
 		ret.vertices = new Vertex[positionsSize];
 		for (unsigned int i = 0; i < positionsSize; i++) {
-			ret.vertices[i] = positions[i];
+			ret.vertices[i] = positions.at(i);
 		}
 
 		ret.numIndices = indicesSize;
 		ret.indices = new GLuint[indicesSize];
 		for (unsigned int k = 0; k < indicesSize; k++) {
-			ret.indices[k] = indices[k];
+			ret.indices[k] = indices.at(k);
 		}
 
 		return ret;
