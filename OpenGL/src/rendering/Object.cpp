@@ -17,12 +17,12 @@ namespace Atlas {
 	Object::Object(glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderFileName, bool glInit, bool lighting)
 		: Mesh(minCorner, maxCorner, type, meshDir, meshName), material(), glInitialized(glInit), textureDirectory(texDir), textureName(texName), hasLighting(lighting)
 	{
-		if (Global::Variables.textureCache.find(meshDir + meshName) != Global::Variables.textureCache.end()) {
-			texID = Global::Variables.textureCache[meshDir + meshName];
+		if (Global::Variables.textureCache.find(texDir + texName) != Global::Variables.textureCache.end()) {
+			texID = Global::Variables.textureCache[texDir + texName];
 		}
 		else {
-			Global::Variables.textureCache[meshDir + meshName] = Loader::LoadTexture(texDir, texName, GL_REPEAT, GL_REPEAT, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
-			texID = Global::Variables.textureCache[meshDir + meshName];
+			Global::Variables.textureCache[texDir + texName] = Loader::LoadTexture(texDir, texName, GL_REPEAT, GL_REPEAT, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
+			texID = Global::Variables.textureCache[texDir + texName];
 		}
 
 		if (Global::Variables.shaderCache.find(shaderDir + shaderFileName) != Global::Variables.shaderCache.end()) {
@@ -42,12 +42,12 @@ namespace Atlas {
 	Object::Object(glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderFileName, bool glInit, bool lighting, glm::vec3 rot, glm::vec3 trans, glm::vec3 s)
 		: Mesh(minCorner, maxCorner, type, meshDir, meshName, rot, trans, s), material(), glInitialized(glInit), textureDirectory(texDir), textureName(texName), shaderDirectory(shaderDir), shaderName(shaderFileName), hasLighting(lighting)
 	{
-		if (Global::Variables.textureCache.find(meshDir + meshName) != Global::Variables.textureCache.end()) {
-			texID = Global::Variables.textureCache[meshDir + meshName];
+		if (Global::Variables.textureCache.find(texDir + texName) != Global::Variables.textureCache.end()) {
+			texID = Global::Variables.textureCache[texDir + texName];
 		}
 		else {
-			Global::Variables.textureCache[meshDir + meshName] = Loader::LoadTexture(texDir, texName, GL_REPEAT, GL_REPEAT, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
-			texID = Global::Variables.textureCache[meshDir + meshName];
+			Global::Variables.textureCache[texDir + texName] = Loader::LoadTexture(texDir, texName, GL_REPEAT, GL_REPEAT, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
+			texID = Global::Variables.textureCache[texDir + texName];
 		}
 
 		if (Global::Variables.shaderCache.find(shaderDir + shaderFileName) != Global::Variables.shaderCache.end()) {
@@ -67,12 +67,12 @@ namespace Atlas {
 	Object::Object(glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderFileName, bool glInit, bool lighting, glm::vec3 rot, glm::vec3 trans, glm::vec3 s, Material mat)
 		: Mesh(minCorner, maxCorner, type, meshDir, meshName, rot, trans, s), material(mat), glInitialized(glInit), textureDirectory(texDir), textureName(texName), shaderDirectory(shaderDir), shaderName(shaderFileName), hasLighting(lighting)
 	{
-		if (Global::Variables.textureCache.find(meshDir + meshName) != Global::Variables.textureCache.end()) {
-			texID = Global::Variables.textureCache[meshDir + meshName];
+		if (Global::Variables.textureCache.find(texDir + texName) != Global::Variables.textureCache.end()) {
+			texID = Global::Variables.textureCache[texDir + texName];
 		}
 		else {
-			Global::Variables.textureCache[meshDir + meshName] = Loader::LoadTexture(texDir, texName, GL_REPEAT, GL_REPEAT, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
-			texID = Global::Variables.textureCache[meshDir + meshName];
+			Global::Variables.textureCache[texDir + texName] = Loader::LoadTexture(texDir, texName, GL_REPEAT, GL_REPEAT, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
+			texID = Global::Variables.textureCache[texDir + texName];
 		}
 
 		if (Global::Variables.shaderCache.find(shaderDir + shaderFileName) != Global::Variables.shaderCache.end()) {

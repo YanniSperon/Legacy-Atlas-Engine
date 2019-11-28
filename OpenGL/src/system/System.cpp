@@ -98,6 +98,9 @@ namespace Atlas {
 
 	void System::SendConsoleCommand(std::string command)
 	{
+		if (command.at(0) == '/') {
+
+		}
 		System::Log("Executing console command: \"" + command + "\"");
 
 		// ACTUALLY PARSE COMMAND HERE
