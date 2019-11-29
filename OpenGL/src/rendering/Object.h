@@ -50,7 +50,9 @@ namespace Atlas {
 		void Unbind();
 		unsigned int GetNumIndices();
 		void SetShader(GLuint id);
+		void SetShader(std::string dir, std::string name);
 		void SetTexture(GLuint tex);
+		void SetTexture(std::string dir, std::string name);
 		void SetMaterial(Material mat);
 		GLuint GetShaderID();
 		GLuint GetTextureID();

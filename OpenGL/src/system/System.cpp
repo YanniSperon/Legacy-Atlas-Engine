@@ -98,10 +98,20 @@ namespace Atlas {
 
 	void System::SendConsoleCommand(std::string command)
 	{
-		if (command.at(0) == '/') {
-
+		size_t slashPos;
+		if ((slashPos = command.find("/")) != std::string::npos) {
+			if (slashPos == 0 && command.size() > 1) {
+				if (command.find(" ") != std::string::npos) {
+					std::string firstWord = command.substr(1, command.find(" "));
+					if (firstWord != " " && firstWord != "") {
+						System::Log(firstWord);
+					}
+				}
+				else {
+					System::Log(command.substr(1));
+				}
+			}
 		}
-		System::Log("Executing console command: \"" + command + "\"");
 
 		// ACTUALLY PARSE COMMAND HERE
 	}
@@ -109,7 +119,7 @@ namespace Atlas {
 	void System::DrawConsole()
 	{
 		static char InputConsoleString[128] = "";
-		ImGui::Begin("Console", NULL, ImGuiWindowFlags_NoCollapse| ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+		ImGui::Begin("Console", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
 		ImGui::BeginChild("Log");
 		for (int i = 0; i < Global::Variables.consoleLog.size(); i++) {
 			std::string temp = Global::Variables.consoleLog[i];
@@ -125,13 +135,17 @@ namespace Atlas {
 		}
 		ImGui::Text("");
 		if (ImGui::InputText("", InputConsoleString, IM_ARRAYSIZE(InputConsoleString), ImGuiInputTextFlags_EnterReturnsTrue)) {
-			SendConsoleCommand(std::string(InputConsoleString));
-			InputConsoleString[0] = '\0';
+			if (InputConsoleString[0] != '\0') {
+				SendConsoleCommand(std::string(InputConsoleString));
+				InputConsoleString[0] = '\0';
+			}
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("Submit")) {
-			SendConsoleCommand(std::string(InputConsoleString));
-			InputConsoleString[0] = '\0';
+			if (InputConsoleString[0] != '\0') {
+				SendConsoleCommand(std::string(InputConsoleString));
+				InputConsoleString[0] = '\0';
+			}
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("Clear")) {

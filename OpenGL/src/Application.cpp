@@ -168,8 +168,14 @@ int main(void)
 		bool ShouldToggleVSync = false;
 		bool GUIEnabled = true;
 
+
+		bool EnableObjectModificationRenderingPage = true;
+		bool EnableObjectModificationPositionPage = true;
+		bool EnableObjectModificationLightingPage = true;
+
 		bool InputModelHasTexture = false;
 		bool InputShaderHasLighting = true;
+		bool EnableObjectInfoPage = true;
 		char InputStringMeshDirectory[128] = "res/models/";
 		char InputStringMeshName[128] = "";
 		char InputStringTextureDirectory[128] = "res/images/textures/3d/";
@@ -183,7 +189,21 @@ int main(void)
 		glm::vec3 InputDiffuse = glm::vec3(0.5f, 0.5f, 0.5f);
 		glm::vec3 InputSpecular = glm::vec3(0.5f, 0.5f, 0.5f);
 		int InputShininess = 32;
-		int InputTexture = 0;
+
+		char InputModificationStringTextureDirectory[128] = "res/images/textures/3d/";
+		char InputModificationStringTextureName[128] = "";
+		char InputModificationStringShaderDirectory[128] = "res/shaders/";
+		char InputModificationStringShaderName[128] = "Lighting.shader";
+		glm::vec3 InputModificationRotation = glm::vec3(0.0f, 0.0f, 0.0f);
+		glm::vec3 InputModificationTranslation = glm::vec3(0.0f, 0.0f, 0.0f);
+		glm::vec3 InputModificationScale = glm::vec3(1.0f, 1.0f, 1.0f);
+		glm::vec3 InputModificationAmbient = glm::vec3(0.5f, 0.5f, 0.5f);
+		glm::vec3 InputModificationDiffuse = glm::vec3(0.5f, 0.5f, 0.5f);
+		glm::vec3 InputModificationSpecular = glm::vec3(0.5f, 0.5f, 0.5f);
+		int InputModificationShininess = 32;
+
+		char* items[] = { "Position", "Lighting", "Rendering" };
+		char* current_item = items[0];
 
 		SimpleRenderer renderer;
 
@@ -541,6 +561,7 @@ int main(void)
 				if (Global::Variables.keyIn.leftAltReleased) {
 					glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 					Global::Variables.enableMouseMove = true;
+					glfwSetCursorPos(window, Global::Variables.mouseX, Global::Variables.mouseY);
 				}
 				if (Global::Variables.keyIn.tildePressed) {
 					EnableConsole = !EnableConsole;
@@ -551,16 +572,17 @@ int main(void)
 
 				{
 					ImGui::Begin("File", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
-					ImGui::Checkbox("Enable Debug", &EnableDebug);
-					ImGui::Checkbox("Enable Spawn Menu", &EnableSpawnMenu);
-					ImGui::Checkbox("Enable Info Page", &EnableInfoPage);
+					ImGui::Checkbox("Enable Info Page##infoControl", &EnableInfoPage);
+					ImGui::Checkbox("Enable Spawn Menu##spawnControl", &EnableSpawnMenu);
+					ImGui::Checkbox("Enable Debug Options##debugControl", &EnableDebug);
+					ImGui::Checkbox("Enable Object Settings##objectSettingsControl", &EnableObjectInfoPage);
 					//ImGui::Separator();
 					//ImGui::Checkbox("Enable VSync", &Global::Variables.VSyncPreference);
 					ImGui::Separator();
-					if (ImGui::Button("Save")) {
+					if (ImGui::Button("Save##saveButton")) {
 						IO::SaveToFile(objectsOnScene, "res/other/", "level.lvl");
 					}
-					if (ImGui::Button("Close")) {
+					if (ImGui::Button("Close##closeButton")) {
 						glfwSetWindowShouldClose(window, GLFW_TRUE);
 					}
 					ImGui::End();
@@ -570,34 +592,34 @@ int main(void)
 					ImGui::Begin("Debug", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
 					ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 					ImGui::Separator();
-					ImGui::Checkbox("Enable Console", &EnableConsole);
+					ImGui::Checkbox("Enable Console##consoleControl", &EnableConsole);
 					ImGui::End();
 				}
 
 				if (EnableSpawnMenu) {
 					ImGui::Begin("Spawn Menu", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
-					ImGui::InputText("Texture Directory", InputStringTextureDirectory, IM_ARRAYSIZE(InputStringTextureDirectory));
-					ImGui::InputText("Texture Name", InputStringTextureName, IM_ARRAYSIZE(InputStringTextureName));
+					ImGui::InputText("Model Directory##shaderInDir", InputStringMeshDirectory, IM_ARRAYSIZE(InputStringMeshDirectory));
+					ImGui::InputText("Model Name##modelInName", InputStringMeshName, IM_ARRAYSIZE(InputStringMeshName));
 					ImGui::Separator();
-					ImGui::InputText("Shader Directory", InputStringShaderDirectory, IM_ARRAYSIZE(InputStringShaderDirectory));
-					ImGui::InputText("Shader Name", InputStringShaderName, IM_ARRAYSIZE(InputStringShaderName));
-					ImGui::Checkbox("Shader Supports Lighting", &InputShaderHasLighting);
+					ImGui::InputText("Texture Directory##textureInDir", InputStringTextureDirectory, IM_ARRAYSIZE(InputStringTextureDirectory));
+					ImGui::InputText("Texture Name##textureInName", InputStringTextureName, IM_ARRAYSIZE(InputStringTextureName));
 					ImGui::Separator();
-					ImGui::InputText("Model Directory", InputStringMeshDirectory, IM_ARRAYSIZE(InputStringMeshDirectory));
-					ImGui::InputText("Model Name", InputStringMeshName, IM_ARRAYSIZE(InputStringMeshName));
+					ImGui::Checkbox("Shader Supports Lighting##shaderSupportsLighting", &InputShaderHasLighting);
+					ImGui::InputText("Shader Directory##shaderInDir", InputStringShaderDirectory, IM_ARRAYSIZE(InputStringShaderDirectory));
+					ImGui::InputText("Shader Name##shaderInName", InputStringShaderName, IM_ARRAYSIZE(InputStringShaderName));
 					ImGui::Separator();
 					ImGui::Text("Position");
-					ImGui::InputFloat3("Rotation", &InputRotation[0]);
-					ImGui::InputFloat3("Translation", &InputTranslation[0]);
-					ImGui::InputFloat3("Scale", &InputScale[0]);
+					ImGui::InputFloat3("Rotation##rotfloatin", &InputRotation[0]);
+					ImGui::InputFloat3("Translation##transfloatin", &InputTranslation[0]);
+					ImGui::InputFloat3("Scale##scalefloatin", &InputScale[0]);
 					ImGui::Separator();
 					ImGui::Text("Lighting");
-					ImGui::InputFloat3("Ambient", &InputAmbient[0]);
-					ImGui::InputFloat3("Diffuse", &InputDiffuse[0]);
-					ImGui::InputFloat3("Specular", &InputSpecular[0]);
-					ImGui::SliderInt("Shininess", &InputShininess, 0, 512);
+					ImGui::InputFloat3("Ambient##ambientfloatin", &InputAmbient[0]);
+					ImGui::InputFloat3("Diffuse##diffusefloatin", &InputDiffuse[0]);
+					ImGui::InputFloat3("Specular##specularfloatin", &InputSpecular[0]);
+					ImGui::SliderInt("Shininess##shininessintslider", &InputShininess, 0, 512);
 					ImGui::Separator();
-					if (ImGui::Button("Spawn")) {
+					if (ImGui::Button("Spawn##spawn")) {
 						System::Log("Spawned object with model \"" + std::string(InputStringMeshDirectory) + std::string(InputStringMeshName) + "\" at (" + std::to_string(InputTranslation.x) + ", " + std::to_string(InputTranslation.y) + ", " + std::to_string(InputTranslation.z) + ")");
 						objectsOnScene.push_back(new Object(glm::vec3(-5.0f, -5.0f, -5.0f), glm::vec3(5.0f, 5.0f, 5.0f), type::normalModel, std::string(InputStringMeshDirectory), std::string(InputStringMeshName), std::string(InputStringTextureDirectory), std::string(InputStringTextureName), std::string(InputStringShaderDirectory), std::string(InputStringShaderName), true, InputShaderHasLighting, InputRotation, InputTranslation, InputScale, Material(InputAmbient, InputDiffuse, InputSpecular, ((float)InputShininess))));
 						selectedObject = objectsOnScene.size() - 1;
@@ -634,6 +656,121 @@ int main(void)
 						ImGui::Text("Translate");
 					}
 					ImGui::End();
+				}
+
+				if (EnableObjectInfoPage) {
+					if (objectsOnScene.size() > 0 && selectedObject < objectsOnScene.size() && selectedObject >= 0) {
+
+						ImGui::Begin("Object Settings", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+
+						if (ImGui::BeginCombo("##combo", current_item)) // The second parameter is the label previewed before opening the combo.
+						{
+							for (int n = 0; n < IM_ARRAYSIZE(items); n++)
+							{
+								bool is_selected = (current_item == items[n]); // You can store your selection however you want, outside or inside your objects
+								if (ImGui::Selectable(items[n], is_selected)) {
+									current_item = items[n];
+									if (is_selected) {
+										ImGui::SetItemDefaultFocus();   // You may set the initial focus when opening the combo (scrolling + for keyboard navigation support)
+									}
+								}
+							}
+							ImGui::EndCombo();
+						}
+						ImGui::Text("");
+
+						if (current_item == "Rendering") {
+							ImGui::Text("Texture Directory");
+							ImGui::InputText("##tin1", InputModificationStringTextureDirectory, IM_ARRAYSIZE(InputModificationStringTextureDirectory));
+							ImGui::Text("Texture Name");
+							ImGui::InputText("##tin2", InputModificationStringTextureName, IM_ARRAYSIZE(InputModificationStringTextureName));
+							if (ImGui::Button("Apply##t1")) {
+								objectsOnScene[selectedObject]->SetTexture(std::string(InputModificationStringTextureDirectory), std::string(InputModificationStringTextureName));
+							}
+							ImGui::Text("");
+							ImGui::Separator();
+							ImGui::Text("");
+							ImGui::Text("Shader Directory");
+							ImGui::InputText("##sin1", InputModificationStringShaderDirectory, IM_ARRAYSIZE(InputModificationStringShaderDirectory));
+							ImGui::Text("Shader Name");
+							ImGui::InputText("##sin2", InputModificationStringShaderName, IM_ARRAYSIZE(InputModificationStringShaderName));
+							if (ImGui::Button("Apply##s1")) {
+								objectsOnScene[selectedObject]->SetShader(std::string(InputModificationStringShaderDirectory), std::string(InputModificationStringShaderName));
+							}
+						}
+						else if (current_item == "Position") {
+
+							ImGui::Text("Rotation");
+							ImGui::InputFloat3("##in1", &InputModificationRotation[0]);
+							if (ImGui::Button("Apply##in1")) {
+								objectsOnScene[selectedObject]->RotateVec3(InputModificationRotation);
+							}
+
+							ImGui::Separator();
+
+							ImGui::Text("Translation");
+							ImGui::InputFloat3("##in2", &InputModificationTranslation[0]);
+							if (ImGui::Button("Apply##in2")) {
+								objectsOnScene[selectedObject]->TranslateVec3(InputModificationTranslation);
+							}
+
+							ImGui::Separator();
+
+							ImGui::Text("Scale");
+							ImGui::InputFloat3("##in3", &InputModificationScale[0]);
+							if (ImGui::Button("Apply##in3")) {
+								objectsOnScene[selectedObject]->ScaleVec3(InputModificationScale);
+							}
+						}
+						else if (current_item == "Lighting") {
+
+							if (ImGui::Button("Toggle Lighting##l1")) {
+								objectsOnScene[selectedObject]->SetHasLighting(!objectsOnScene[selectedObject]->GetHasLighting());
+							}
+
+							ImGui::Separator();
+
+							ImGui::Text("Ambient Reflection");
+							ImGui::InputFloat3("##lin2", &InputModificationAmbient[0]);
+							if (ImGui::Button("Apply##lin2")) {
+								auto temp = objectsOnScene[selectedObject]->GetMaterial();
+								temp.ambient = InputModificationAmbient;
+								objectsOnScene[selectedObject]->SetMaterial(temp);
+							}
+
+							ImGui::Separator();
+
+							ImGui::Text("Diffuse Reflection");
+							ImGui::InputFloat3("##lin3", &InputModificationDiffuse[0]);
+							if (ImGui::Button("Apply##lin3")) {
+								auto temp = objectsOnScene[selectedObject]->GetMaterial();
+								temp.diffuse = InputModificationDiffuse;
+								objectsOnScene[selectedObject]->SetMaterial(temp);
+							}
+
+							ImGui::Separator();
+
+							ImGui::Text("Specular Reflection");
+							ImGui::InputFloat3("##lin4", &InputModificationSpecular[0]);
+							if (ImGui::Button("Apply##lin4")) {
+								auto temp = objectsOnScene[selectedObject]->GetMaterial();
+								temp.ambient = InputModificationSpecular;
+								objectsOnScene[selectedObject]->SetMaterial(temp);
+							}
+
+							ImGui::Separator();
+
+							ImGui::Text("Reflection Shininess");
+							ImGui::SliderInt("##lin5", &InputModificationShininess, 0, 512);
+							if (ImGui::Button("Apply##lin5")) {
+								auto temp = objectsOnScene[selectedObject]->GetMaterial();
+								temp.shininess = InputModificationShininess;
+								objectsOnScene[selectedObject]->SetMaterial(temp);
+							}
+						}
+
+						ImGui::End();
+					}
 				}
 
 				if (EnableConsole) {
