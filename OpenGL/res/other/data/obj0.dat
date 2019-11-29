@@ -22,9 +22,9 @@ specular.b: 0.5
 shininess: 32
 hasLighting: true
 modelFileDir: res/models/
-modelFileName: tank.obj
-textureDir: res/images/colors/
-textureName: white.png
+modelFileName: texturedmodel1024.obj
+textureDir: res/images/textures/3d/
+textureName: 
 shaderDir: res/shaders/
 shaderName: Lighting.shader
 

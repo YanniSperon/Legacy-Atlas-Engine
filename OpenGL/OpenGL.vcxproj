@@ -150,6 +150,7 @@
     <ClCompile Include="src\global\Global.cpp" />
     <ClCompile Include="src\global\GlobalVariables.cpp" />
     <ClCompile Include="src\input\InputHandler.cpp" />
+    <ClCompile Include="src\rendering\gui\Window.cpp" />
     <ClCompile Include="src\system\System.cpp" />
     <ClCompile Include="src\other\Search.cpp" />
     <ClCompile Include="src\rendering\gui\Font.cpp" />
@@ -305,6 +306,7 @@
     <ClInclude Include="src\global\GlobalVariables.h" />
     <ClInclude Include="src\input\Input.h" />
     <ClInclude Include="src\input\InputHandler.h" />
+    <ClInclude Include="src\rendering\gui\Window.h" />
     <ClInclude Include="src\system\Callbacks.h" />
     <ClInclude Include="src\system\System.h" />
     <ClInclude Include="src\other\Search.h" />
