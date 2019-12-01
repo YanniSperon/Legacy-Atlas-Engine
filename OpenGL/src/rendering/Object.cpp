@@ -253,6 +253,7 @@ namespace Atlas {
 	{
 		return "Object";
 	}
+
 	void Object::FlushCache()
 	{
 		for (auto it : Global::Variables.textureCache) {
