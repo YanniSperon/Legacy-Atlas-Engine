@@ -41,5 +41,7 @@ namespace Atlas {
 		shaderCache = std::unordered_map<std::string, Shader*>();
 
 		textureCache = std::unordered_map<std::string, GLuint>();
+
+		currentScene = Scene();
 	}
 }

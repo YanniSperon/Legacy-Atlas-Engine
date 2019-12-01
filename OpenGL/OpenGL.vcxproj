@@ -91,12 +91,12 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>src\global;src\system;src\input;src\rendering\gui;src\leveleditor;src\other;src\rendering\primitives;src\physics;src\rendering;src;src\vendor;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\OPENVR\include;$(SolutionDir)Dependencies\IRRKLANG\include;$(SolutionDir)Dependencies\FREETYPE\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src\rendering\gui\primitives;src\game;src\global;src\system;src\input;src\rendering\gui;src\leveleditor;src\other;src\rendering\primitives;src\physics;src\rendering;src;src\vendor;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\OPENVR\include;$(SolutionDir)Dependencies\IRRKLANG\include;$(SolutionDir)Dependencies\FREETYPE\include;</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\FREETYPE\lib;$(SolutionDir)Dependencies\OPENVR\lib;$(SolutionDir)Dependencies\IRRKLANG\lib;$(SolutionDir)Dependencies\GLEW\lib\Release\Win32;$(SolutionDir)Dependencies\GLFW\lib-vc2019</AdditionalLibraryDirectories>
-      <AdditionalDependencies>freetype.lib;irrklang.lib;openvr_api.lib;glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;</AdditionalDependencies>
+      <AdditionalDependencies>comdlg32.lib;freetype.lib;irrklang.lib;openvr_api.lib;glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -104,12 +104,12 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>src\global;src\system;src\input;src\rendering\gui;src\leveleditor;src\other;src\rendering\primitives;src\physics;src\rendering;src;src\vendor;$(SolutionDir)Dependencies\GLFW x64\include;$(SolutionDir)Dependencies\GLEW x64\include;$(SolutionDir)Dependencies\OPENVR\include;$(SolutionDir)Dependencies\IRRKLANG x64\include;$(SolutionDir)Dependencies\FREETYPE x64\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src\rendering\gui\primitives;src\game;src\global;src\system;src\input;src\rendering\gui;src\leveleditor;src\other;src\rendering\primitives;src\physics;src\rendering;src;src\vendor;$(SolutionDir)Dependencies\GLFW x64\include;$(SolutionDir)Dependencies\GLEW x64\include;$(SolutionDir)Dependencies\OPENVR\include;$(SolutionDir)Dependencies\IRRKLANG x64\include;$(SolutionDir)Dependencies\FREETYPE x64\include;</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\OPENVR x64\lib;$(SolutionDir)Dependencies\FREETYPE x64\lib;$(SolutionDir)Dependencies\IRRKLANG x64\lib;$(SolutionDir)Dependencies\GLEW x64\lib\Release\x64;$(SolutionDir)Dependencies\GLFW x64\lib-vc2019</AdditionalLibraryDirectories>
-      <AdditionalDependencies>freetype.lib;irrklang.lib;openvr_api.lib;glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;</AdditionalDependencies>
+      <AdditionalDependencies>comdlg32.lib;freetype.lib;irrklang.lib;openvr_api.lib;glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -119,14 +119,14 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>src\global;src\system;src\input;src\rendering\gui;src\leveleditor;src\other;src\rendering\primitives;src\physics;src\rendering;src;src\vendor;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\OPENVR\include;$(SolutionDir)Dependencies\IRRKLANG\include;$(SolutionDir)Dependencies\FREETYPE\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src\rendering\gui\primitives;src\game;src\global;src\system;src\input;src\rendering\gui;src\leveleditor;src\other;src\rendering\primitives;src\physics;src\rendering;src;src\vendor;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\OPENVR\include;$(SolutionDir)Dependencies\IRRKLANG\include;$(SolutionDir)Dependencies\FREETYPE\include;</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\FREETYPE\lib;$(SolutionDir)Dependencies\OPENVR\lib;$(SolutionDir)Dependencies\IRRKLANG\lib;$(SolutionDir)Dependencies\GLEW\lib\Release\Win32;$(SolutionDir)Dependencies\GLFW\lib-vc2019</AdditionalLibraryDirectories>
-      <AdditionalDependencies>freetype.lib;irrklang.lib;openvr_api.lib;glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;</AdditionalDependencies>
+      <AdditionalDependencies>comdlg32.lib;freetype.lib;irrklang.lib;openvr_api.lib;glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -136,27 +136,30 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>src\global;src\system;src\input;src\rendering\gui;src\leveleditor;src\other;src\rendering\primitives;src\physics;src\rendering;src;src\vendor;$(SolutionDir)Dependencies\GLFW x64\include;$(SolutionDir)Dependencies\GLEW x64\include;$(SolutionDir)Dependencies\OPENVR\include;$(SolutionDir)Dependencies\IRRKLANG x64\include;$(SolutionDir)Dependencies\FREETYPE x64\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src\rendering\gui\primitives;src\game;src\global;src\system;src\input;src\rendering\gui;src\leveleditor;src\other;src\rendering\primitives;src\physics;src\rendering;src;src\vendor;$(SolutionDir)Dependencies\GLFW x64\include;$(SolutionDir)Dependencies\GLEW x64\include;$(SolutionDir)Dependencies\OPENVR\include;$(SolutionDir)Dependencies\IRRKLANG x64\include;$(SolutionDir)Dependencies\FREETYPE x64\include;</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\OPENVR x64\lib;$(SolutionDir)Dependencies\FREETYPE x64\lib;$(SolutionDir)Dependencies\IRRKLANG x64\lib;$(SolutionDir)Dependencies\GLEW x64\lib\Release\x64;$(SolutionDir)Dependencies\GLFW x64\lib-vc2019</AdditionalLibraryDirectories>
-      <AdditionalDependencies>freetype.lib;irrklang.lib;openvr_api.lib;glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;</AdditionalDependencies>
+      <AdditionalDependencies>comdlg32.lib;freetype.lib;irrklang.lib;openvr_api.lib;glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\game\Scene.cpp" />
     <ClCompile Include="src\global\Global.cpp" />
     <ClCompile Include="src\global\GlobalVariables.cpp" />
     <ClCompile Include="src\input\InputHandler.cpp" />
+    <ClCompile Include="src\leveleditor\SceneEditorControl.cpp" />
+    <ClCompile Include="src\rendering\gui\GUI.cpp" />
     <ClCompile Include="src\rendering\gui\Window.cpp" />
     <ClCompile Include="src\system\System.cpp" />
     <ClCompile Include="src\other\Search.cpp" />
-    <ClCompile Include="src\rendering\gui\Font.cpp" />
-    <ClCompile Include="src\rendering\gui\Mesh2D.cpp" />
-    <ClCompile Include="src\rendering\gui\Object2D.cpp" />
-    <ClCompile Include="src\rendering\gui\Sentence.cpp" />
+    <ClCompile Include="src\rendering\gui\primitives\Font.cpp" />
+    <ClCompile Include="src\rendering\gui\primitives\Mesh2D.cpp" />
+    <ClCompile Include="src\rendering\gui\primitives\Object2D.cpp" />
+    <ClCompile Include="src\rendering\gui\primitives\Sentence.cpp" />
     <ClCompile Include="src\system\IO.cpp" />
     <ClCompile Include="src\physics\AxisAlignedBoundingBox.cpp" />
     <ClCompile Include="src\physics\BoundingSphere.cpp" />
@@ -302,18 +305,21 @@
     <None Include="src\vendor\glm\gtx\wrap.inl" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\game\Scene.h" />
     <ClInclude Include="src\global\Global.h" />
     <ClInclude Include="src\global\GlobalVariables.h" />
     <ClInclude Include="src\input\Input.h" />
     <ClInclude Include="src\input\InputHandler.h" />
+    <ClInclude Include="src\leveleditor\SceneEditorControl.h" />
+    <ClInclude Include="src\rendering\gui\GUI.h" />
     <ClInclude Include="src\rendering\gui\Window.h" />
     <ClInclude Include="src\system\Callbacks.h" />
     <ClInclude Include="src\system\System.h" />
     <ClInclude Include="src\other\Search.h" />
-    <ClInclude Include="src\rendering\gui\Font.h" />
-    <ClInclude Include="src\rendering\gui\Mesh2D.h" />
-    <ClInclude Include="src\rendering\gui\Object2D.h" />
-    <ClInclude Include="src\rendering\gui\Sentence.h" />
+    <ClInclude Include="src\rendering\gui\primitives\Font.h" />
+    <ClInclude Include="src\rendering\gui\primitives\Mesh2D.h" />
+    <ClInclude Include="src\rendering\gui\primitives\Object2D.h" />
+    <ClInclude Include="src\rendering\gui\primitives\Sentence.h" />
     <ClInclude Include="src\leveleditor\LevelEditor.h" />
     <ClInclude Include="src\system\IO.h" />
     <ClInclude Include="src\physics\AxisAlignedBoundingBox.h" />

@@ -4,6 +4,7 @@
 #include "Camera.h"
 #include "Input.h"
 #include "Shader.h"
+#include "Scene.h"
 #include <chrono>
 #include <unordered_map>
 #include <vector>
@@ -53,6 +54,8 @@ namespace Atlas {
 		std::unordered_map<std::string, Shader*> shaderCache;
 	
 		std::unordered_map<std::string, GLuint> textureCache;
+
+		Scene currentScene;
 	};
 
 }

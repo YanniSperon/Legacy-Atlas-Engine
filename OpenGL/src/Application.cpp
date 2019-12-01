@@ -41,7 +41,9 @@ extern "C"
 #include "Input.h"
 #include "Global.h"
 #include "Callbacks.h"
-#include "Window.h"
+#include "GUI.h"
+#include "Scene.h"
+#include "SceneEditorControl.h"
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
@@ -49,9 +51,6 @@ extern "C"
 #include "glm/gtx/quaternion.hpp"
 #include "primitives/Vertex.h"
 #include "primitives/ShapeGenerator.h"
-
-#include "imgui/imgui.h"
-#include "imgui/imgui_impl_glfw_gl3.h"
 
 
 
@@ -167,23 +166,20 @@ int main(void)
 
 		SimpleRenderer renderer;
 
-		std::vector<Object*> objectsOnScene;
-		std::vector<Object*> preloadedObjectsOnScene;
-
 		LevelEditor::Mode currentMode(LevelEditor::cam);
 
 		Font arial24pt = Font("res/fonts/arial/", "arial.ttf", 24);
 		Font timesnewroman32pt = Font("res/fonts/times new roman/", "times.ttf", 32);
 
-		preloadedObjectsOnScene.push_back(new Object(glm::vec3(-50.0f, -50.0f, -50.0f), glm::vec3(50.0f, 50.0f, 50.0f), type::skyBox, "", "", "res/images/textures/2d/", "skybox.png", "res/shaders/", "Basic.shader", true, false, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f)));
-		preloadedObjectsOnScene.push_back(new Object(glm::vec3(-5.0f, -5.0f, -5.0f), glm::vec3(5.0f, 5.0f, 5.0f), type::normalModel, "res/models/", "plane.obj", "res/images/colors/", "white.png", "res/shaders/", "Lighting.shader", true, true, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -3.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), Material(glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(0.5f, 0.5f, 0.5f), 32.0f)));
+		Global::Variables.currentScene.lightsOnScene.push_back(new Light(LightIntensity(glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(1.0f, 1.0f, 1.0f)), glm::vec3(-0.1f, -0.1f, -0.1f), glm::vec3(0.1f, 0.1f, 0.1f), type::cubeInvertedLighting, "", "", "res/images/colors/", "yellow.png", "res/shaders/", "Lighting.shader", true, true, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 5.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), Material(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), 32.0f)));
+
+		Global::Variables.currentScene.preloadedObjectsOnScene.push_back(new Object(glm::vec3(-50.0f, -50.0f, -50.0f), glm::vec3(50.0f, 50.0f, 50.0f), type::skyBox, "", "", "res/images/textures/2d/", "skybox.png", "res/shaders/", "Basic.shader", true, false, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f)));
+		Global::Variables.currentScene.preloadedObjectsOnScene.push_back(new Object(glm::vec3(-5.0f, -5.0f, -5.0f), glm::vec3(5.0f, 5.0f, 5.0f), type::normalModel, "res/models/", "plane.obj", "res/images/colors/", "white.png", "res/shaders/", "Lighting.shader", true, true, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -3.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), Material(glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(0.5f, 0.5f, 0.5f), 32.0f)));
 
 		bool loadFile = true;
 		if (loadFile) {
-			IO::LoadFile(objectsOnScene, "res/other/", "level.lvl");
+			IO::LoadFile(Global::Variables.currentScene.objectsOnScene, "res/other/", "level.lvl");
 		}
-
-		Light* light = new Light(LightIntensity(glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(1.0f, 1.0f, 1.0f)), glm::vec3(-0.1f, -0.1f, -0.1f), glm::vec3(0.1f, 0.1f, 0.1f), type::cubeInvertedLighting, "", "", "res/images/colors/", "yellow.png", "res/shaders/", "Lighting.shader", true, true, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 5.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), Material(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), 32.0f));
 
 		//GLuint leftEyeFrameBuffer;
 		//glGenFramebuffers(1, &leftEyeFrameBuffer);
@@ -198,12 +194,9 @@ int main(void)
 
 		LevelEditor::EditorType currentEditorType(LevelEditor::scene);
 
-		ImGui::CreateContext();
+		
+		GUI::Initialize(window);
 
-		ImGuiIO& io = ImGui::GetIO(); (void)io;
-
-		ImGui_ImplGlfwGL3_Init(window, true);
-		ImGui::StyleColorsDark();
 
 		glm::vec3 camPos(0.0f, 0.0f, 0.0f);
 		glfwSetCursorPos(window, 0.0, 0.0);
@@ -216,8 +209,8 @@ int main(void)
 		engine->setSoundVolume(1);
 
 		unsigned int selectedObject;
-		if (objectsOnScene.size() > 0) {
-			selectedObject = objectsOnScene.size() - 1;
+		if (Global::Variables.currentScene.objectsOnScene.size() > 0) {
+			selectedObject = Global::Variables.currentScene.objectsOnScene.size() - 1;
 		}
 		else {
 			selectedObject = 0;
@@ -234,8 +227,6 @@ int main(void)
 			///////////////////////////////////////////////////////////////////////////
 			glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 			///////////////////////////////////////////////////////////////////////////
-			ImGui_ImplGlfwGL3_NewFrame();
-			///////////////////////////////////////////////////////////////////////////
 			InputHandler::ProcessEvents(&Global::Variables.keyIn, &Global::Variables.mouseIn);
 			///////////////////////////////////////////////////////////////////////////
 			float deltaTime = (float)deltaT * timeConstant;
@@ -248,310 +239,25 @@ int main(void)
 				glfwSetWindowShouldClose(window, GLFW_TRUE);
 			}
 			else if ((Global::Variables.keyIn.leftControlHeld && Global::Variables.keyIn.sHeld) || (Global::Variables.keyIn.leftControlPressed && Global::Variables.keyIn.sPressed) || (Global::Variables.keyIn.leftControlHeld && Global::Variables.keyIn.sPressed) || (Global::Variables.keyIn.leftControlPressed && Global::Variables.keyIn.sHeld)) {
-				IO::SaveToFile(objectsOnScene, "res/other/", "level.lvl");
+				IO::SaveToFile(Global::Variables.currentScene.objectsOnScene, "res/other/", "level.lvl");
+			}
+			if (Global::Variables.keyIn.uPressed) {
+				std::string filename = System::FileOpenDialog("testing", window);
+				IO::Test(filename);
 			}
 			///////////////////////////////////////////////////////////////////////////
 			if (EditorEnabled) {
-				if (Global::Variables.keyIn.onePressed) {
-					currentEditorType = LevelEditor::EditorType::scene;
-				}
-
-				if (Global::Variables.keyIn.twoPressed) {
-					currentEditorType = LevelEditor::EditorType::light;
-				}
-
-				if ((objectsOnScene.size() > 0 && currentEditorType == LevelEditor::EditorType::scene) || (currentEditorType == LevelEditor::EditorType::light)) {
-					if (Global::Variables.keyIn.cPressed) {
-						currentMode = LevelEditor::Mode::cam;
-					}
-					else if (Global::Variables.keyIn.ePressed) {
-						currentMode = LevelEditor::Mode::scale;
-					}
-					else if (Global::Variables.keyIn.rPressed) {
-						currentMode = LevelEditor::Mode::rotate;
-					}
-					else if (Global::Variables.keyIn.vPressed) {
-						currentMode = LevelEditor::Mode::translate;
-					}
-					else if (Global::Variables.keyIn.tPressed) {
-						currentMode = LevelEditor::Mode::texture;
-					}
-				}
-				else {
-					currentMode = LevelEditor::Mode::cam;
-				}
-				///////////////////////////////////////////////////////////////////////////
-				if (currentEditorType == LevelEditor::EditorType::scene) {
-					if (currentMode == LevelEditor::Mode::scale) {
-						if (Global::Variables.keyIn.wHeld) {
-							objectsOnScene[selectedObject]->ScaleAdd3f(0.0f, 0.0f, -Global::Variables.movementSpeed * deltaTime);
-						}
-						if (Global::Variables.keyIn.sHeld) {
-							objectsOnScene[selectedObject]->ScaleAdd3f(0.0f, 0.0f, Global::Variables.movementSpeed * deltaTime);
-						}
-						if (Global::Variables.keyIn.aHeld) {
-							objectsOnScene[selectedObject]->ScaleAdd3f(-Global::Variables.movementSpeed * deltaTime, 0.0f, 0.0f);
-						}
-						if (Global::Variables.keyIn.dHeld) {
-							objectsOnScene[selectedObject]->ScaleAdd3f(Global::Variables.movementSpeed * deltaTime, 0.0f, 0.0f);
-						}
-						if (Global::Variables.keyIn.spaceHeld) {
-							objectsOnScene[selectedObject]->ScaleAdd3f(0.0f, Global::Variables.movementSpeed * deltaTime, 0.0f);
-						}
-						if (Global::Variables.keyIn.leftControlHeld) {
-							objectsOnScene[selectedObject]->ScaleAdd3f(0.0f, -Global::Variables.movementSpeed * deltaTime, 0.0f);
-						}
-					}
-					else if (currentMode == LevelEditor::Mode::translate) {
-						if (Global::Variables.keyIn.wHeld) {
-							objectsOnScene[selectedObject]->TranslateAdd3f(0.0f, 0.0f, -Global::Variables.movementSpeed * deltaTime);
-						}
-						if (Global::Variables.keyIn.sHeld) {
-							objectsOnScene[selectedObject]->TranslateAdd3f(0.0f, 0.0f, Global::Variables.movementSpeed * deltaTime);
-						}
-						if (Global::Variables.keyIn.aHeld) {
-							objectsOnScene[selectedObject]->TranslateAdd3f(-Global::Variables.movementSpeed * deltaTime, 0.0f, 0.0f);
-						}
-						if (Global::Variables.keyIn.dHeld) {
-							objectsOnScene[selectedObject]->TranslateAdd3f(Global::Variables.movementSpeed * deltaTime, 0.0f, 0.0f);
-						}
-						if (Global::Variables.keyIn.spaceHeld) {
-							objectsOnScene[selectedObject]->TranslateAdd3f(0.0f, Global::Variables.movementSpeed * deltaTime, 0.0f);
-						}
-						if (Global::Variables.keyIn.leftControlHeld) {
-							objectsOnScene[selectedObject]->TranslateAdd3f(0.0f, -Global::Variables.movementSpeed * deltaTime, 0.0f);
-						}
-					}
-					else if (currentMode == LevelEditor::Mode::cam) {
-						if (Global::Variables.keyIn.wHeld) {
-							Global::Variables.camera.MoveForward(deltaTime);
-						}
-						if (Global::Variables.keyIn.sHeld) {
-							Global::Variables.camera.MoveBackward(deltaTime);
-						}
-						if (Global::Variables.keyIn.aHeld) {
-							Global::Variables.camera.StrafeLeft(deltaTime);
-						}
-						if (Global::Variables.keyIn.dHeld) {
-							Global::Variables.camera.StrafeRight(deltaTime);
-						}
-						if (Global::Variables.keyIn.spaceHeld) {
-							Global::Variables.camera.MoveUp(deltaTime);
-						}
-						if (Global::Variables.keyIn.leftControlHeld) {
-							Global::Variables.camera.MoveDown(deltaTime);
-						}
-					}
-					else if (currentMode == LevelEditor::Mode::rotate) {
-						if (Global::Variables.keyIn.wHeld) {
-							objectsOnScene[selectedObject]->RotateAdd3f(0.0f, 0.0f, glm::degrees(-Global::Variables.movementSpeed * deltaTime));
-						}
-						if (Global::Variables.keyIn.sHeld) {
-							objectsOnScene[selectedObject]->RotateAdd3f(0.0f, 0.0f, glm::degrees(Global::Variables.movementSpeed * deltaTime));
-						}
-						if (Global::Variables.keyIn.aHeld) {
-							objectsOnScene[selectedObject]->RotateAdd3f(glm::degrees(-Global::Variables.movementSpeed * deltaTime), 0.0f, 0.0f);
-						}
-						if (Global::Variables.keyIn.dHeld) {
-							objectsOnScene[selectedObject]->RotateAdd3f(glm::degrees(Global::Variables.movementSpeed * deltaTime), 0.0f, 0.0f);
-						}
-						if (Global::Variables.keyIn.spaceHeld) {
-							objectsOnScene[selectedObject]->RotateAdd3f(0.0f, glm::degrees(Global::Variables.movementSpeed * deltaTime), 0.0f);
-						}
-						if (Global::Variables.keyIn.leftControlHeld) {
-							objectsOnScene[selectedObject]->RotateAdd3f(0.0f, glm::degrees(-Global::Variables.movementSpeed * deltaTime), 0.0f);
-						}
-					}
-
-					if (Global::Variables.keyIn.leftBracketPressed) {
-						if (selectedObject > 0) {
-							selectedObject--;
-						}
-					}
-					if (Global::Variables.keyIn.rightBracketPressed) {
-						if (selectedObject < objectsOnScene.size() - 1) {
-							selectedObject++;
-						}
-					}
-					if (Global::Variables.keyIn.nPressed) {
-						System::Log("Cube created!");
-						objectsOnScene.push_back(new AABBCollidable(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), type::cubeModel, "", "", "res/images/textures/2d/", "newcow.png", "res/shaders/", "Lighting.shader", true, true, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), Material(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), 32.0f), 1.0f, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), 1.0f, glm::vec3(0.0f, 0.0f, 0.0f)));
-						selectedObject = objectsOnScene.size() - 1;
-					}
-					if (Global::Variables.keyIn.backspacePressed) {
-						if (objectsOnScene.size() > 0) {
-							System::Log("Object deleted!");
-							delete objectsOnScene[selectedObject];
-							objectsOnScene.erase(objectsOnScene.begin() + selectedObject);
-
-							if (selectedObject > 0) {
-								selectedObject--;
-							}
-							else {
-								selectedObject = 0;
-							}
-						}
-					}
-				}
-				else if (currentEditorType == LevelEditor::EditorType::light) {
-					if (currentMode == LevelEditor::Mode::scale) {
-						if (Global::Variables.keyIn.wHeld) {
-							light->ScaleAdd3f(0.0f, 0.0f, -Global::Variables.movementSpeed * deltaTime);
-						}
-						if (Global::Variables.keyIn.sHeld) {
-							light->ScaleAdd3f(0.0f, 0.0f, Global::Variables.movementSpeed * deltaTime);
-						}
-						if (Global::Variables.keyIn.aHeld) {
-							light->ScaleAdd3f(-Global::Variables.movementSpeed * deltaTime, 0.0f, 0.0f);
-						}
-						if (Global::Variables.keyIn.dHeld) {
-							light->ScaleAdd3f(Global::Variables.movementSpeed * deltaTime, 0.0f, 0.0f);
-						}
-						if (Global::Variables.keyIn.spaceHeld) {
-							light->ScaleAdd3f(0.0f, Global::Variables.movementSpeed * deltaTime, 0.0f);
-						}
-						if (Global::Variables.keyIn.leftControlHeld) {
-							light->ScaleAdd3f(0.0f, -Global::Variables.movementSpeed * deltaTime, 0.0f);
-						}
-					}
-					else if (currentMode == LevelEditor::Mode::translate) {
-						if (Global::Variables.keyIn.wHeld) {
-							light->TranslateAdd3f(0.0f, 0.0f, -Global::Variables.movementSpeed * deltaTime);
-						}
-						if (Global::Variables.keyIn.sHeld) {
-							light->TranslateAdd3f(0.0f, 0.0f, Global::Variables.movementSpeed * deltaTime);
-						}
-						if (Global::Variables.keyIn.aHeld) {
-							light->TranslateAdd3f(-Global::Variables.movementSpeed * deltaTime, 0.0f, 0.0f);
-						}
-						if (Global::Variables.keyIn.dHeld) {
-							light->TranslateAdd3f(Global::Variables.movementSpeed * deltaTime, 0.0f, 0.0f);
-						}
-						if (Global::Variables.keyIn.spaceHeld) {
-							light->TranslateAdd3f(0.0f, Global::Variables.movementSpeed * deltaTime, 0.0f);
-						}
-						if (Global::Variables.keyIn.leftControlHeld) {
-							light->TranslateAdd3f(0.0f, -Global::Variables.movementSpeed * deltaTime, 0.0f);
-						}
-					}
-					else if (currentMode == LevelEditor::Mode::cam) {
-						if (Global::Variables.keyIn.wHeld) {
-							Global::Variables.camera.MoveForward(deltaTime);
-						}
-						if (Global::Variables.keyIn.sHeld) {
-							Global::Variables.camera.MoveBackward(deltaTime);
-						}
-						if (Global::Variables.keyIn.aHeld) {
-							Global::Variables.camera.StrafeLeft(deltaTime);
-						}
-						if (Global::Variables.keyIn.dHeld) {
-							Global::Variables.camera.StrafeRight(deltaTime);
-						}
-						if (Global::Variables.keyIn.spaceHeld) {
-							Global::Variables.camera.MoveUp(deltaTime);
-						}
-						if (Global::Variables.keyIn.leftControlHeld) {
-							Global::Variables.camera.MoveDown(deltaTime);
-						}
-					}
-					else if (currentMode == LevelEditor::Mode::rotate) {
-						if (Global::Variables.keyIn.wHeld) {
-							light->RotateAdd3f(0.0f, 0.0f, glm::degrees(-Global::Variables.movementSpeed * deltaTime));
-						}
-						if (Global::Variables.keyIn.sHeld) {
-							light->RotateAdd3f(0.0f, 0.0f, glm::degrees(Global::Variables.movementSpeed * deltaTime));
-						}
-						if (Global::Variables.keyIn.aHeld) {
-							light->RotateAdd3f(glm::degrees(-Global::Variables.movementSpeed * deltaTime), 0.0f, 0.0f);
-						}
-						if (Global::Variables.keyIn.dHeld) {
-							light->RotateAdd3f(glm::degrees(Global::Variables.movementSpeed* deltaTime), 0.0f, 0.0f);
-						}
-						if (Global::Variables.keyIn.spaceHeld) {
-							light->RotateAdd3f(0.0f, glm::degrees(Global::Variables.movementSpeed * deltaTime), 0.0f);
-						}
-						if (Global::Variables.keyIn.leftControlHeld) {
-							light->RotateAdd3f(0.0f, glm::degrees(-Global::Variables.movementSpeed * deltaTime), 0.0f);
-						}
-					}
-				}
+				LevelEditor::SceneEditorControl::Control(currentEditorType, currentMode, selectedObject, deltaTime);
 			}
 			///////////////////////////////////////////////////////////////////////////
 			Global::Variables.camera.ChangeMovementSpeed(Global::Variables.movementSpeed);
 			camPos = Global::Variables.camera.GetTranslation();
-			Global::Variables.camera.BringWith(preloadedObjectsOnScene[0]);
-			///////////////////////////////////////////////////////////////////////////
+			Global::Variables.camera.BringWith(Global::Variables.currentScene.preloadedObjectsOnScene[0]);
 			glm::mat4 viewMatrix = Global::Variables.camera.GetViewTransformMatrix();
-			for (unsigned int i = 0; i < preloadedObjectsOnScene.size(); i++) {
-				if (i == 0) {
-					renderer.SubmitForceRender3D(preloadedObjectsOnScene[i]);
-				}
-				else {
-					renderer.Submit3D(preloadedObjectsOnScene[i], camPos);
-				}
-			}
-			for (unsigned int i = 0; i < objectsOnScene.size(); i++) {
-				renderer.Submit3D(objectsOnScene[i], camPos);
-			}
+			Global::Variables.currentScene.Submit(&renderer, camPos, viewMatrix);
 			///////////////////////////////////////////////////////////////////////////
 			if (GUIEnabled) {
-				static bool EnableDebug = true;
-				static bool EnableSpawnMenu = true;
-				static bool EnableConsole = true;
-				static bool EnableInfoPage = true;
-				static bool ShouldToggleVSync = false;
-				static bool GUIEnabled = true;
-				static bool EnableObjectInfoPage = true;
-				if (Global::Variables.keyIn.leftAltPressed) {
-					glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-					Global::Variables.enableMouseMove = false;
-				}
-				if (Global::Variables.keyIn.leftAltReleased) {
-					glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-					Global::Variables.enableMouseMove = true;
-					glfwSetCursorPos(window, Global::Variables.mouseX, Global::Variables.mouseY);
-				}
-				if (Global::Variables.keyIn.tildePressed) {
-					EnableConsole = !EnableConsole;
-				}
-
-				{
-					ImGui::Begin("File", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
-					ImGui::Checkbox("Enable Info Page##infoControl", &EnableInfoPage);
-					ImGui::Checkbox("Enable Spawn Menu##spawnControl", &EnableSpawnMenu);
-					ImGui::Checkbox("Enable Debug Options##debugControl", &EnableDebug);
-					ImGui::Checkbox("Enable Object Settings##objectSettingsControl", &EnableObjectInfoPage);
-					ImGui::Separator();
-					if (ImGui::Button("Save##saveButton")) {
-						IO::SaveToFile(objectsOnScene, "res/other/", "level.lvl");
-					}
-					if (ImGui::Button("Close##closeButton")) {
-						glfwSetWindowShouldClose(window, GLFW_TRUE);
-					}
-					ImGui::End();
-				}
-
-				if (EnableDebug) {
-					Window::DrawDebug(EnableConsole);
-				}
-
-				if (EnableSpawnMenu) {
-					Window::DrawSpawnWindow(objectsOnScene, selectedObject);
-				}
-
-				if (EnableInfoPage) {
-					Window::DrawInfoWindow(currentEditorType, currentMode);
-				}
-
-				if (EnableObjectInfoPage) {
-					if (objectsOnScene.size() > 0 && selectedObject < objectsOnScene.size() && selectedObject >= 0) {
-						Window::DrawObjectSettingsWindow(objectsOnScene[selectedObject]);
-					}
-				}
-
-				if (EnableConsole) {
-					System::DrawConsole();
-				}
+				GUI::LoadLevelEditorGUI(window, currentEditorType, currentMode, selectedObject);
 			}
 			///////////////////////////////////////////////////////////////////////////
 			//if (hasVR) {
@@ -571,22 +277,19 @@ int main(void)
 			//	}
 			//}
 			///////////////////////////////////////////////////////////////////////////
-			renderer.SimpleFlush(&Global::Variables.camera, Global::Variables.currentWidth, Global::Variables.currentHeight, Global::Variables.FOV, light);
+			renderer.SimpleFlush(&Global::Variables.camera, Global::Variables.currentWidth, Global::Variables.currentHeight, Global::Variables.FOV, Global::Variables.currentScene.lightsOnScene.at(0));
 			///////////////////////////////////////////////////////////////////////////
-			ImGui::Render();
-			ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
+			GUI::Draw();
 			glfwSwapBuffers(window);
 			///////////////////////////////////////////////////////////////////////////
 			InputHandler::Flush(&Global::Variables.keyIn, &Global::Variables.mouseIn);
 			///////////////////////////////////////////////////////////////////////////
 		}
-		IO::SaveToFile(objectsOnScene, "res/other/", "level.lvl");
+		Global::Variables.currentScene.Save("res/other/", "level.lvl");
 		Global::Variables.config.WriteConfig("res/other/", "config.cfg");
 		Mesh::CleanUpCache();
 	}
-
-	ImGui_ImplGlfwGL3_Shutdown();
-	ImGui::DestroyContext();
+	GUI::Terminate();
 	glfwTerminate();
 	return 0;
 }

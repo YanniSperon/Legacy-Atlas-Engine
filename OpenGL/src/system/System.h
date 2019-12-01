@@ -1,6 +1,10 @@
 #pragma once
 #include <string>
 #include <vector>
+#include "GL/glew.h"
+#include "GLFW/glfw3.h"
+#define GLFW_EXPOSE_NATIVE_WIN32
+#include "GLFW/glfw3native.h"
 
 namespace Atlas {
 	class System {
@@ -12,5 +16,7 @@ namespace Atlas {
 		static void SendConsoleCommand(std::string command);
 
 		static void DrawConsole();
+
+		static std::string FileOpenDialog(std::string label, GLFWwindow* window);
 	};
 };
