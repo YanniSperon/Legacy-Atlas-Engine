@@ -17,6 +17,6 @@ namespace Atlas {
 
 		static void DrawConsole();
 
-		static std::string FileOpenDialog(std::string label, GLFWwindow* window);
+		static std::string FileOpenDialog(std::string label, LPCSTR filter, GLFWwindow* window);
 	};
 };

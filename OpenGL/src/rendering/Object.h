@@ -66,5 +66,7 @@ namespace Atlas {
 		void SetHasLighting(bool newValue);
 
 		virtual std::string GetType() override;
+
+		static void FlushCache();
 	};
 }

@@ -253,4 +253,17 @@ namespace Atlas {
 	{
 		return "Object";
 	}
+	void Object::FlushCache()
+	{
+		for (auto it : Global::Variables.textureCache) {
+			glDeleteTextures(1, &it.second);
+		}
+		Global::Variables.textureCache.erase(Global::Variables.textureCache.begin(), Global::Variables.textureCache.end());
+
+		for (auto it : Global::Variables.shaderCache) {
+			it.second->Unbind();
+			delete it.second;
+		}
+		Global::Variables.shaderCache.erase(Global::Variables.shaderCache.begin(), Global::Variables.shaderCache.end());
+	}
 }

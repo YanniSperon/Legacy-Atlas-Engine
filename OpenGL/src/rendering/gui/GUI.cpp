@@ -23,6 +23,7 @@ namespace Atlas {
 		static bool EnableSpawnMenu = true;
 		static bool EnableConsole = true;
 		static bool EnableInfoPage = true;
+		static bool EnableFileManager = true;
 		static bool ShouldToggleVSync = false;
 		static bool GUIEnabled = true;
 		static bool EnableObjectInfoPage = true;
@@ -75,6 +76,10 @@ namespace Atlas {
 
 		if (EnableConsole) {
 			System::DrawConsole();
+		}
+
+		if (EnableFileManager) {
+			Window::DrawFileManager(window);
 		}
 	}
 

@@ -580,24 +580,4 @@ namespace Atlas {
 		}
 		outfile.close();
 	}
-	
-	void IO::Test(std::string file)
-	{
-		System::Log(file);
-		std::size_t botDirPos = file.find_last_of("\\");
-		std::string meshDir = "";
-		std::string meshName = "";
-		if (botDirPos != std::string::npos) {
-			System::Log(std::to_string(botDirPos));
-			meshDir = file.substr(0, botDirPos + 1);
-			meshName = file.substr(botDirPos + 1);
-			System::Log("meshDir: \"" + meshDir + "\"");
-			System::Log("meshName: \"" + meshName + "\"");
-		}
-		else {
-			meshName = file;
-		}
-
-		Global::Variables.currentScene.objectsOnScene.push_back(new Object(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), type::normalModel, meshDir, meshName, "res/images/colors/", "white.png", "res/shaders/", "Lighting.shader", true, true));
-	}
 }

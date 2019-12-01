@@ -55,6 +55,12 @@ namespace Atlas {
 	
 		std::unordered_map<std::string, GLuint> textureCache;
 
+		std::unordered_map<std::string, std::string> loadedMeshCache;
+
+		std::unordered_map<std::string, std::string> loadedTextureCache;
+
+		std::unordered_map<std::string, std::string> loadedShaderCache;
+
 		Scene currentScene;
 	};
 

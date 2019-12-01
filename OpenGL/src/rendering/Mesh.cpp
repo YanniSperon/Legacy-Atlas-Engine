@@ -345,7 +345,7 @@ namespace Atlas {
 		return "Mesh";
 	}
 
-	void Mesh::CleanUpCache()
+	void Mesh::FlushCache()
 	{
 		for (auto it : Global::Variables.meshCache) {
 			it.second.cleanUp();

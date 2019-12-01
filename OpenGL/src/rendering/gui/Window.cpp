@@ -2,8 +2,69 @@
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw_gl3.h"
 #include "System.h"
+#include "Global.h"
+#include "Loader.h"
+#include "ShapeGenerator.h"
 
 namespace Atlas {
+
+	static int AddValueMesh(std::string meshName, int value) {
+		if (value == 0) {
+			if (Global::Variables.loadedMeshCache.find(meshName) != Global::Variables.loadedMeshCache.end()) {
+				return AddValueMesh(meshName, value + 1);
+			}
+			else {
+				return value;
+			}
+		}
+		else {
+			if (Global::Variables.loadedMeshCache.find(meshName + std::to_string(value)) != Global::Variables.loadedMeshCache.end()) {
+				return AddValueMesh(meshName, value + 1);
+			}
+			else {
+				return value;
+			}
+		}
+	}
+	
+	static int AddValueTexture(std::string meshName, int value) {
+		if (value == 0) {
+			if (Global::Variables.loadedTextureCache.find(meshName) != Global::Variables.loadedTextureCache.end()) {
+				return AddValueTexture(meshName, value + 1);
+			}
+			else {
+				return value;
+			}
+		}
+		else {
+			if (Global::Variables.loadedTextureCache.find(meshName + std::to_string(value)) != Global::Variables.loadedTextureCache.end()) {
+				return AddValueTexture(meshName, value + 1);
+			}
+			else {
+				return value;
+			}
+		}
+	}
+	
+	static int AddValueShader(std::string meshName, int value) {
+		if (value == 0) {
+			if (Global::Variables.loadedShaderCache.find(meshName) != Global::Variables.loadedShaderCache.end()) {
+				return AddValueShader(meshName, value + 1);
+			}
+			else {
+				return value;
+			}
+		}
+		else {
+			if (Global::Variables.loadedShaderCache.find(meshName + std::to_string(value)) != Global::Variables.loadedShaderCache.end()) {
+				return AddValueShader(meshName, value + 1);
+			}
+			else {
+				return value;
+			}
+		}
+	}
+
 	void Window::DrawObjectSettingsWindow(Object* object)
 	{
 		static char InputModificationStringTextureDirectory[128] = "res/images/textures/3d/";
@@ -217,6 +278,96 @@ namespace Atlas {
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::Separator();
 		ImGui::Checkbox("Enable Console##consoleControl", &EnableConsole);
+		ImGui::End();
+	}
+
+	void Window::DrawFileManager(GLFWwindow* window)
+	{
+		ImGui::Begin("File Manager", NULL);
+		if (ImGui::Button("Load new mesh##loadmeshbutton1")) {
+			std::string file = System::FileOpenDialog("Select a mesh to load", "OBJECT File\0*.obj\0", window);
+			if (file != "INVALID") {
+				std::size_t lastSlashPos = file.find_last_of("\\");
+				std::string meshDir = "";
+				std::string meshName = "";
+				if (lastSlashPos != std::string::npos) {
+					meshDir = file.substr(0, lastSlashPos + 1);
+					meshName = file.substr(lastSlashPos + 1);
+				}
+				else {
+					meshName = file;
+				}
+				std::string val = std::to_string(AddValueMesh(meshName, 0));
+				if (val == "0") {
+					Global::Variables.loadedMeshCache[meshName] = (meshDir + meshName);
+				}
+				else {
+					Global::Variables.loadedMeshCache[meshName + val] = (meshDir + meshName);
+				}
+				try {
+					if (Global::Variables.meshCache.find(meshDir + meshName) == Global::Variables.meshCache.end()) {
+						Global::Variables.meshCache[meshDir + meshName] = ShapeGenerator::loadShape(meshDir + meshName, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+					}
+				}
+				catch (const std::exception & e) {
+					if (Global::Variables.meshCache.find(meshDir + meshName) == Global::Variables.meshCache.end()) {
+						Global::Variables.meshCache[meshDir + meshName] = ShapeGenerator::loadTexturedShape(meshDir, meshName, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+					}
+				}
+			}
+		}
+		if (ImGui::Button("Load new texture##loadtexturebutton1")) {
+			std::string file = System::FileOpenDialog("Select a texture to load", "Portable Network Graphics\0*.png\0", window);
+			if (file != "INVALID") {
+				std::size_t lastSlashPos = file.find_last_of("\\");
+				std::string texDir = "";
+				std::string texName = "";
+				if (lastSlashPos != std::string::npos) {
+					texDir = file.substr(0, lastSlashPos + 1);
+					texName = file.substr(lastSlashPos + 1);
+				}
+				else {
+					texName = file;
+				}
+				std::string val = std::to_string(AddValueTexture(texName, 0));
+				if (val == "0") {
+					Global::Variables.loadedTextureCache[texName] = (texDir + texName);
+				}
+				else {
+					Global::Variables.loadedTextureCache[texName + val] = (texDir + texName);
+				}
+
+				if (Global::Variables.textureCache.find(texDir + texName) == Global::Variables.textureCache.end()) {
+					Global::Variables.textureCache[texDir + texName] = Loader::LoadTexture(texDir, texName, GL_REPEAT, GL_REPEAT, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
+				}
+			}
+		}
+		if (ImGui::Button("Load new shader##loadshaderbutton1")) {
+			std::string file = System::FileOpenDialog("Select a shader to load", "SHADER File\0*.shader\0", window);
+			if (file != "INVALID") {
+				std::size_t lastSlashPos = file.find_last_of("\\");
+				std::string shaderDir = "";
+				std::string shaderName = "";
+				if (lastSlashPos != std::string::npos) {
+					shaderDir = file.substr(0, lastSlashPos + 1);
+					shaderName = file.substr(lastSlashPos + 1);
+				}
+				else {
+					shaderName = file;
+				}
+				std::string val = std::to_string(AddValueTexture(shaderName, 0));
+				if (val == "0") {
+					Global::Variables.loadedShaderCache[shaderName] = (shaderDir + shaderName);
+				}
+				else {
+					Global::Variables.loadedShaderCache[shaderName + val] = (shaderDir + shaderName);
+				}
+
+				if (Global::Variables.shaderCache.find(shaderDir + shaderName) == Global::Variables.shaderCache.end()) {
+					Global::Variables.shaderCache[shaderDir + shaderName] = new Shader(shaderDir + shaderName);
+				}
+			}
+		}
 		ImGui::End();
 	}
 }

@@ -61,6 +61,6 @@ namespace Atlas {
 		std::string GetModelType();
 		virtual std::string GetType();
 
-		static void CleanUpCache();
+		static void FlushCache();
 	};
 }

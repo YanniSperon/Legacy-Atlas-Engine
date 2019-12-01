@@ -158,7 +158,7 @@ namespace Atlas {
 		ImGui::End();
 	}
 
-	std::string System::FileOpenDialog(std::string label, GLFWwindow* window)
+	std::string System::FileOpenDialog(std::string label, LPCSTR filter, GLFWwindow* window)
 	{
 		char filename[MAX_PATH];
 
@@ -167,7 +167,7 @@ namespace Atlas {
 		ZeroMemory(&ofn, sizeof(ofn));
 		ofn.lStructSize = sizeof(ofn);
 		ofn.hwndOwner = glfwGetWin32Window(window); // glfwGetWindowHandle();  // If you have a window to center over, put its HANDLE here
-		ofn.lpstrFilter = "Any File\0*.*\0";
+		ofn.lpstrFilter = filter; // "Any File\0*.*\0"
 		ofn.lpstrFile = filename;
 		ofn.nMaxFile = MAX_PATH;
 		ofn.lpstrTitle = const_cast<char*>(label.c_str());

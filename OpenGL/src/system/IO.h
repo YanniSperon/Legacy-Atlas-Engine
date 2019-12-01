@@ -18,7 +18,5 @@ namespace Atlas {
 
 		static void LoadFile(std::vector<Sentence*>& vec, const std::string dir, const std::string fileName);
 		static void SaveToFile(std::vector<Sentence*>& vec, const std::string dir, const std::string fileName);
-
-		static void Test(std::string file);
 	};
 }

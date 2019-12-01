@@ -118,9 +118,7 @@ int main(void)
 		}
 	}
 
-	for (int i = 0; i < 10; i++) {
-		Global::Variables.consoleLog.push_back("");
-	}
+	
 	
 	System::Log("Vendor: " + std::string((char*)glGetString(GL_VENDOR)));
 	System::Log("Model: " + std::string((char*)glGetString(GL_RENDERER)));
@@ -241,10 +239,6 @@ int main(void)
 			else if ((Global::Variables.keyIn.leftControlHeld && Global::Variables.keyIn.sHeld) || (Global::Variables.keyIn.leftControlPressed && Global::Variables.keyIn.sPressed) || (Global::Variables.keyIn.leftControlHeld && Global::Variables.keyIn.sPressed) || (Global::Variables.keyIn.leftControlPressed && Global::Variables.keyIn.sHeld)) {
 				IO::SaveToFile(Global::Variables.currentScene.objectsOnScene, "res/other/", "level.lvl");
 			}
-			if (Global::Variables.keyIn.uPressed) {
-				std::string filename = System::FileOpenDialog("testing", window);
-				IO::Test(filename);
-			}
 			///////////////////////////////////////////////////////////////////////////
 			if (EditorEnabled) {
 				LevelEditor::SceneEditorControl::Control(currentEditorType, currentMode, selectedObject, deltaTime);
@@ -287,7 +281,8 @@ int main(void)
 		}
 		Global::Variables.currentScene.Save("res/other/", "level.lvl");
 		Global::Variables.config.WriteConfig("res/other/", "config.cfg");
-		Mesh::CleanUpCache();
+		Mesh::FlushCache();
+		Object::FlushCache();
 	}
 	GUI::Terminate();
 	glfwTerminate();

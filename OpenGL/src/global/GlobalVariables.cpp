@@ -36,11 +36,21 @@ namespace Atlas {
 
 		consoleLog = std::vector<std::string>();
 
+		for (int i = 0; i < 10; i++) {
+			consoleLog.push_back("");
+		}
+
 		meshCache = std::unordered_map<std::string, ShapeData>();
 		
 		shaderCache = std::unordered_map<std::string, Shader*>();
 
 		textureCache = std::unordered_map<std::string, GLuint>();
+
+		loadedMeshCache = std::unordered_map<std::string, std::string>();
+		
+		loadedTextureCache = std::unordered_map<std::string, std::string>();
+		
+		loadedShaderCache = std::unordered_map<std::string, std::string>();
 
 		currentScene = Scene();
 	}
