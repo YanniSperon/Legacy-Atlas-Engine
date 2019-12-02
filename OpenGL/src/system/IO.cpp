@@ -4,11 +4,12 @@
 #include "AABBCollidable.h"
 #include "PhysicsBody.h"
 #include "Global.h"
+#include "System.h"
 #include <iostream>
 #include <fstream>
 #include <future>
 #include <chrono>
-#include <System.h>
+#include <fstream>
 
 namespace Atlas {
 

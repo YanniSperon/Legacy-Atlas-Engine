@@ -9,6 +9,10 @@
 namespace Atlas {
 	class System {
 	public:
+		static bool DoesFileExist(const std::string& filePath);
+		static bool HasValidFileAttributes(const std::string& filePath);
+		static bool CopyFileAtlas(const std::string& originalFilePathAndName, const std::string& finalFilePath);
+
 		static void Log(std::string text);
 		static void Warn(std::string text);
 		static void Err(std::string text);

@@ -5,8 +5,49 @@
 #include <iostream>
 #include <chrono>
 #include <Windows.h>
+#include <fstream>
 
 namespace Atlas {
+
+	bool System::DoesFileExist(const std::string& filePath)
+	{
+		std::ifstream file(filePath);
+		if (file.is_open() == true)
+		{
+			return true;
+		}
+		return false;
+	}
+
+	bool System::HasValidFileAttributes(const std::string& filePath)
+	{
+		DWORD attr = GetFileAttributes(filePath.c_str());
+		if (attr == INVALID_FILE_ATTRIBUTES || (attr & FILE_ATTRIBUTE_DIRECTORY)) {
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
+
+	bool System::CopyFileAtlas(const std::string& originalFilePathAndName, const std::string& finalFilePath)
+	{
+		if (HasValidFileAttributes(originalFilePathAndName) && HasValidFileAttributes(finalFilePath)) {
+			std::ifstream  src(originalFilePathAndName, std::ios::binary);
+			std::ofstream  dst(finalFilePath, std::ios::binary);
+
+			if (src.is_open() && dst.is_open()) {
+				dst << src.rdbuf();
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+		else {
+			return false;
+		}
+	}
 
 	void System::Log(std::string text)
 	{

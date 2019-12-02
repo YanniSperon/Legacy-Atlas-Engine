@@ -77,12 +77,12 @@ int main(void)
 				window = glfwCreateWindow(Global::Variables.initialWidth, Global::Variables.initialHeight, "Atlas", glfwGetPrimaryMonitor(), NULL);
 			}
 			else {
-				glfwWindowHint(GLFW_DECORATED, false);
+				//glfwWindowHint(GLFW_DECORATED, false);
 				window = glfwCreateWindow(Global::Variables.initialWidth, Global::Variables.initialHeight, "Atlas", NULL, NULL);
 			}
 		}
 		else {
-			glfwWindowHint(GLFW_DECORATED, false);
+			//glfwWindowHint(GLFW_DECORATED, false);
 			window = glfwCreateWindow(Global::Variables.initialWidth, Global::Variables.initialHeight, "Atlas", NULL, NULL);
 		}
 	}
@@ -212,6 +212,10 @@ int main(void)
 		}
 		else {
 			selectedObject = 0;
+		}
+
+		if (System::CopyFileAtlas("C:\\Dev\\Visual Studio\\C++ Projects\\Level Editor\\test.txt", "C:\\Dev\\Visual Studio\\C++ Projects\\Level Editor\\OpenGL\\res\\test.txt")) {
+			printf("Successfully copied file\n");
 		}
 
 		while (!glfwWindowShouldClose(window))
