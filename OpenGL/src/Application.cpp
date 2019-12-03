@@ -171,7 +171,7 @@ int main(void)
 
 		Global::Variables.currentScene.lightsOnScene.push_back(new Light(LightIntensity(glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(1.0f, 1.0f, 1.0f)), glm::vec3(-0.1f, -0.1f, -0.1f), glm::vec3(0.1f, 0.1f, 0.1f), type::cubeInvertedLighting, "", "", "res/images/colors/", "yellow.png", "res/shaders/", "Lighting.shader", true, true, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 5.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), Material(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), 32.0f)));
 
-		Global::Variables.currentScene.preloadedObjectsOnScene.push_back(new Object(glm::vec3(-50.0f, -50.0f, -50.0f), glm::vec3(50.0f, 50.0f, 50.0f), type::skyBox, "", "", "res/images/textures/2d/", "skybox.png", "res/shaders/", "Basic.shader", true, false, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f)));
+		Global::Variables.currentScene.preloadedObjectsOnScene.push_back(new Object(glm::vec3(-50.0f, -50.0f, -50.0f), glm::vec3(50.0f, 50.0f, 50.0f), type::skyBox, "", "", "res/images/textures/", "skybox.png", "res/shaders/", "Basic.shader", true, false, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f)));
 		Global::Variables.currentScene.preloadedObjectsOnScene.push_back(new Object(glm::vec3(-5.0f, -5.0f, -5.0f), glm::vec3(5.0f, 5.0f, 5.0f), type::normalModel, "res/models/", "plane.obj", "res/images/colors/", "white.png", "res/shaders/", "Lighting.shader", true, true, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -3.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), Material(glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(0.5f, 0.5f, 0.5f), 32.0f)));
 
 		bool loadFile = true;
@@ -214,9 +214,7 @@ int main(void)
 			selectedObject = 0;
 		}
 
-		if (System::CopyFileAtlas("C:\\Dev\\Visual Studio\\C++ Projects\\Level Editor\\test.txt", "C:\\Dev\\Visual Studio\\C++ Projects\\Level Editor\\OpenGL\\res\\test.txt")) {
-			printf("Successfully copied file\n");
-		}
+		//System::Warn(System::GetEXEDirectory());
 
 		while (!glfwWindowShouldClose(window))
 		{
@@ -231,6 +229,14 @@ int main(void)
 			///////////////////////////////////////////////////////////////////////////
 			InputHandler::ProcessEvents(&Global::Variables.keyIn, &Global::Variables.mouseIn);
 			///////////////////////////////////////////////////////////////////////////
+			if (Global::Variables.keyIn.sixPressed) {
+				System::Log("--------------------------------");
+				for (auto it : Global::Variables.loadedMeshCache) {
+					System::Log("First: " + it.first);
+					System::Log("Second: " + it.second);
+				}
+			}
+			///////////////////////////////////////////////////////////////////////////
 			float deltaTime = (float)deltaT * timeConstant;
 			///////////////////////////////////////////////////////////////////////////
 			if ((Global::Variables.keyIn.leftControlHeld && Global::Variables.keyIn.fHeld) || (Global::Variables.keyIn.leftControlPressed && Global::Variables.keyIn.fPressed)) {
@@ -241,7 +247,7 @@ int main(void)
 				glfwSetWindowShouldClose(window, GLFW_TRUE);
 			}
 			else if ((Global::Variables.keyIn.leftControlHeld && Global::Variables.keyIn.sHeld) || (Global::Variables.keyIn.leftControlPressed && Global::Variables.keyIn.sPressed) || (Global::Variables.keyIn.leftControlHeld && Global::Variables.keyIn.sPressed) || (Global::Variables.keyIn.leftControlPressed && Global::Variables.keyIn.sHeld)) {
-				IO::SaveToFile(Global::Variables.currentScene.objectsOnScene, "res/other/", "level.lvl");
+				Global::Variables.currentScene.Save("res/other/", "level.lvl");
 			}
 			///////////////////////////////////////////////////////////////////////////
 			if (EditorEnabled) {

@@ -13,7 +13,8 @@ namespace Atlas {
 
 	class Loader {
 	public:
-		static GLuint LoadTexture(const std::string texDir, const std::string texName, GLint textureWrapS, GLint textureWrapT, GLint textureMinFilter, GLint textureMaxFilter);
+		static GLuint LoadTexture(const std::string& texDirAndName, GLint textureWrapS, GLint textureWrapT, GLint textureMinFilter, GLint textureMaxFilter);
+		static GLuint LoadTexture(const std::string& texDir, const std::string& texName, GLint textureWrapS, GLint textureWrapT, GLint textureMinFilter, GLint textureMaxFilter);
 		static TexCoords GetTextureCoordinates(GLuint minX, GLuint minY, GLuint maxX, GLuint maxY, GLuint width, GLuint height);
 	};
 }

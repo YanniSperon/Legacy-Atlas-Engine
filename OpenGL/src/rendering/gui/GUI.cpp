@@ -48,7 +48,7 @@ namespace Atlas {
 			ImGui::Checkbox("Enable Object Settings##objectSettingsControl", &EnableObjectInfoPage);
 			ImGui::Separator();
 			if (ImGui::Button("Save##saveButton")) {
-				IO::SaveToFile(Global::Variables.currentScene.objectsOnScene, "res/other/", "level.lvl");
+				Global::Variables.currentScene.Save("res/other/", "level.lvl");
 			}
 			if (ImGui::Button("Close##closeButton")) {
 				glfwSetWindowShouldClose(window, GLFW_TRUE);

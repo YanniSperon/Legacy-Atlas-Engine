@@ -1,5 +1,6 @@
 #include "Scene.h"
 #include "IO.h"
+#include "System.h"
 
 Atlas::Scene::Scene()
 {
@@ -48,5 +49,6 @@ void Atlas::Scene::Submit(Renderer* renderer, glm::vec3 camPos, glm::mat4 viewMa
 
 void Atlas::Scene::Save(std::string directory, std::string name)
 {
+	System::Log("Saving");
 	IO::SaveToFile(objectsOnScene, directory, name);
 }

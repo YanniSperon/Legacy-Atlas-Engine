@@ -5,8 +5,28 @@
 #include "Global.h"
 #include "Loader.h"
 #include "ShapeGenerator.h"
+#include <algorithm>
 
 namespace Atlas {
+
+	static int AddValueFile(std::string directory, std::string file, int value) {
+		if (value == 0) {
+			if (System::DoesFileExist(directory + file)) {
+				AddValueFile(directory, file, value + 1);
+			}
+			else {
+				return value;
+			}
+		}
+		else {
+			if (System::DoesFileExist(directory + std::to_string(value) + file)) {
+				return AddValueFile(directory, file, value + 1);
+			}
+			else {
+				return value;
+			}
+		}
+	}
 
 	static int AddValueMesh(std::string meshName, int value) {
 		if (value == 0) {
@@ -67,7 +87,7 @@ namespace Atlas {
 
 	void Window::DrawObjectSettingsWindow(Object* object)
 	{
-		static char InputModificationStringTextureDirectory[128] = "res/images/textures/3d/";
+		static char InputModificationStringTextureDirectory[128] = "res/images/textures/";
 		static char InputModificationStringTextureName[128] = "";
 		static char InputModificationStringShaderDirectory[128] = "res/shaders/";
 		static char InputModificationStringShaderName[128] = "Lighting.shader";
@@ -226,14 +246,6 @@ namespace Atlas {
 
 	void Window::DrawSpawnWindow(std::vector<Object*>& objectsOnScene, unsigned int& selectedObject)
 	{
-		static bool InputModelHasTexture = false;
-		static bool InputShaderHasLighting = true;
-		static char InputStringMeshDirectory[128] = "res/models/";
-		static char InputStringMeshName[128] = "";
-		static char InputStringTextureDirectory[128] = "res/images/textures/3d/";
-		static char InputStringTextureName[128] = "";
-		static char InputStringShaderDirectory[128] = "res/shaders/";
-		static char InputStringShaderName[128] = "Lighting.shader";
 		static glm::vec3 InputRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 		static glm::vec3 InputTranslation = glm::vec3(0.0f, 0.0f, 0.0f);
 		static glm::vec3 InputScale = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -241,17 +253,52 @@ namespace Atlas {
 		static glm::vec3 InputDiffuse = glm::vec3(0.5f, 0.5f, 0.5f);
 		static glm::vec3 InputSpecular = glm::vec3(0.5f, 0.5f, 0.5f);
 		static int InputShininess = 32;
+		static std::string currentSelectedMesh = "";
+		static std::string currentSelectedTexture = "";
+		static std::string currentSelectedShader = "";
 
 		ImGui::Begin("Spawn Menu", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
-		ImGui::InputText("Model Directory##shaderInDir", InputStringMeshDirectory, IM_ARRAYSIZE(InputStringMeshDirectory));
-		ImGui::InputText("Model Name##modelInName", InputStringMeshName, IM_ARRAYSIZE(InputStringMeshName));
+		if (ImGui::BeginCombo("Mesh##meshcombo", currentSelectedMesh.c_str()))
+		{
+			for (auto it : Global::Variables.loadedMeshCache) {
+				bool is_selected = (currentSelectedMesh == it.first);
+				if (ImGui::Selectable(it.first.c_str(), is_selected)) {
+					currentSelectedMesh = it.first;
+					if (is_selected) {
+						ImGui::SetItemDefaultFocus();
+					}
+				}
+			}
+			ImGui::EndCombo();
+		}
 		ImGui::Separator();
-		ImGui::InputText("Texture Directory##textureInDir", InputStringTextureDirectory, IM_ARRAYSIZE(InputStringTextureDirectory));
-		ImGui::InputText("Texture Name##textureInName", InputStringTextureName, IM_ARRAYSIZE(InputStringTextureName));
+		if (ImGui::BeginCombo("Texture##texturecombo", currentSelectedTexture.c_str()))
+		{
+			for (auto it : Global::Variables.loadedTextureCache) {
+				bool is_selected = (currentSelectedTexture == it.first);
+				if (ImGui::Selectable(it.first.c_str(), is_selected)) {
+					currentSelectedTexture = it.first;
+					if (is_selected) {
+						ImGui::SetItemDefaultFocus();
+					}
+				}
+			}
+			ImGui::EndCombo();
+		}
 		ImGui::Separator();
-		ImGui::Checkbox("Shader Supports Lighting##shaderSupportsLighting", &InputShaderHasLighting);
-		ImGui::InputText("Shader Directory##shaderInDir", InputStringShaderDirectory, IM_ARRAYSIZE(InputStringShaderDirectory));
-		ImGui::InputText("Shader Name##shaderInName", InputStringShaderName, IM_ARRAYSIZE(InputStringShaderName));
+		if (ImGui::BeginCombo("Shader##shadercombo", currentSelectedShader.c_str()))
+		{
+			for (auto it : Global::Variables.loadedShaderCache) {
+				bool is_selected = (currentSelectedTexture == it.first);
+				if (ImGui::Selectable(it.first.c_str(), is_selected)) {
+					currentSelectedShader = it.first;
+					if (is_selected) {
+						ImGui::SetItemDefaultFocus();
+					}
+				}
+			}
+			ImGui::EndCombo();
+		}
 		ImGui::Separator();
 		ImGui::Text("Position");
 		ImGui::InputFloat3("Rotation##rotfloatin", &InputRotation[0]);
@@ -265,9 +312,18 @@ namespace Atlas {
 		ImGui::SliderInt("Shininess##shininessintslider", &InputShininess, 0, 512);
 		ImGui::Separator();
 		if (ImGui::Button("Spawn##spawn")) {
-			System::Log("Spawned object with model \"" + std::string(InputStringMeshDirectory) + std::string(InputStringMeshName) + "\" at (" + std::to_string(InputTranslation.x) + ", " + std::to_string(InputTranslation.y) + ", " + std::to_string(InputTranslation.z) + ")");
-			objectsOnScene.push_back(new Object(glm::vec3(-5.0f, -5.0f, -5.0f), glm::vec3(5.0f, 5.0f, 5.0f), type::normalModel, std::string(InputStringMeshDirectory), std::string(InputStringMeshName), std::string(InputStringTextureDirectory), std::string(InputStringTextureName), std::string(InputStringShaderDirectory), std::string(InputStringShaderName), true, InputShaderHasLighting, InputRotation, InputTranslation, InputScale, Material(InputAmbient, InputDiffuse, InputSpecular, ((float)InputShininess))));
-			selectedObject = objectsOnScene.size() - 1;
+			if (Global::Variables.loadedMeshCache.find(currentSelectedMesh) != Global::Variables.loadedMeshCache.end() && Global::Variables.loadedTextureCache.find(currentSelectedTexture) != Global::Variables.loadedTextureCache.end() && Global::Variables.loadedShaderCache.find(currentSelectedShader) != Global::Variables.loadedShaderCache.end()) {
+				Filepath meshpath = System::SeperateFilepath(Global::Variables.loadedMeshCache[currentSelectedMesh]);
+				Filepath texpath = System::SeperateFilepath(Global::Variables.loadedTextureCache[currentSelectedTexture]);
+				Filepath shaderpath = System::SeperateFilepath(Global::Variables.loadedShaderCache[currentSelectedShader]);
+
+				System::Log("Spawned object with model \"" + meshpath.directory + meshpath.filename + "\" at (" + std::to_string(InputTranslation.x) + ", " + std::to_string(InputTranslation.y) + ", " + std::to_string(InputTranslation.z) + ")");
+				objectsOnScene.push_back(new Object(glm::vec3(-5.0f, -5.0f, -5.0f), glm::vec3(5.0f, 5.0f, 5.0f), type::normalModel, meshpath.directory, meshpath.filename, texpath.directory, texpath.filename, shaderpath.directory, shaderpath.filename, true, true, InputRotation, InputTranslation, InputScale, Material(InputAmbient, InputDiffuse, InputSpecular, ((float)InputShininess))));
+				selectedObject = objectsOnScene.size() - 1;
+			}
+			else {
+				System::Err("Invalid or corrupted cache files!");
+			}
 		}
 		ImGui::End();
 	}
@@ -286,8 +342,10 @@ namespace Atlas {
 		ImGui::Begin("File Manager", NULL);
 		if (ImGui::Button("Load new mesh##loadmeshbutton1")) {
 			std::string file = System::FileOpenDialog("Select a mesh to load", "OBJECT File\0*.obj\0", window);
+			std::replace(file.begin(), file.end(), '\\', '/');
 			if (file != "INVALID") {
-				std::size_t lastSlashPos = file.find_last_of("\\");
+				std::string physicalLocation = "";
+				std::size_t lastSlashPos = file.find_last_of("/");
 				std::string meshDir = "";
 				std::string meshName = "";
 				if (lastSlashPos != std::string::npos) {
@@ -297,55 +355,135 @@ namespace Atlas {
 				else {
 					meshName = file;
 				}
-				std::string val = std::to_string(AddValueMesh(meshName, 0));
-				if (val == "0") {
-					Global::Variables.loadedMeshCache[meshName] = (meshDir + meshName);
+				physicalLocation = meshDir + meshName;
+				if (System::IsFilePathInEXEDirectory(file)) {
+					file = System::ConvertFilePathToLocal(file);
+					lastSlashPos = file.find_last_of("/");
+					meshDir = "";
+					meshName = "";
+					if (lastSlashPos != std::string::npos) {
+						meshDir = file.substr(0, lastSlashPos + 1);
+						meshName = file.substr(lastSlashPos + 1);
+					}
+					else {
+						meshName = file;
+					}
+					physicalLocation = meshDir + meshName;
 				}
 				else {
-					Global::Variables.loadedMeshCache[meshName + val] = (meshDir + meshName);
+					std::string val = std::to_string(AddValueFile("res/models/", meshName, 0));
+					if (val == "0") {
+						physicalLocation = System::GetEXEDirectory() + "res/models/" + meshName;
+					}
+					else {
+						physicalLocation = System::GetEXEDirectory() + "res/models/" + val + meshName;
+					}
+					System::CopyFileAtlas(file, physicalLocation);
+					physicalLocation = System::ConvertFilePathToLocal(physicalLocation);
+					lastSlashPos = physicalLocation.find_last_of("/");
+					meshDir = "";
+					meshName = "";
+					if (lastSlashPos != std::string::npos) {
+						meshDir = physicalLocation.substr(0, lastSlashPos + 1);
+						meshName = physicalLocation.substr(lastSlashPos + 1);
+					}
+					else {
+						meshName = physicalLocation;
+					}
+				}
+				std::string val = std::to_string(AddValueMesh(meshName, 0));
+				if (val == "0") {
+					Global::Variables.loadedMeshCache[meshName] = (physicalLocation);
+				}
+				else {
+					Global::Variables.loadedMeshCache[val + meshName] = (physicalLocation);
 				}
 				try {
 					if (Global::Variables.meshCache.find(meshDir + meshName) == Global::Variables.meshCache.end()) {
-						Global::Variables.meshCache[meshDir + meshName] = ShapeGenerator::loadShape(meshDir + meshName, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+						Global::Variables.meshCache[meshDir + meshName] = ShapeGenerator::loadShape(physicalLocation, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 					}
 				}
 				catch (const std::exception & e) {
-					if (Global::Variables.meshCache.find(meshDir + meshName) == Global::Variables.meshCache.end()) {
-						Global::Variables.meshCache[meshDir + meshName] = ShapeGenerator::loadTexturedShape(meshDir, meshName, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+					try {
+						if (Global::Variables.meshCache.find(meshDir + meshName) == Global::Variables.meshCache.end()) {
+							Global::Variables.meshCache[meshDir + meshName] = ShapeGenerator::loadTexturedShape(meshDir, meshName, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+						}
+					}
+					catch (const std::exception & e) {
+						System::Err("Unrecognized file type, must be wavefront .obj file following the specified format");
 					}
 				}
 			}
 		}
 		if (ImGui::Button("Load new texture##loadtexturebutton1")) {
 			std::string file = System::FileOpenDialog("Select a texture to load", "Portable Network Graphics\0*.png\0", window);
+			std::replace(file.begin(), file.end(), '\\', '/');
 			if (file != "INVALID") {
-				std::size_t lastSlashPos = file.find_last_of("\\");
-				std::string texDir = "";
-				std::string texName = "";
+				std::string physicalLocation = "";
+				std::size_t lastSlashPos = file.find_last_of("/");
+				std::string textureDir = "";
+				std::string textureName = "";
 				if (lastSlashPos != std::string::npos) {
-					texDir = file.substr(0, lastSlashPos + 1);
-					texName = file.substr(lastSlashPos + 1);
+					textureDir = file.substr(0, lastSlashPos + 1);
+					textureName = file.substr(lastSlashPos + 1);
 				}
 				else {
-					texName = file;
+					textureName = file;
 				}
-				std::string val = std::to_string(AddValueTexture(texName, 0));
+				physicalLocation = textureDir + textureName;
+				if (System::IsFilePathInEXEDirectory(file)) {
+					file = System::ConvertFilePathToLocal(file);
+					lastSlashPos = file.find_last_of("/");
+					textureDir = "";
+					textureName = "";
+					if (lastSlashPos != std::string::npos) {
+						textureDir = file.substr(0, lastSlashPos + 1);
+						textureName = file.substr(lastSlashPos + 1);
+					}
+					else {
+						textureName = file;
+					}
+					physicalLocation = textureDir + textureName;
+				}
+				else {
+					std::string val = std::to_string(AddValueFile("res/images/textures/", textureName, 0));
+					if (val == "0") {
+						physicalLocation = System::GetEXEDirectory() + "res/images/textures/" + textureName;
+					}
+					else {
+						physicalLocation = System::GetEXEDirectory() + "res/images/textures/" + val + textureName;
+					}
+					System::CopyFileAtlas(file, physicalLocation);
+					physicalLocation = System::ConvertFilePathToLocal(physicalLocation);
+					lastSlashPos = physicalLocation.find_last_of("/");
+					textureDir = "";
+					textureName = "";
+					if (lastSlashPos != std::string::npos) {
+						textureDir = physicalLocation.substr(0, lastSlashPos + 1);
+						textureName = physicalLocation.substr(lastSlashPos + 1);
+					}
+					else {
+						textureName = physicalLocation;
+					}
+				}
+				std::string val = std::to_string(AddValueTexture(textureName, 0));
 				if (val == "0") {
-					Global::Variables.loadedTextureCache[texName] = (texDir + texName);
+					Global::Variables.loadedTextureCache[textureName] = physicalLocation;
 				}
 				else {
-					Global::Variables.loadedTextureCache[texName + val] = (texDir + texName);
+					Global::Variables.loadedTextureCache[val + textureName] = physicalLocation;
 				}
-
-				if (Global::Variables.textureCache.find(texDir + texName) == Global::Variables.textureCache.end()) {
-					Global::Variables.textureCache[texDir + texName] = Loader::LoadTexture(texDir, texName, GL_REPEAT, GL_REPEAT, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
+				if (Global::Variables.textureCache.find(textureDir + textureName) == Global::Variables.textureCache.end()) {
+					Global::Variables.textureCache[textureDir + textureName] = Loader::LoadTexture(physicalLocation, GL_REPEAT, GL_REPEAT, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
 				}
 			}
 		}
 		if (ImGui::Button("Load new shader##loadshaderbutton1")) {
 			std::string file = System::FileOpenDialog("Select a shader to load", "SHADER File\0*.shader\0", window);
+			std::replace(file.begin(), file.end(), '\\', '/');
 			if (file != "INVALID") {
-				std::size_t lastSlashPos = file.find_last_of("\\");
+				std::string physicalLocation = "";
+				std::size_t lastSlashPos = file.find_last_of("/");
 				std::string shaderDir = "";
 				std::string shaderName = "";
 				if (lastSlashPos != std::string::npos) {
@@ -355,16 +493,52 @@ namespace Atlas {
 				else {
 					shaderName = file;
 				}
-				std::string val = std::to_string(AddValueTexture(shaderName, 0));
-				if (val == "0") {
-					Global::Variables.loadedShaderCache[shaderName] = (shaderDir + shaderName);
+				physicalLocation = shaderDir + shaderName;
+				if (System::IsFilePathInEXEDirectory(file)) {
+					file = System::ConvertFilePathToLocal(file);
+					lastSlashPos = file.find_last_of("/");
+					shaderDir = "";
+					shaderName = "";
+					if (lastSlashPos != std::string::npos) {
+						shaderDir = file.substr(0, lastSlashPos + 1);
+						shaderName = file.substr(lastSlashPos + 1);
+					}
+					else {
+						shaderName = file;
+					}
+					physicalLocation = shaderDir + shaderName;
 				}
 				else {
-					Global::Variables.loadedShaderCache[shaderName + val] = (shaderDir + shaderName);
+					std::string val = std::to_string(AddValueFile("res/shaders/", shaderName, 0));
+					if (val == "0") {
+						physicalLocation = System::GetEXEDirectory() + "res/shaders/" + shaderName;
+					}
+					else {
+						physicalLocation = System::GetEXEDirectory() + "res/shaders/" + val + shaderName;
+					}
+					System::CopyFileAtlas(file, physicalLocation);
+					physicalLocation = System::ConvertFilePathToLocal(physicalLocation);
+					lastSlashPos = physicalLocation.find_last_of("/");
+					shaderDir = "";
+					shaderName = "";
+					if (lastSlashPos != std::string::npos) {
+						shaderDir = physicalLocation.substr(0, lastSlashPos + 1);
+						shaderName = physicalLocation.substr(lastSlashPos + 1);
+					}
+					else {
+						shaderName = physicalLocation;
+					}
+				}
+				std::string val = std::to_string(AddValueShader(shaderName, 0));
+				if (val == "0") {
+					Global::Variables.loadedShaderCache[shaderName] = physicalLocation;
+				}
+				else {
+					Global::Variables.loadedShaderCache[val + shaderName] = physicalLocation;
 				}
 
 				if (Global::Variables.shaderCache.find(shaderDir + shaderName) == Global::Variables.shaderCache.end()) {
-					Global::Variables.shaderCache[shaderDir + shaderName] = new Shader(shaderDir + shaderName);
+					Global::Variables.shaderCache[shaderDir + shaderName] = new Shader(physicalLocation);
 				}
 			}
 		}

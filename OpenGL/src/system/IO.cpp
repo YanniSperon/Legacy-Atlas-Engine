@@ -19,7 +19,7 @@ namespace Atlas {
 	{
 		std::ifstream objDataStream(filePath);
 		if (!objDataStream.is_open()) {
-			System::Err("Error loading object at path\"" + filePath + "\"");
+			System::Err("\"" + filePath + "\"");
 		}
 		else {
 			glm::vec3 translation(0.0f, 0.0f, 0.0f);
@@ -319,7 +319,7 @@ namespace Atlas {
 	void IO::LoadFile(std::vector<Object*>& vec, const std::string dir, const std::string fileName)
 	{
 		//std::vector<std::future<void>> futures;
-		std::ifstream f(dir + fileName);
+		std::ifstream f(System::GetEXEDirectory() + dir + fileName);
 
 		if (!f.is_open()) {
 			System::Err("File: \"" + dir + fileName + "\" does not exist or could not be loaded");
@@ -344,7 +344,7 @@ namespace Atlas {
 
 		for (unsigned int i = 0; i < filepaths.size(); i++) {
 			//futures.push_back(std::async(std::launch::async, LoadData, std::ref(vec), filepaths[i]));
-			LoadData(std::ref(vec), filepaths[i]);
+			LoadData(std::ref(vec), System::GetEXEDirectory() + filepaths[i]);
 		}
 	}
 
@@ -467,10 +467,12 @@ namespace Atlas {
 	void IO::SaveToFile(std::vector<Object*>& vec, const std::string dir, const std::string fileName)
 	{
 		std::vector<std::future<void>> futures;
-		std::ofstream outfile(dir + fileName);
+		std::ofstream outfile(System::GetEXEDirectory() + dir + fileName);
 		outfile << "Total Size: " << vec.size() << "\n\n";
+		System::Log("vec size: " + std::to_string(vec.size()));
 		for (unsigned int i = 0; i < vec.size(); i++) {
-			std::string str = dir + "data/obj" + std::to_string(i) + ".dat";
+			System::Log("Saving data");
+			std::string str = System::ConvertFilePathToLocal(dir + "data/obj" + std::to_string(i) + ".dat");
 			outfile << "Obj: " << str << "\n";
 			futures.push_back(std::async(std::launch::async, SaveData, vec[i], str, i));
 		}

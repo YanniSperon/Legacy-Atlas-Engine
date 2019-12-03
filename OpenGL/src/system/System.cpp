@@ -6,8 +6,132 @@
 #include <chrono>
 #include <Windows.h>
 #include <fstream>
+#include <algorithm>
 
 namespace Atlas {
+
+	std::vector<std::string> System::GetFilesInDirectory(const std::string& directory)
+	{
+		std::string correctDirectory = directory;
+		if (directory.at(directory.size() - 1) != '*') {
+			if (directory.at(directory.size() - 1) == '/') {
+				correctDirectory = directory + "*";
+			}
+			else {
+				correctDirectory = directory + "/*";
+			}
+		}
+		std::vector<std::string> returnValue;
+
+		WIN32_FIND_DATA data;
+		LPCSTR dir = const_cast<char*>(correctDirectory.c_str());
+		HANDLE hFind = FindFirstFile(dir, &data);      // DIRECTORY
+
+		if (hFind != INVALID_HANDLE_VALUE) {
+			do {
+				if (!(data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+				{
+					returnValue.push_back(data.cFileName);
+				}
+			} while (FindNextFile(hFind, &data) != 0);
+			FindClose(hFind);
+		}
+
+		return returnValue;
+	}
+
+	std::string System::GetEXEDirectory()
+	{
+		char ownPth[MAX_PATH];
+		HMODULE hModule = GetModuleHandle(NULL);
+		ownPth[0] = '\0';
+		if (hModule != NULL) {
+			GetModuleFileName(hModule, ownPth, sizeof(ownPth));
+		};
+		
+		std::string file(ownPth);
+		std::replace(file.begin(), file.end(), '\\', '/');
+		std::size_t lastSlashPos = file.find_last_of("/");
+		std::string runningDir = "";
+		std::string runningName = "";
+		
+		if (lastSlashPos != std::string::npos) {
+			runningDir = file.substr(0, lastSlashPos + 1);
+			runningName = file.substr(lastSlashPos + 1);
+		}
+		
+		return runningDir;
+
+		//TCHAR pwd[MAX_PATH];
+		//GetCurrentDirectory(MAX_PATH, pwd);
+		//return std::string(pwd);
+	}
+
+	std::string System::GetEXEName()
+	{
+		char ownPth[MAX_PATH];
+		HMODULE hModule = GetModuleHandle(NULL);
+		ownPth[0] = '\0';
+		if (hModule != NULL) {
+			GetModuleFileName(hModule, ownPth, sizeof(ownPth));
+		};
+
+		std::string file(ownPth);
+		std::replace(file.begin(), file.end(), '\\', '/');
+		std::size_t lastSlashPos = file.find_last_of("/");
+		std::string runningDir = "";
+		std::string runningName = "";
+
+		if (lastSlashPos != std::string::npos) {
+			runningDir = file.substr(0, lastSlashPos + 1);
+			runningName = file.substr(lastSlashPos + 1);
+		}
+		else {
+			runningName = file;
+		}
+
+		return runningName;
+	}
+
+	bool System::IsFilePathInEXEDirectory(const std::string& filePath)
+	{
+		std::string correctFilePath = filePath;
+		if (correctFilePath.find("\\") != std::string::npos) {
+			std::replace(correctFilePath.begin(), correctFilePath.end(), '\\', '/');
+		}
+		if (correctFilePath.find(GetEXEDirectory()) != std::string::npos) {
+			return true;
+		}
+		return false;
+	}
+
+	std::string System::ConvertFilePathToAbsolute(const std::string& localFilePath)
+	{
+		std::string correctFilePath = localFilePath;
+		if (correctFilePath.find("\\") != std::string::npos) {
+			std::replace(correctFilePath.begin(), correctFilePath.end(), '\\', '/');
+		}
+		if (IsFilePathInEXEDirectory(correctFilePath)) {
+			return correctFilePath;
+		}
+		else {
+			return GetEXEDirectory() + correctFilePath;
+		}
+	}
+
+	std::string System::ConvertFilePathToLocal(const std::string& absoluteFilePath)
+	{
+		std::string correctFilePath = absoluteFilePath;
+		if (correctFilePath.find("\\") != std::string::npos) {
+			std::replace(correctFilePath.begin(), correctFilePath.end(), '\\', '/');
+		}
+		if (IsFilePathInEXEDirectory(correctFilePath)) {
+			return correctFilePath.substr(GetEXEDirectory().size());
+		}
+		else {
+			return correctFilePath;
+		}
+	}
 
 	bool System::DoesFileExist(const std::string& filePath)
 	{
@@ -32,24 +156,27 @@ namespace Atlas {
 
 	bool System::CopyFileAtlas(const std::string& originalFilePathAndName, const std::string& finalFilePath)
 	{
-		if (HasValidFileAttributes(originalFilePathAndName) && HasValidFileAttributes(finalFilePath)) {
-			std::ifstream  src(originalFilePathAndName, std::ios::binary);
-			std::ofstream  dst(finalFilePath, std::ios::binary);
+		if (DoesFileExist(originalFilePathAndName) && HasValidFileAttributes(originalFilePathAndName)) {
+			std::ifstream src(originalFilePathAndName, std::ios::binary);
+			std::ofstream dst(finalFilePath, std::ios::binary);
 
 			if (src.is_open() && dst.is_open()) {
 				dst << src.rdbuf();
+				System::Log("Successfully copied \"" + originalFilePathAndName + "\" to \"" + finalFilePath + "\"");
 				return true;
 			}
 			else {
+				System::Err("Error opening streams while copying \"" + originalFilePathAndName + "\" to \"" + finalFilePath + "\"");
 				return false;
 			}
 		}
 		else {
+			System::Err("Cannot copy \"" + originalFilePathAndName + "\" to \"" + finalFilePath + "\" as it does not exist or the file attributes are invalid!");
 			return false;
 		}
 	}
 
-	void System::Log(std::string text)
+	void System::Log(const std::string& text)
 	{
 		auto currentTime = std::chrono::high_resolution_clock::now();
 		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(currentTime - Global::Variables.systemStartTime);
@@ -77,7 +204,7 @@ namespace Atlas {
 		}
 	}
 
-	void System::Warn(std::string text)
+	void System::Warn(const std::string& text)
 	{
 		auto currentTime = std::chrono::high_resolution_clock::now();
 		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(currentTime - Global::Variables.systemStartTime);
@@ -106,7 +233,7 @@ namespace Atlas {
 		}
 	}
 
-	void System::Err(std::string text)
+	void System::Err(const std::string& text)
 	{
 		auto currentTime = std::chrono::high_resolution_clock::now();
 		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(currentTime - Global::Variables.systemStartTime);
@@ -135,7 +262,7 @@ namespace Atlas {
 		}
 	}
 
-	void System::SendConsoleCommand(std::string command)
+	void System::SendConsoleCommand(const std::string& command)
 	{
 		size_t slashPos;
 		if ((slashPos = command.find("/")) != std::string::npos) {
@@ -199,7 +326,7 @@ namespace Atlas {
 		ImGui::End();
 	}
 
-	std::string System::FileOpenDialog(std::string label, LPCSTR filter, GLFWwindow* window)
+	std::string System::FileOpenDialog(const std::string& label, LPCSTR filter, GLFWwindow* window)
 	{
 		char filename[MAX_PATH];
 
@@ -245,5 +372,20 @@ namespace Atlas {
 			}
 		}
 		return "INVALID";
+	}
+
+	Filepath System::SeperateFilepath(const std::string& filePath)
+	{
+		std::size_t lastSlashPos = filePath.find_last_of("/");
+		std::string dir = "";
+		std::string name = "";
+		if (lastSlashPos != std::string::npos) {
+			dir = filePath.substr(0, lastSlashPos + 1);
+			name = filePath.substr(lastSlashPos + 1);
+		}
+		else {
+			name = filePath;
+		}
+		return Filepath(dir, name);
 	}
 }

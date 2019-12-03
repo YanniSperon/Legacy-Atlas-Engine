@@ -3,11 +3,31 @@
 #include "Global.h"
 #include "Loader.h"
 #include <iostream>
+#include <algorithm>
 #include "glm/gtc/matrix_transform.hpp"
 #include "stb_image/stb_image.h"
 #include "System.h"
 
 namespace Atlas {
+
+	static int AddValueTexture(std::string meshName, int value) {
+		if (value == 0) {
+			if (Global::Variables.loadedTextureCache.find(meshName) != Global::Variables.loadedTextureCache.end()) {
+				return AddValueTexture(meshName, value + 1);
+			}
+			else {
+				return value;
+			}
+		}
+		else {
+			if (Global::Variables.loadedTextureCache.find(meshName + std::to_string(value)) != Global::Variables.loadedTextureCache.end()) {
+				return AddValueTexture(meshName, value + 1);
+			}
+			else {
+				return value;
+			}
+		}
+	}
 
 	Object::Object()
 		: Mesh(), vertexBufferID(0), indexBufferID(0), numIndices(0), texID(0), shaderID(0), material(), glInitialized(false), textureDirectory(""), textureName(""), hasLighting(false)
@@ -22,16 +42,42 @@ namespace Atlas {
 			texID = Global::Variables.textureCache[texDir + texName];
 		}
 		else {
-			Global::Variables.textureCache[texDir + texName] = Loader::LoadTexture(texDir, texName, GL_REPEAT, GL_REPEAT, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
-			texID = Global::Variables.textureCache[texDir + texName];
+			std::string file = texDir + texName;
+			std::replace(file.begin(), file.end(), '\\', '/');
+			std::string physicalLocation = "";
+
+			file = System::ConvertFilePathToLocal(file);
+			Filepath pathtemp = System::SeperateFilepath(file);
+			std::string textureDirectory = pathtemp.directory;
+			std::string textureName = pathtemp.filename;
+			physicalLocation = pathtemp.directory + pathtemp.filename;
+
+			Global::Variables.loadedTextureCache[textureName] = physicalLocation;
+
+			Global::Variables.textureCache[textureDirectory + textureName] = Loader::LoadTexture(textureDirectory, textureName, GL_REPEAT, GL_REPEAT, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
+			texID = Global::Variables.textureCache[textureDirectory + textureName];
+			System::Log("Texture dir and name: \"" + textureDirectory + textureName + "\"");
 		}
 
 		if (Global::Variables.shaderCache.find(shaderDir + shaderFileName) != Global::Variables.shaderCache.end()) {
 			shaderID = Global::Variables.shaderCache[shaderDir + shaderFileName]->GetShaderID();
 		}
 		else {
-			Global::Variables.shaderCache[shaderDir + shaderFileName] = new Shader(shaderDir + shaderFileName);
-			shaderID = Global::Variables.shaderCache[shaderDir + shaderFileName]->GetShaderID();
+			std::string file = shaderDir + shaderFileName;
+			std::replace(file.begin(), file.end(), '\\', '/');
+			std::string physicalLocation = "";
+
+			file = System::ConvertFilePathToLocal(file);
+			Filepath pathtemp = System::SeperateFilepath(file);
+			std::string shaderDirectory = pathtemp.directory;
+			std::string shaderName = pathtemp.filename;
+			physicalLocation = pathtemp.directory + pathtemp.filename;
+
+			Global::Variables.loadedShaderCache[shaderName] = physicalLocation;
+
+			Global::Variables.shaderCache[shaderDirectory + shaderName] = new Shader(shaderDirectory + shaderName);
+			shaderID = Global::Variables.shaderCache[shaderDirectory + shaderName]->GetShaderID();
+			System::Log("Shader dir and name: \"" + shaderDirectory + shaderName + "\"");
 		}
 		numIndices = (GLsizei)GetShape().numIndices;
 

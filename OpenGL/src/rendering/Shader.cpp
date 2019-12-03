@@ -1,4 +1,5 @@
 #include "Shader.h"
+#include "System.h"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -7,16 +8,15 @@
 namespace Atlas {
 
 	Shader::Shader()
+		: m_RendererID(0), m_FilePath("INVALID")
 	{
-		m_RendererID = 0;
-		m_FilePath = "invalid";
+
 	}
 
 	Shader::Shader(const std::string& filepath)
 		: m_FilePath(filepath), m_RendererID(0)
-
 	{
-		ShaderProgramSource source = ParseShader(filepath);
+		ShaderProgramSource source = ParseShader(System::ConvertFilePathToAbsolute(filepath));
 		m_RendererID = CreateShader(source.VertexSource, source.FragmentSource);
 	}
 
@@ -33,6 +33,10 @@ namespace Atlas {
 		{
 			NONE = -1, VERTEX = 0, FRAGMENT = 1
 		};
+
+		if (!stream.is_open()) {
+			System::Err("Error parsing shader, invalid file!");
+		}
 
 		std::string line;
 		std::stringstream ss[2];

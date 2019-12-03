@@ -1,6 +1,7 @@
 #include "ShapeGenerator.h"
 #include "glm/glm.hpp"
 #include "Vertex.h"
+#include "System.h"
 #include <fstream>
 #include <string>
 #include <vector>
@@ -518,12 +519,13 @@ namespace Atlas {
 		std::vector<GLuint> indices;
 		std::vector<glm::vec3> normals;
 
-		std::ifstream f(fileName);
+		std::ifstream f(System::GetEXEDirectory() + fileName);
 
 		unsigned int positionsSize = 0;
 		unsigned int indicesSize = 0;
 
 		if (!f.is_open()) {
+			System::Err("Invalid file - does not exist! \"" + System::GetEXEDirectory() + fileName + "\"");
 			return ret;
 		}
 
@@ -591,12 +593,13 @@ namespace Atlas {
 		std::vector<TexCoord> tempTex;
 		std::vector<glm::vec3> normals;
 
-		std::ifstream obj(directory + name);
+		std::ifstream obj(System::GetEXEDirectory() + directory + name);
 
 		unsigned int positionsSize = 0;
 		unsigned int indicesSize = 0;
 
 		if (!obj.is_open()) {
+			System::Err("Invalid file - does not exist! \"" + System::GetEXEDirectory() + directory + name + "\"");
 			return ret;
 		}
 

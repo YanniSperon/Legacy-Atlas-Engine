@@ -3,8 +3,10 @@
 #include "glm/gtx/euler_angles.hpp"
 #include "primitives/ShapeGenerator.h"
 #include "Global.h"
+#include "System.h"
 #include <iostream>
 #include <unordered_map>
+#include <algorithm>
 
 namespace Atlas {
 
@@ -32,17 +34,48 @@ namespace Atlas {
 					shape = Global::Variables.meshCache[dir + fileName];
 				}
 				else {
-					Global::Variables.meshCache[dir + fileName] = ShapeGenerator::loadShape(dir + name, minExtents, maxExtents);
-					shape = Global::Variables.meshCache[dir + fileName];
+					std::string file = dir + name;
+					std::replace(file.begin(), file.end(), '\\', '/');
+					std::string physicalLocation = "";
+
+					file = System::ConvertFilePathToLocal(file);
+					Filepath pathtemp = System::SeperateFilepath(file);
+					std::string meshDirectory = pathtemp.directory;
+					std::string meshName = pathtemp.filename;
+					physicalLocation = pathtemp.directory + pathtemp.filename;
+
+					Global::Variables.loadedMeshCache[meshName] = physicalLocation;
+
+					Global::Variables.meshCache[meshDirectory + meshName] = ShapeGenerator::loadShape(meshDirectory + meshName, minExtents, maxExtents);
+					shape = Global::Variables.meshCache[meshDirectory + meshName];
+					System::Log("Mesh dir and name: \"" + meshDirectory + meshName + "\"");
 				}
 			}
 			catch (const std::exception & e) {
-				if (Global::Variables.meshCache.find(dir + fileName) != Global::Variables.meshCache.end()) {
-					shape = Global::Variables.meshCache[dir + fileName];
+				try {
+					if (Global::Variables.meshCache.find(dir + fileName) != Global::Variables.meshCache.end()) {
+						shape = Global::Variables.meshCache[dir + fileName];
+					}
+					else {
+						std::string file = dir + name;
+						std::replace(file.begin(), file.end(), '\\', '/');
+						std::string physicalLocation = "";
+
+						file = System::ConvertFilePathToLocal(file);
+						Filepath pathtemp = System::SeperateFilepath(file);
+						std::string meshDirectory = pathtemp.directory;
+						std::string meshName = pathtemp.filename;
+						physicalLocation = pathtemp.directory + pathtemp.filename;
+
+						Global::Variables.loadedMeshCache[meshName] = physicalLocation;
+
+						Global::Variables.meshCache[meshDirectory + meshName] = ShapeGenerator::loadTexturedShape(dir, name, minExtents, maxExtents);
+						shape = Global::Variables.meshCache[meshDirectory + meshName];
+						System::Log("Mesh dir and name: \"" + meshDirectory + meshName + "\"");
+					}
 				}
-				else {
-					Global::Variables.meshCache[dir + fileName] = ShapeGenerator::loadTexturedShape(dir, name, minExtents, maxExtents);
-					shape = Global::Variables.meshCache[dir + fileName];
+				catch (const std::exception & e) {
+					System::Err("Unrecognized file type, must be wavefront .obj file following the specified format");
 				}
 			}
 		}
