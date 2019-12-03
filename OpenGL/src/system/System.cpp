@@ -61,10 +61,6 @@ namespace Atlas {
 		}
 		
 		return runningDir;
-
-		//TCHAR pwd[MAX_PATH];
-		//GetCurrentDirectory(MAX_PATH, pwd);
-		//return std::string(pwd);
 	}
 
 	std::string System::GetEXEName()
