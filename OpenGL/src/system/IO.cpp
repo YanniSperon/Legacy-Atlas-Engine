@@ -17,6 +17,7 @@ namespace Atlas {
 
 	static void LoadData(std::vector<Object*>& vec, std::string filePath)
 	{
+		System::Log("Loading object at path \"" + filePath + "\"");
 		std::ifstream objDataStream(filePath);
 		if (!objDataStream.is_open()) {
 			System::Err("\"" + filePath + "\"");
@@ -325,10 +326,10 @@ namespace Atlas {
 	void IO::LoadFile(std::vector<Object*>& vec, const std::string dir, const std::string fileName)
 	{
 		//std::vector<std::future<void>> futures;
-		std::ifstream f(System::GetWorkingDirectory() + dir + fileName);
+		std::ifstream f(System::ConvertFilePathToAbsolute(dir + fileName));
 
 		if (!f.is_open()) {
-			System::Err("File: \"" + dir + fileName + "\" does not exist or could not be loaded");
+			System::Err("File: \"" + System::ConvertFilePathToAbsolute(dir + fileName) + "\" does not exist or could not be loaded");
 		}
 
 		std::vector<std::string> filepaths;
@@ -350,12 +351,16 @@ namespace Atlas {
 
 		for (unsigned int i = 0; i < filepaths.size(); i++) {
 			//futures.push_back(std::async(std::launch::async, LoadData, std::ref(vec), filepaths[i]));
-			LoadData(std::ref(vec), System::GetWorkingDirectory() + filepaths[i]);
+			LoadData(std::ref(vec), System::ConvertFilePathToAbsolute(filepaths[i]));
 		}
 	}
 
 	static void SaveData(Object* obj, std::string filePath, unsigned int index) {
 		std::ofstream objectFile = std::ofstream(filePath);
+		if (!objectFile.is_open()) {
+			System::Err("Error loading save data file \"" + filePath + "\"");
+			return;
+		}
 		std::string type = obj->GetType();
 
 		glm::vec3 translation = obj->GetTranslation();
@@ -473,120 +478,122 @@ namespace Atlas {
 	void IO::SaveToFile(std::vector<Object*>& vec, const std::string dir, const std::string fileName)
 	{
 		std::vector<std::future<void>> futures;
-		std::ofstream outfile(System::GetWorkingDirectory() + dir + fileName);
+		std::ofstream outfile(System::ConvertFilePathToAbsolute(dir + fileName));
+		if (!outfile.is_open()) {
+			System::Err("Error saving objects to level and data files!");
+			return;
+		}
 		outfile << "Total Size: " << vec.size() << "\n\n";
-		System::Log("vec size: " + std::to_string(vec.size()));
 		for (unsigned int i = 0; i < vec.size(); i++) {
-			System::Log("Saving data");
-			std::string str = System::ConvertFilePathToLocal(dir + "data/obj" + std::to_string(i) + ".dat");
+			std::string str = System::ConvertFilePathToAbsolute(dir + "data/obj" + std::to_string(i) + ".dat");
 			outfile << "Obj: " << str << "\n";
 			futures.push_back(std::async(std::launch::async, SaveData, vec[i], str, i));
 		}
 	}
-
-	void IO::LoadFile(std::vector<Object2D*>& vec, const std::string dir, const std::string fileName)
-	{
-		std::ifstream f(dir + fileName);
-
-		if (!f.is_open()) {
-			System::Err("File: \"" + dir + fileName + "\" does not exist or could not be loaded");
-		}
-
-		glm::vec2 translation;
-		float rotation;
-		glm::vec2 scale;
-		glm::vec2 texCoordMin;
-		glm::vec2 texCoordMax;
-		GLuint shader = 0;
-		GLuint texture = 0;
-
-		while (!f.eof())
-		{
-			std::string line;
-			std::getline(f, line);
-
-			if (line.find("#") != std::string::npos || line.size() == 0) {
-			}
-			else if (line.find("Object2D: ") != std::string::npos) {
-			}
-			else if (line.find("translation.x: ") != std::string::npos) {
-				std::string value = line.substr(15);
-				translation.x = std::stof(value);
-			}
-			else if (line.find("translation.y: ") != std::string::npos) {
-				std::string value = line.substr(15);
-				translation.y = std::stof(value);
-			}
-			else if (line.find("rotation: ") != std::string::npos) {
-				std::string value = line.substr(10);
-				rotation = std::stof(value);
-			}
-			else if (line.find("scale.x: ") != std::string::npos) {
-				std::string value = line.substr(9);
-				scale.x = std::stof(value);
-			}
-			else if (line.find("scale.y: ") != std::string::npos) {
-				std::string value = line.substr(9);
-				scale.y = std::stof(value);
-			}
-			else if (line.find("texture: ") != std::string::npos) {
-				std::string value = line.substr(9);
-				texture = std::stoi(value);
-			}
-			else if (line.find("textureCoordMin.x: ") != std::string::npos) {
-				std::string value = line.substr(19);
-				texCoordMin.x = std::stof(value);
-			}
-			else if (line.find("textureCoordMin.y: ") != std::string::npos) {
-				std::string value = line.substr(19);
-				texCoordMin.y = std::stof(value);
-			}
-			else if (line.find("textureCoordMax.x: ") != std::string::npos) {
-				std::string value = line.substr(19);
-				texCoordMax.x = std::stof(value);
-			}
-			else if (line.find("textureCoordMax.y: ") != std::string::npos) {
-				std::string value = line.substr(19);
-				texCoordMax.y = std::stof(value);
-			}
-			else if (line.find("shader: ") != std::string::npos) {
-				std::string value = line.substr(8);
-				shader = std::stoi(value);
-			}
-			else if (line.find("End Object2D") != std::string::npos) {
-				vec.push_back(new Object2D(glm::vec2(-50.0f, -50.0f), glm::vec2(50.0f, 50.0f), rotation, translation, scale, texture, shader, texCoordMin, texCoordMax));
-			}
-		}
-	}
-
-	void IO::SaveToFile(std::vector<Object2D*>& vec, const std::string dir, const std::string fileName)
-	{
-		System::Log("Saving to file: \"" + dir + fileName + "\"");
-		std::ofstream outfile(dir + fileName);
-		outfile << "Total Size: " << vec.size() << "\n\n";
-		for (unsigned int i = 0; i < vec.size(); i++) {
-			glm::vec2 translation = vec[i]->GetTranslation();
-			float rotation = vec[i]->GetRotation();
-			glm::vec2 scale = vec[i]->GetScale();
-			glm::vec2 texCoordMin = vec[i]->GetMinTexCoords();
-			glm::vec2 texCoordMax = vec[i]->GetMaxTexCoords();
-			GLuint tex = vec[i]->GetTextureID();
-			GLuint shader = vec[i]->GetShaderID();
-			outfile << "Object2D: " << i << "\n";
-			outfile << "translation.x: " << translation.x << "\n";
-			outfile << "translation.y: " << translation.y << "\n";
-			outfile << "rotation: " << rotation << "\n";
-			outfile << "scale.x: " << scale.x << "\n";
-			outfile << "scale.y: " << scale.y << "\n";
-			outfile << "texture: " << tex << "\n";
-			outfile << "textureCoordMin.x: " << texCoordMin.x << "\n";
-			outfile << "textureCoordMin.y: " << texCoordMin.y << "\n";
-			outfile << "textureCoordMax.x: " << texCoordMax.x << "\n";
-			outfile << "textureCoordMax.y: " << texCoordMax.y << "\n";
-			outfile << "shader: " << shader << "\n";
-			outfile << "End Object2D\n";
-			outfile << "\n";
-		}
-		outfile.close();
-	}
+	//
+	//void IO::LoadFile(std::vector<Object2D*>& vec, const std::string dir, const std::string fileName)
+	//{
+	//	std::ifstream f(dir + fileName);
+	//
+	//	if (!f.is_open()) {
+	//		System::Err("File: \"" + dir + fileName + "\" does not exist or could not be loaded");
+	//	}
+	//
+	//	glm::vec2 translation;
+	//	float rotation;
+	//	glm::vec2 scale;
+	//	glm::vec2 texCoordMin;
+	//	glm::vec2 texCoordMax;
+	//	GLuint shader = 0;
+	//	GLuint texture = 0;
+	//
+	//	while (!f.eof())
+	//	{
+	//		std::string line;
+	//		std::getline(f, line);
+	//
+	//		if (line.find("#") != std::string::npos || line.size() == 0) {
+	//		}
+	//		else if (line.find("Object2D: ") != std::string::npos) {
+	//		}
+	//		else if (line.find("translation.x: ") != std::string::npos) {
+	//			std::string value = line.substr(15);
+	//			translation.x = std::stof(value);
+	//		}
+	//		else if (line.find("translation.y: ") != std::string::npos) {
+	//			std::string value = line.substr(15);
+	//			translation.y = std::stof(value);
+	//		}
+	//		else if (line.find("rotation: ") != std::string::npos) {
+	//			std::string value = line.substr(10);
+	//			rotation = std::stof(value);
+	//		}
+	//		else if (line.find("scale.x: ") != std::string::npos) {
+	//			std::string value = line.substr(9);
+	//			scale.x = std::stof(value);
+	//		}
+	//		else if (line.find("scale.y: ") != std::string::npos) {
+	//			std::string value = line.substr(9);
+	//			scale.y = std::stof(value);
+	//		}
+	//		else if (line.find("texture: ") != std::string::npos) {
+	//			std::string value = line.substr(9);
+	//			texture = std::stoi(value);
+	//		}
+	//		else if (line.find("textureCoordMin.x: ") != std::string::npos) {
+	//			std::string value = line.substr(19);
+	//			texCoordMin.x = std::stof(value);
+	//		}
+	//		else if (line.find("textureCoordMin.y: ") != std::string::npos) {
+	//			std::string value = line.substr(19);
+	//			texCoordMin.y = std::stof(value);
+	//		}
+	//		else if (line.find("textureCoordMax.x: ") != std::string::npos) {
+	//			std::string value = line.substr(19);
+	//			texCoordMax.x = std::stof(value);
+	//		}
+	//		else if (line.find("textureCoordMax.y: ") != std::string::npos) {
+	//			std::string value = line.substr(19);
+	//			texCoordMax.y = std::stof(value);
+	//		}
+	//		else if (line.find("shader: ") != std::string::npos) {
+	//			std::string value = line.substr(8);
+	//			shader = std::stoi(value);
+	//		}
+	//		else if (line.find("End Object2D") != std::string::npos) {
+	//			vec.push_back(new Object2D(glm::vec2(-50.0f, -50.0f), glm::vec2(50.0f, 50.0f), rotation, translation, scale, texture, shader, texCoordMin, texCoordMax));
+	//		}
+	//	}
+	//}
+	//
+	//void IO::SaveToFile(std::vector<Object2D*>& vec, const std::string dir, const std::string fileName)
+	//{
+	//	System::Log("Saving to file: \"" + dir + fileName + "\"");
+	//	std::ofstream outfile(dir + fileName);
+	//	outfile << "Total Size: " << vec.size() << "\n\n";
+	//	for (unsigned int i = 0; i < vec.size(); i++) {
+	//		glm::vec2 translation = vec[i]->GetTranslation();
+	//		float rotation = vec[i]->GetRotation();
+	//		glm::vec2 scale = vec[i]->GetScale();
+	//		glm::vec2 texCoordMin = vec[i]->GetMinTexCoords();
+	//		glm::vec2 texCoordMax = vec[i]->GetMaxTexCoords();
+	//		GLuint tex = vec[i]->GetTextureID();
+	//		GLuint shader = vec[i]->GetShaderID();
+	//		outfile << "Object2D: " << i << "\n";
+	//		outfile << "translation.x: " << translation.x << "\n";
+	//		outfile << "translation.y: " << translation.y << "\n";
+	//		outfile << "rotation: " << rotation << "\n";
+	//		outfile << "scale.x: " << scale.x << "\n";
+	//		outfile << "scale.y: " << scale.y << "\n";
+	//		outfile << "texture: " << tex << "\n";
+	//		outfile << "textureCoordMin.x: " << texCoordMin.x << "\n";
+	//		outfile << "textureCoordMin.y: " << texCoordMin.y << "\n";
+	//		outfile << "textureCoordMax.x: " << texCoordMax.x << "\n";
+	//		outfile << "textureCoordMax.y: " << texCoordMax.y << "\n";
+	//		outfile << "shader: " << shader << "\n";
+	//		outfile << "End Object2D\n";
+	//		outfile << "\n";
+	//	}
+	//	outfile.close();
+	//}
 }
