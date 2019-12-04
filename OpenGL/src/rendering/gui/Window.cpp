@@ -87,10 +87,6 @@ namespace Atlas {
 
 	void Window::DrawObjectSettingsWindow(Object* object)
 	{
-		static char InputModificationStringTextureDirectory[128] = "res/images/textures/";
-		static char InputModificationStringTextureName[128] = "";
-		static char InputModificationStringShaderDirectory[128] = "res/shaders/";
-		static char InputModificationStringShaderName[128] = "Lighting.shader";
 		static glm::vec3 InputModificationRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 		static glm::vec3 InputModificationTranslation = glm::vec3(0.0f, 0.0f, 0.0f);
 		static glm::vec3 InputModificationScale = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -100,6 +96,8 @@ namespace Atlas {
 		static int InputModificationShininess = 32;
 		static char* items[] = { "Position", "Lighting", "Rendering" };
 		static char* current_item = items[0];
+		static std::string currentSelectedTexture = "";
+		static std::string currentSelectedShader = "";
 
 		ImGui::Begin("Object Settings", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
 
@@ -120,22 +118,42 @@ namespace Atlas {
 		ImGui::Text("");
 
 		if (current_item == "Rendering") {
-			ImGui::Text("Texture Directory");
-			ImGui::InputText("##tin1", InputModificationStringTextureDirectory, IM_ARRAYSIZE(InputModificationStringTextureDirectory));
-			ImGui::Text("Texture Name");
-			ImGui::InputText("##tin2", InputModificationStringTextureName, IM_ARRAYSIZE(InputModificationStringTextureName));
+			if (ImGui::BeginCombo("Texture##texturecombo", currentSelectedTexture.c_str()))
+			{
+				for (auto it : Global::Variables.loadedTextureCache) {
+					bool is_selected = (currentSelectedTexture == it.first);
+					if (ImGui::Selectable(it.first.c_str(), is_selected)) {
+						currentSelectedTexture = it.first;
+						if (is_selected) {
+							ImGui::SetItemDefaultFocus();
+						}
+					}
+				}
+				ImGui::EndCombo();
+			}
 			if (ImGui::Button("Apply##t1")) {
-				object->SetTexture(std::string(InputModificationStringTextureDirectory), std::string(InputModificationStringTextureName));
+				Filepath texpath = System::SeperateFilepath(Global::Variables.loadedTextureCache[currentSelectedTexture]);
+				object->SetTexture(std::string(texpath.directory), std::string(texpath.filename));
 			}
 			ImGui::Text("");
 			ImGui::Separator();
 			ImGui::Text("");
-			ImGui::Text("Shader Directory");
-			ImGui::InputText("##sin1", InputModificationStringShaderDirectory, IM_ARRAYSIZE(InputModificationStringShaderDirectory));
-			ImGui::Text("Shader Name");
-			ImGui::InputText("##sin2", InputModificationStringShaderName, IM_ARRAYSIZE(InputModificationStringShaderName));
+			if (ImGui::BeginCombo("Shader##shadercombo", currentSelectedShader.c_str()))
+			{
+				for (auto it : Global::Variables.loadedShaderCache) {
+					bool is_selected = (currentSelectedTexture == it.first);
+					if (ImGui::Selectable(it.first.c_str(), is_selected)) {
+						currentSelectedShader = it.first;
+						if (is_selected) {
+							ImGui::SetItemDefaultFocus();
+						}
+					}
+				}
+				ImGui::EndCombo();
+			}
 			if (ImGui::Button("Apply##s1")) {
-				object->SetShader(std::string(InputModificationStringShaderDirectory), std::string(InputModificationStringShaderName));
+				Filepath shaderpath = System::SeperateFilepath(Global::Variables.loadedShaderCache[currentSelectedShader]);
+				object->SetShader(std::string(shaderpath.directory), std::string(shaderpath.filename));
 			}
 		}
 		else if (current_item == "Position") {
@@ -356,7 +374,7 @@ namespace Atlas {
 					meshName = file;
 				}
 				physicalLocation = meshDir + meshName;
-				if (System::IsFilePathInEXEDirectory(file)) {
+				if (System::IsFilePathInWorkingDirectory(file)) {
 					file = System::ConvertFilePathToLocal(file);
 					lastSlashPos = file.find_last_of("/");
 					meshDir = "";
@@ -373,10 +391,10 @@ namespace Atlas {
 				else {
 					std::string val = std::to_string(AddValueFile("res/models/", meshName, 0));
 					if (val == "0") {
-						physicalLocation = System::GetEXEDirectory() + "res/models/" + meshName;
+						physicalLocation = System::ConvertFilePathToAbsolute("res/models/" + meshName);
 					}
 					else {
-						physicalLocation = System::GetEXEDirectory() + "res/models/" + val + meshName;
+						physicalLocation = System::ConvertFilePathToAbsolute("res/models/" + val + meshName);
 					}
 					System::CopyFileAtlas(file, physicalLocation);
 					physicalLocation = System::ConvertFilePathToLocal(physicalLocation);
@@ -393,19 +411,31 @@ namespace Atlas {
 				}
 				std::string val = std::to_string(AddValueMesh(meshName, 0));
 				if (val == "0") {
+					System::Warn("Mesh loaded cache loading at:");
+					System::Err(meshName);
+					System::Err(physicalLocation);
 					Global::Variables.loadedMeshCache[meshName] = (physicalLocation);
 				}
 				else {
+					System::Warn("Mesh loaded cache loading at:");
+					System::Err(val + meshName);
+					System::Err(physicalLocation);
 					Global::Variables.loadedMeshCache[val + meshName] = (physicalLocation);
 				}
 				try {
 					if (Global::Variables.meshCache.find(meshDir + meshName) == Global::Variables.meshCache.end()) {
+						System::Warn("Actual untextured mesh loading at:");
+						System::Err(meshDir + meshName);
+						System::Err(physicalLocation);
 						Global::Variables.meshCache[meshDir + meshName] = ShapeGenerator::loadShape(physicalLocation, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 					}
 				}
 				catch (const std::exception & e) {
 					try {
 						if (Global::Variables.meshCache.find(meshDir + meshName) == Global::Variables.meshCache.end()) {
+							System::Warn("Actual textured mesh loading at:");
+							System::Err(meshDir + meshName);
+							System::Err(physicalLocation);
 							Global::Variables.meshCache[meshDir + meshName] = ShapeGenerator::loadTexturedShape(meshDir, meshName, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 						}
 					}
@@ -431,7 +461,7 @@ namespace Atlas {
 					textureName = file;
 				}
 				physicalLocation = textureDir + textureName;
-				if (System::IsFilePathInEXEDirectory(file)) {
+				if (System::IsFilePathInWorkingDirectory(file)) {
 					file = System::ConvertFilePathToLocal(file);
 					lastSlashPos = file.find_last_of("/");
 					textureDir = "";
@@ -448,10 +478,10 @@ namespace Atlas {
 				else {
 					std::string val = std::to_string(AddValueFile("res/images/textures/", textureName, 0));
 					if (val == "0") {
-						physicalLocation = System::GetEXEDirectory() + "res/images/textures/" + textureName;
+						physicalLocation = System::ConvertFilePathToAbsolute("res/images/textures/" + textureName);
 					}
 					else {
-						physicalLocation = System::GetEXEDirectory() + "res/images/textures/" + val + textureName;
+						physicalLocation = System::ConvertFilePathToAbsolute("res/images/textures/" + val + textureName);
 					}
 					System::CopyFileAtlas(file, physicalLocation);
 					physicalLocation = System::ConvertFilePathToLocal(physicalLocation);
@@ -494,7 +524,7 @@ namespace Atlas {
 					shaderName = file;
 				}
 				physicalLocation = shaderDir + shaderName;
-				if (System::IsFilePathInEXEDirectory(file)) {
+				if (System::IsFilePathInWorkingDirectory(file)) {
 					file = System::ConvertFilePathToLocal(file);
 					lastSlashPos = file.find_last_of("/");
 					shaderDir = "";
@@ -511,10 +541,10 @@ namespace Atlas {
 				else {
 					std::string val = std::to_string(AddValueFile("res/shaders/", shaderName, 0));
 					if (val == "0") {
-						physicalLocation = System::GetEXEDirectory() + "res/shaders/" + shaderName;
+						physicalLocation = System::ConvertFilePathToAbsolute("res/shaders/" + shaderName);
 					}
 					else {
-						physicalLocation = System::GetEXEDirectory() + "res/shaders/" + val + shaderName;
+						physicalLocation = System::ConvertFilePathToAbsolute("res/shaders/" + val + shaderName);
 					}
 					System::CopyFileAtlas(file, physicalLocation);
 					physicalLocation = System::ConvertFilePathToLocal(physicalLocation);

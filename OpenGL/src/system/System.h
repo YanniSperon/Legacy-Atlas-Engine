@@ -29,6 +29,9 @@ namespace Atlas {
 
 		static std::string GetEXEDirectory();
 		static std::string GetEXEName();
+		static void SetWorkingDirectory();
+		static std::string GetWorkingDirectory();
+		static bool IsFilePathInWorkingDirectory(const std::string& filePath);
 		static bool IsFilePathInEXEDirectory(const std::string& filePath);
 
 		static std::string ConvertFilePathToAbsolute(const std::string& localFilePath);

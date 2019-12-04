@@ -166,26 +166,32 @@ namespace Atlas {
 				else if (line.find("modelFileDir: ") != std::string::npos) {
 					std::string value = line.substr(14);
 					modelFileDirectory = value;
+					System::Log("When loading object, found model directory: \"" + value + "\"");
 				}
 				else if (line.find("modelFileName: ") != std::string::npos) {
 					std::string value = line.substr(15);
 					modelFileName = value;
+					System::Log("When loading object, found model name: \"" + value + "\"");
 				}
 				else if (line.find("textureDir: ") != std::string::npos) {
 					std::string value = line.substr(12);
 					textureFileDirectory = value;
+					System::Log("When loading object, found texture directory: \"" + value + "\"");
 				}
 				else if (line.find("textureName: ") != std::string::npos) {
 					std::string value = line.substr(13);
 					textureFileName = value;
+					System::Log("When loading object, found texture name: \"" + value + "\"");
 				}
 				else if (line.find("shaderDir: ") != std::string::npos) {
 					std::string value = line.substr(11);
 					shaderFileDirectory = value;
+					System::Log("When loading object, found shader directory: \"" + value + "\"");
 				}
 				else if (line.find("shaderName: ") != std::string::npos) {
 					std::string value = line.substr(12);
 					shaderFileName = value;
+					System::Log("When loading object, found shader name: \"" + value + "\"");
 				}
 				else if (line.find("ambientLight.r: ") != std::string::npos) {
 					std::string value = line.substr(16);
@@ -319,7 +325,7 @@ namespace Atlas {
 	void IO::LoadFile(std::vector<Object*>& vec, const std::string dir, const std::string fileName)
 	{
 		//std::vector<std::future<void>> futures;
-		std::ifstream f(System::GetEXEDirectory() + dir + fileName);
+		std::ifstream f(System::GetWorkingDirectory() + dir + fileName);
 
 		if (!f.is_open()) {
 			System::Err("File: \"" + dir + fileName + "\" does not exist or could not be loaded");
@@ -344,7 +350,7 @@ namespace Atlas {
 
 		for (unsigned int i = 0; i < filepaths.size(); i++) {
 			//futures.push_back(std::async(std::launch::async, LoadData, std::ref(vec), filepaths[i]));
-			LoadData(std::ref(vec), System::GetEXEDirectory() + filepaths[i]);
+			LoadData(std::ref(vec), System::GetWorkingDirectory() + filepaths[i]);
 		}
 	}
 
@@ -467,7 +473,7 @@ namespace Atlas {
 	void IO::SaveToFile(std::vector<Object*>& vec, const std::string dir, const std::string fileName)
 	{
 		std::vector<std::future<void>> futures;
-		std::ofstream outfile(System::GetEXEDirectory() + dir + fileName);
+		std::ofstream outfile(System::GetWorkingDirectory() + dir + fileName);
 		outfile << "Total Size: " << vec.size() << "\n\n";
 		System::Log("vec size: " + std::to_string(vec.size()));
 		for (unsigned int i = 0; i < vec.size(); i++) {

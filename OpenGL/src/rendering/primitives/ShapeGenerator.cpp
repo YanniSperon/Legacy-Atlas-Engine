@@ -513,24 +513,26 @@ namespace Atlas {
 
 	ShapeData ShapeGenerator::loadShape(std::string fileName, glm::vec3& min, glm::vec3& max)
 	{
+		System::Warn("Loading shape: \"" + System::ConvertFilePathToAbsolute(fileName) + "\"");
 		ShapeData ret;
 
 		std::vector<Vertex> positions;
 		std::vector<GLuint> indices;
 		std::vector<glm::vec3> normals;
 
-		std::ifstream f(System::GetEXEDirectory() + fileName);
+		std::ifstream f(System::ConvertFilePathToAbsolute(fileName));
 
 		unsigned int positionsSize = 0;
 		unsigned int indicesSize = 0;
 
 		if (!f.is_open()) {
-			System::Err("Invalid file - does not exist! \"" + System::GetEXEDirectory() + fileName + "\"");
+			System::Err("Invalid file - does not exist! \"" + System::ConvertFilePathToAbsolute(fileName) + "\"");
 			return ret;
 		}
-
+		int temp = 0;
 		while (!f.eof())
 		{
+			temp++;
 			char line[128];
 			f.getline(line, 128);
 
@@ -568,6 +570,10 @@ namespace Atlas {
 				positions.at(f[2] - 1).normal = normals.at(n[2] - 1);
 			}
 		}
+		if (temp == 0) {
+			System::Err("Corrupted file! \"" + System::ConvertFilePathToAbsolute(fileName) + "\"");
+			return ret;
+		}
 
 		ret.numVertices = positionsSize;
 		ret.vertices = new Vertex[positionsSize];
@@ -586,6 +592,7 @@ namespace Atlas {
 
 	ShapeData ShapeGenerator::loadTexturedShape(std::string directory, std::string name, glm::vec3& min, glm::vec3& max)
 	{
+		System::Warn("Loading textured shape: \"" + System::ConvertFilePathToAbsolute(directory + name) + "\"");
 		ShapeData ret;
 
 		std::vector<Vertex> positions;
@@ -593,20 +600,21 @@ namespace Atlas {
 		std::vector<TexCoord> tempTex;
 		std::vector<glm::vec3> normals;
 
-		std::ifstream obj(System::GetEXEDirectory() + directory + name);
+		std::ifstream obj(System::ConvertFilePathToAbsolute(directory + name));
 
 		unsigned int positionsSize = 0;
 		unsigned int indicesSize = 0;
 
 		if (!obj.is_open()) {
-			System::Err("Invalid file - does not exist! \"" + System::GetEXEDirectory() + directory + name + "\"");
+			System::Err("Invalid file - does not exist! \"" + System::ConvertFilePathToAbsolute(directory + name) + "\"");
 			return ret;
 		}
 
 		std::string mtlName;
-
+		int temp = 0;
 		while (!obj.eof())
 		{
+			temp++;
 			char line[128];
 			obj.getline(line, 128);
 
@@ -693,6 +701,10 @@ namespace Atlas {
 				uv.v = two;
 				tempTex.push_back(uv);
 			}
+		}
+		if (temp == 0) {
+			System::Err("Corrupted file! \"" + System::ConvertFilePathToAbsolute(directory + name) + "\"");
+			return ret;
 		}
 
 		ret.numVertices = positionsSize;

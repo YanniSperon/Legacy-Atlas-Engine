@@ -9,7 +9,7 @@ namespace Atlas {
 	class GUI {
 	public:
 		static void Initialize(GLFWwindow* window);
-		static void LoadLevelEditorGUI(GLFWwindow* window, LevelEditor::EditorType currentEditorType, LevelEditor::Mode currentMode, unsigned int selectedObject);
+		static void LoadLevelEditorGUI(GLFWwindow* window, LevelEditor::EditorType currentEditorType, LevelEditor::Mode currentMode, unsigned int& selectedObject);
 		static void Draw();
 		static void Terminate();
 	};

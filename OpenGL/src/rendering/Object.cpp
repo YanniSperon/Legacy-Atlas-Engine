@@ -30,13 +30,13 @@ namespace Atlas {
 	}
 
 	Object::Object()
-		: Mesh(), vertexBufferID(0), indexBufferID(0), numIndices(0), texID(0), shaderID(0), material(), glInitialized(false), textureDirectory(""), textureName(""), hasLighting(false)
+		: Mesh(), vertexBufferID(0), indexBufferID(0), numIndices(0), texID(0), shaderID(0), material(), glInitialized(false), textureDirectory(""), textureName(""), hasLighting(false), shaderDirectory(""), shaderName("")
 	{
 
 	}
 
 	Object::Object(glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderFileName, bool glInit, bool lighting)
-		: Mesh(minCorner, maxCorner, type, meshDir, meshName), material(), glInitialized(glInit), textureDirectory(texDir), textureName(texName), hasLighting(lighting), indexBufferID(0), vertexBufferID(0)
+		: Mesh(minCorner, maxCorner, type, meshDir, meshName), material(), glInitialized(glInit), textureDirectory(texDir), textureName(texName), hasLighting(lighting), indexBufferID(0), vertexBufferID(0), shaderDirectory(shaderDir), shaderName(shaderFileName)
 	{
 		if (Global::Variables.textureCache.find(texDir + texName) != Global::Variables.textureCache.end()) {
 			texID = Global::Variables.textureCache[texDir + texName];
@@ -48,15 +48,15 @@ namespace Atlas {
 
 			file = System::ConvertFilePathToLocal(file);
 			Filepath pathtemp = System::SeperateFilepath(file);
-			std::string textureDirectory = pathtemp.directory;
-			std::string textureName = pathtemp.filename;
+			std::string textureDir = pathtemp.directory;
+			std::string texName = pathtemp.filename;
 			physicalLocation = pathtemp.directory + pathtemp.filename;
 
-			Global::Variables.loadedTextureCache[textureName] = physicalLocation;
+			Global::Variables.loadedTextureCache[texName] = physicalLocation;
 
-			Global::Variables.textureCache[textureDirectory + textureName] = Loader::LoadTexture(textureDirectory, textureName, GL_REPEAT, GL_REPEAT, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
-			texID = Global::Variables.textureCache[textureDirectory + textureName];
-			System::Log("Texture dir and name: \"" + textureDirectory + textureName + "\"");
+			Global::Variables.textureCache[textureDir + texName] = Loader::LoadTexture(textureDir, texName, GL_REPEAT, GL_REPEAT, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
+			texID = Global::Variables.textureCache[textureDir + texName];
+			System::Log("Texture dir and name: \"" + textureDir + texName + "\"");
 		}
 
 		if (Global::Variables.shaderCache.find(shaderDir + shaderFileName) != Global::Variables.shaderCache.end()) {
@@ -69,15 +69,15 @@ namespace Atlas {
 
 			file = System::ConvertFilePathToLocal(file);
 			Filepath pathtemp = System::SeperateFilepath(file);
-			std::string shaderDirectory = pathtemp.directory;
-			std::string shaderName = pathtemp.filename;
+			std::string shadrDirectory = pathtemp.directory;
+			std::string shadrName = pathtemp.filename;
 			physicalLocation = pathtemp.directory + pathtemp.filename;
 
-			Global::Variables.loadedShaderCache[shaderName] = physicalLocation;
+			Global::Variables.loadedShaderCache[shadrName] = physicalLocation;
 
-			Global::Variables.shaderCache[shaderDirectory + shaderName] = new Shader(shaderDirectory + shaderName);
-			shaderID = Global::Variables.shaderCache[shaderDirectory + shaderName]->GetShaderID();
-			System::Log("Shader dir and name: \"" + shaderDirectory + shaderName + "\"");
+			Global::Variables.shaderCache[shadrDirectory + shadrName] = new Shader(shadrDirectory + shadrName);
+			shaderID = Global::Variables.shaderCache[shadrDirectory + shadrName]->GetShaderID();
+			System::Log("Shader dir and name: \"" + shadrDirectory + shadrName + "\"");
 		}
 		numIndices = (GLsizei)GetShape().numIndices;
 
@@ -93,16 +93,42 @@ namespace Atlas {
 			texID = Global::Variables.textureCache[texDir + texName];
 		}
 		else {
-			Global::Variables.textureCache[texDir + texName] = Loader::LoadTexture(texDir, texName, GL_REPEAT, GL_REPEAT, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
-			texID = Global::Variables.textureCache[texDir + texName];
+			std::string file = texDir + texName;
+			std::replace(file.begin(), file.end(), '\\', '/');
+			std::string physicalLocation = "";
+
+			file = System::ConvertFilePathToLocal(file);
+			Filepath pathtemp = System::SeperateFilepath(file);
+			std::string textureDir = pathtemp.directory;
+			std::string texName = pathtemp.filename;
+			physicalLocation = pathtemp.directory + pathtemp.filename;
+
+			Global::Variables.loadedTextureCache[texName] = physicalLocation;
+
+			Global::Variables.textureCache[textureDir + texName] = Loader::LoadTexture(textureDir, texName, GL_REPEAT, GL_REPEAT, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
+			texID = Global::Variables.textureCache[textureDir + texName];
+			System::Log("Texture dir and name: \"" + textureDir + texName + "\"");
 		}
 
 		if (Global::Variables.shaderCache.find(shaderDir + shaderFileName) != Global::Variables.shaderCache.end()) {
 			shaderID = Global::Variables.shaderCache[shaderDir + shaderFileName]->GetShaderID();
 		}
 		else {
-			Global::Variables.shaderCache[shaderDir + shaderFileName] = new Shader(shaderDir + shaderFileName);
-			shaderID = Global::Variables.shaderCache[shaderDir + shaderFileName]->GetShaderID();
+			std::string file = shaderDir + shaderFileName;
+			std::replace(file.begin(), file.end(), '\\', '/');
+			std::string physicalLocation = "";
+
+			file = System::ConvertFilePathToLocal(file);
+			Filepath pathtemp = System::SeperateFilepath(file);
+			std::string shadrDirectory = pathtemp.directory;
+			std::string shadrName = pathtemp.filename;
+			physicalLocation = pathtemp.directory + pathtemp.filename;
+
+			Global::Variables.loadedShaderCache[shadrName] = physicalLocation;
+
+			Global::Variables.shaderCache[shadrDirectory + shadrName] = new Shader(shadrDirectory + shadrName);
+			shaderID = Global::Variables.shaderCache[shadrDirectory + shadrName]->GetShaderID();
+			System::Log("Shader dir and name: \"" + shadrDirectory + shadrName + "\"");
 		}
 		numIndices = (GLsizei)GetShape().numIndices;
 
@@ -118,16 +144,42 @@ namespace Atlas {
 			texID = Global::Variables.textureCache[texDir + texName];
 		}
 		else {
-			Global::Variables.textureCache[texDir + texName] = Loader::LoadTexture(texDir, texName, GL_REPEAT, GL_REPEAT, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
-			texID = Global::Variables.textureCache[texDir + texName];
+			std::string file = texDir + texName;
+			std::replace(file.begin(), file.end(), '\\', '/');
+			std::string physicalLocation = "";
+
+			file = System::ConvertFilePathToLocal(file);
+			Filepath pathtemp = System::SeperateFilepath(file);
+			std::string textureDir = pathtemp.directory;
+			std::string texName = pathtemp.filename;
+			physicalLocation = pathtemp.directory + pathtemp.filename;
+
+			Global::Variables.loadedTextureCache[texName] = physicalLocation;
+
+			Global::Variables.textureCache[textureDir + texName] = Loader::LoadTexture(textureDir, texName, GL_REPEAT, GL_REPEAT, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
+			texID = Global::Variables.textureCache[textureDir + texName];
+			System::Log("Texture dir and name: \"" + textureDir + texName + "\"");
 		}
 
 		if (Global::Variables.shaderCache.find(shaderDir + shaderFileName) != Global::Variables.shaderCache.end()) {
 			shaderID = Global::Variables.shaderCache[shaderDir + shaderFileName]->GetShaderID();
 		}
 		else {
-			Global::Variables.shaderCache[shaderDir + shaderFileName] = new Shader(shaderDir + shaderFileName);
-			shaderID = Global::Variables.shaderCache[shaderDir + shaderFileName]->GetShaderID();
+			std::string file = shaderDir + shaderFileName;
+			std::replace(file.begin(), file.end(), '\\', '/');
+			std::string physicalLocation = "";
+
+			file = System::ConvertFilePathToLocal(file);
+			Filepath pathtemp = System::SeperateFilepath(file);
+			std::string shadrDirectory = pathtemp.directory;
+			std::string shadrName = pathtemp.filename;
+			physicalLocation = pathtemp.directory + pathtemp.filename;
+
+			Global::Variables.loadedShaderCache[shadrName] = physicalLocation;
+
+			Global::Variables.shaderCache[shadrDirectory + shadrName] = new Shader(shadrDirectory + shadrName);
+			shaderID = Global::Variables.shaderCache[shadrDirectory + shadrName]->GetShaderID();
+			System::Log("Shader dir and name: \"" + shadrDirectory + shadrName + "\"");
 		}
 		numIndices = (GLsizei)GetShape().numIndices;
 

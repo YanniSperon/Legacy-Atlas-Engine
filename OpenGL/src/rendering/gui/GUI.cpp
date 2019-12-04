@@ -16,7 +16,7 @@ namespace Atlas {
 		ImGui::StyleColorsDark();
 	}
 
-	void GUI::LoadLevelEditorGUI(GLFWwindow* window, LevelEditor::EditorType currentEditorType, LevelEditor::Mode currentMode, unsigned int selectedObject)
+	void GUI::LoadLevelEditorGUI(GLFWwindow* window, LevelEditor::EditorType currentEditorType, LevelEditor::Mode currentMode, unsigned int& selectedObject)
 	{
 		ImGui_ImplGlfwGL3_NewFrame();
 		static bool EnableDebug = true;

@@ -29,7 +29,7 @@ namespace Atlas {
 		}
 		else
 		{
-			System::Log("Failed to load texture \"" + texDirAndName + "\"!");
+			System::Err("Failed to load texture \"" + texDirAndNameAbsolute + "\"!");
 		}
 		return texID;
 	}
@@ -56,7 +56,7 @@ namespace Atlas {
 		}
 		else
 		{
-			System::Log("Failed to load texture \"" + texDir + texName + "\"!");
+			System::Err("Failed to load texture \"" + str + "\"!");
 		}
 		return texID;
 	}

@@ -89,13 +89,55 @@ namespace Atlas {
 		return runningName;
 	}
 
-	bool System::IsFilePathInEXEDirectory(const std::string& filePath)
+	static std::string workingDir;
+
+	void System::SetWorkingDirectory()
+	{
+		std::string outString;
+		{
+			TCHAR path[MAX_PATH + 1] = "";
+			DWORD len = GetCurrentDirectory(MAX_PATH, path);
+			outString = std::string(&path[0]);
+		}
+		outString.append("\\");
+		if (outString.find("\\") != std::string::npos) {
+			std::replace(outString.begin(), outString.end(), '\\', '/');
+		}
+		workingDir = outString;
+	}
+
+	std::string System::GetWorkingDirectory()
+	{
+		return workingDir;
+	}
+
+	bool System::IsFilePathInWorkingDirectory(const std::string& filePath)
 	{
 		std::string correctFilePath = filePath;
+		std::string currentWorkingDir = GetWorkingDirectory();
 		if (correctFilePath.find("\\") != std::string::npos) {
 			std::replace(correctFilePath.begin(), correctFilePath.end(), '\\', '/');
 		}
-		if (correctFilePath.find(GetEXEDirectory()) != std::string::npos) {
+		if (currentWorkingDir.find("\\") != std::string::npos) {
+			std::replace(currentWorkingDir.begin(), currentWorkingDir.end(), '\\', '/');
+		}
+		if (correctFilePath.find(currentWorkingDir) != std::string::npos) {
+			return true;
+		}
+		return false;
+	}
+
+	bool System::IsFilePathInEXEDirectory(const std::string& filePath)
+	{
+		std::string correctFilePath = filePath;
+		std::string currentEXEDir = GetEXEDirectory();
+		if (correctFilePath.find("\\") != std::string::npos) {
+			std::replace(correctFilePath.begin(), correctFilePath.end(), '\\', '/');
+		}
+		if (currentEXEDir.find("\\") != std::string::npos) {
+			std::replace(currentEXEDir.begin(), currentEXEDir.end(), '\\', '/');
+		}
+		if (correctFilePath.find(currentEXEDir) != std::string::npos) {
 			return true;
 		}
 		return false;
@@ -107,11 +149,11 @@ namespace Atlas {
 		if (correctFilePath.find("\\") != std::string::npos) {
 			std::replace(correctFilePath.begin(), correctFilePath.end(), '\\', '/');
 		}
-		if (IsFilePathInEXEDirectory(correctFilePath)) {
+		if (IsFilePathInWorkingDirectory(correctFilePath)) {
 			return correctFilePath;
 		}
 		else {
-			return GetEXEDirectory() + correctFilePath;
+			return GetWorkingDirectory() + correctFilePath;
 		}
 	}
 
@@ -121,8 +163,8 @@ namespace Atlas {
 		if (correctFilePath.find("\\") != std::string::npos) {
 			std::replace(correctFilePath.begin(), correctFilePath.end(), '\\', '/');
 		}
-		if (IsFilePathInEXEDirectory(correctFilePath)) {
-			return correctFilePath.substr(GetEXEDirectory().size());
+		if (IsFilePathInWorkingDirectory(correctFilePath)) {
+			return correctFilePath.substr(GetWorkingDirectory().size());
 		}
 		else {
 			return correctFilePath;
@@ -153,17 +195,22 @@ namespace Atlas {
 	bool System::CopyFileAtlas(const std::string& originalFilePathAndName, const std::string& finalFilePath)
 	{
 		if (DoesFileExist(originalFilePathAndName) && HasValidFileAttributes(originalFilePathAndName)) {
-			std::ifstream src(originalFilePathAndName, std::ios::binary);
-			std::ofstream dst(finalFilePath, std::ios::binary);
+			if (!DoesFileExist(finalFilePath)) {
+				std::ifstream src(originalFilePathAndName, std::ios::binary);
+				std::ofstream dst(finalFilePath, std::ios::binary);
 
-			if (src.is_open() && dst.is_open()) {
-				dst << src.rdbuf();
-				System::Log("Successfully copied \"" + originalFilePathAndName + "\" to \"" + finalFilePath + "\"");
-				return true;
+				if (src.is_open() && dst.is_open()) {
+					dst << src.rdbuf();
+					System::Log("Successfully copied \"" + originalFilePathAndName + "\" to \"" + finalFilePath + "\"");
+					return true;
+				}
+				else {
+					System::Err("Error opening streams while copying \"" + originalFilePathAndName + "\" to \"" + finalFilePath + "\"");
+					return false;
+				}
 			}
 			else {
-				System::Err("Error opening streams while copying \"" + originalFilePathAndName + "\" to \"" + finalFilePath + "\"");
-				return false;
+				System::Err("This file already exists!");
 			}
 		}
 		else {

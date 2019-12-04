@@ -19,6 +19,7 @@ namespace Atlas {
 	Mesh::Mesh(glm::vec3 min, glm::vec3 max, type type, std::string dir, std::string name)
 		: directory(dir), fileName(name), rotation(0.0f, 0.0f, 0.0f), translation(0.0f, 0.0f, 0.0f), minExtents(min), maxExtents(max), scale(1.0f, 1.0f, 1.0f), objectType(type)
 	{
+		System::Log("Creating mesh \"" + dir + name + "\"");
 		if (type == type::cubeModel) {
 			if (Global::Variables.meshCache.find("default::type::cube") != Global::Variables.meshCache.end()) {
 				shape = Global::Variables.meshCache["default::type::cube"];
@@ -34,11 +35,13 @@ namespace Atlas {
 					shape = Global::Variables.meshCache[dir + fileName];
 				}
 				else {
+					System::Err("Attempting to load normal shape with location \"" + dir + fileName + "\"");
 					std::string file = dir + name;
 					std::replace(file.begin(), file.end(), '\\', '/');
 					std::string physicalLocation = "";
 
 					file = System::ConvertFilePathToLocal(file);
+					System::Warn("    Local filepath \"" + file + "\"");
 					Filepath pathtemp = System::SeperateFilepath(file);
 					std::string meshDirectory = pathtemp.directory;
 					std::string meshName = pathtemp.filename;
@@ -48,7 +51,8 @@ namespace Atlas {
 
 					Global::Variables.meshCache[meshDirectory + meshName] = ShapeGenerator::loadShape(meshDirectory + meshName, minExtents, maxExtents);
 					shape = Global::Variables.meshCache[meshDirectory + meshName];
-					System::Log("Mesh dir and name: \"" + meshDirectory + meshName + "\"");
+					System::Warn("    Mesh dir and name (key): \"" + meshDirectory + meshName + "\"");
+					System::Warn("    Original mesh dir and name (value): \"" + dir + name + "\"");
 				}
 			}
 			catch (const std::exception & e) {
@@ -57,11 +61,13 @@ namespace Atlas {
 						shape = Global::Variables.meshCache[dir + fileName];
 					}
 					else {
+						System::Err("Attempting to load textured shape with location \"" + dir + fileName + "\"");
 						std::string file = dir + name;
 						std::replace(file.begin(), file.end(), '\\', '/');
 						std::string physicalLocation = "";
 
 						file = System::ConvertFilePathToLocal(file);
+						System::Warn("    Local filepath \"" + file + "\"");
 						Filepath pathtemp = System::SeperateFilepath(file);
 						std::string meshDirectory = pathtemp.directory;
 						std::string meshName = pathtemp.filename;
@@ -71,7 +77,8 @@ namespace Atlas {
 
 						Global::Variables.meshCache[meshDirectory + meshName] = ShapeGenerator::loadTexturedShape(dir, name, minExtents, maxExtents);
 						shape = Global::Variables.meshCache[meshDirectory + meshName];
-						System::Log("Mesh dir and name: \"" + meshDirectory + meshName + "\"");
+						System::Warn("    Mesh dir and name (key): \"" + meshDirectory + meshName + "\"");
+						System::Warn("    Original mesh dir and name (value): \"" + dir + name + "\"");
 					}
 				}
 				catch (const std::exception & e) {
@@ -111,6 +118,7 @@ namespace Atlas {
 	Mesh::Mesh(glm::vec3 min, glm::vec3 max, type type, std::string dir, std::string name, glm::vec3 rot, glm::vec3 trans, glm::vec3 s)
 		: directory(dir), fileName(name), rotation(rot), translation(trans), minExtents(min), maxExtents(max), scale(s), objectType(type)
 	{
+		System::Log("Creating mesh \"" + dir + name + "\"");
 		if (type == type::cubeModel) {
 			if (Global::Variables.meshCache.find("default::type::cube") != Global::Variables.meshCache.end()) {
 				shape = Global::Variables.meshCache["default::type::cube"];
@@ -126,17 +134,54 @@ namespace Atlas {
 					shape = Global::Variables.meshCache[dir + fileName];
 				}
 				else {
-					Global::Variables.meshCache[dir + fileName] = ShapeGenerator::loadShape(dir + name, minExtents, maxExtents);
-					shape = Global::Variables.meshCache[dir + fileName];
+					System::Err("Attempting to load normal shape with location \"" + dir + fileName + "\"");
+					std::string file = dir + name;
+					std::replace(file.begin(), file.end(), '\\', '/');
+					std::string physicalLocation = "";
+
+					file = System::ConvertFilePathToLocal(file);
+					System::Warn("    Local filepath \"" + file + "\"");
+					Filepath pathtemp = System::SeperateFilepath(file);
+					std::string meshDirectory = pathtemp.directory;
+					std::string meshName = pathtemp.filename;
+					physicalLocation = pathtemp.directory + pathtemp.filename;
+
+					Global::Variables.loadedMeshCache[meshName] = physicalLocation;
+
+					Global::Variables.meshCache[meshDirectory + meshName] = ShapeGenerator::loadShape(meshDirectory + meshName, minExtents, maxExtents);
+					shape = Global::Variables.meshCache[meshDirectory + meshName];
+					System::Warn("    Mesh dir and name (key): \"" + meshDirectory + meshName + "\"");
+					System::Warn("    Original mesh dir and name (value): \"" + dir + name + "\"");
 				}
 			}
 			catch (const std::exception & e) {
-				if (Global::Variables.meshCache.find(dir + fileName) != Global::Variables.meshCache.end()) {
-					shape = Global::Variables.meshCache[dir + fileName];
+				try {
+					if (Global::Variables.meshCache.find(dir + fileName) != Global::Variables.meshCache.end()) {
+						shape = Global::Variables.meshCache[dir + fileName];
+					}
+					else {
+						System::Err("Attempting to load textured shape with location \"" + dir + fileName + "\"");
+						std::string file = dir + name;
+						std::replace(file.begin(), file.end(), '\\', '/');
+						std::string physicalLocation = "";
+
+						file = System::ConvertFilePathToLocal(file);
+						System::Warn("    Local filepath \"" + file + "\"");
+						Filepath pathtemp = System::SeperateFilepath(file);
+						std::string meshDirectory = pathtemp.directory;
+						std::string meshName = pathtemp.filename;
+						physicalLocation = pathtemp.directory + pathtemp.filename;
+
+						Global::Variables.loadedMeshCache[meshName] = physicalLocation;
+
+						Global::Variables.meshCache[meshDirectory + meshName] = ShapeGenerator::loadTexturedShape(dir, name, minExtents, maxExtents);
+						shape = Global::Variables.meshCache[meshDirectory + meshName];
+						System::Warn("    Mesh dir and name (key): \"" + meshDirectory + meshName + "\"");
+						System::Warn("    Original mesh dir and name (value): \"" + dir + name + "\"");
+					}
 				}
-				else {
-					Global::Variables.meshCache[dir + fileName] = ShapeGenerator::loadTexturedShape(dir, name, minExtents, maxExtents);
-					shape = Global::Variables.meshCache[dir + fileName];
+				catch (const std::exception & e) {
+					System::Err("Unrecognized file type, must be wavefront .obj file following the specified format");
 				}
 			}
 		}
