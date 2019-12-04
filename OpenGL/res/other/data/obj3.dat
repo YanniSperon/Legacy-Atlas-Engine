@@ -1,12 +1,12 @@
 Object: 3
 type: Object
 modelType: normalModel
-translation.x: -17.1734
-translation.y: 0
-translation.z: -0.423208
-rotation.x: 189.502
+translation.x: -4.47334
+translation.y: 6.86782
+translation.z: -8.26397
+rotation.x: 0
 rotation.y: 0
-rotation.z: 33.2823
+rotation.z: 0
 scale.x: 1
 scale.y: 1
 scale.z: 1
@@ -22,7 +22,7 @@ specular.b: 0.5
 shininess: 32
 hasLighting: true
 modelFileDir: res/models/
-modelFileName: plane.obj
+modelFileName: tank.obj
 textureDir: res/images/colors/
 textureName: green.png
 shaderDir: res/shaders/

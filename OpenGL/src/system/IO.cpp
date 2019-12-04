@@ -341,7 +341,7 @@ namespace Atlas {
 
 			if (line.find("Total Size: ") != std::string::npos) {
 				std::string value = line.substr(12);
-				int size = std::stoi(value);
+				int size = std::stoi(value);	
 			}
 			else if (line.find("Obj: ") != std::string::npos) {
 				std::string value = line.substr(5);
