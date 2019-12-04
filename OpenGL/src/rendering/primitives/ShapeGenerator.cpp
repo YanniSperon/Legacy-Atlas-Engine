@@ -513,7 +513,6 @@ namespace Atlas {
 
 	ShapeData ShapeGenerator::loadShape(std::string fileName, glm::vec3& min, glm::vec3& max)
 	{
-		System::Warn("Loading shape: \"" + System::ConvertFilePathToAbsolute(fileName) + "\"");
 		ShapeData ret;
 
 		std::vector<Vertex> positions;
@@ -592,7 +591,6 @@ namespace Atlas {
 
 	ShapeData ShapeGenerator::loadTexturedShape(std::string directory, std::string name, glm::vec3& min, glm::vec3& max)
 	{
-		System::Warn("Loading textured shape: \"" + System::ConvertFilePathToAbsolute(directory + name) + "\"");
 		ShapeData ret;
 
 		std::vector<Vertex> positions;

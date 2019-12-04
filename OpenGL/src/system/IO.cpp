@@ -17,7 +17,6 @@ namespace Atlas {
 
 	static void LoadData(std::vector<Object*>& vec, std::string filePath)
 	{
-		System::Log("Loading object at path \"" + filePath + "\"");
 		std::ifstream objDataStream(filePath);
 		if (!objDataStream.is_open()) {
 			System::Err("\"" + filePath + "\"");
@@ -167,32 +166,26 @@ namespace Atlas {
 				else if (line.find("modelFileDir: ") != std::string::npos) {
 					std::string value = line.substr(14);
 					modelFileDirectory = value;
-					System::Log("When loading object, found model directory: \"" + value + "\"");
 				}
 				else if (line.find("modelFileName: ") != std::string::npos) {
 					std::string value = line.substr(15);
 					modelFileName = value;
-					System::Log("When loading object, found model name: \"" + value + "\"");
 				}
 				else if (line.find("textureDir: ") != std::string::npos) {
 					std::string value = line.substr(12);
 					textureFileDirectory = value;
-					System::Log("When loading object, found texture directory: \"" + value + "\"");
 				}
 				else if (line.find("textureName: ") != std::string::npos) {
 					std::string value = line.substr(13);
 					textureFileName = value;
-					System::Log("When loading object, found texture name: \"" + value + "\"");
 				}
 				else if (line.find("shaderDir: ") != std::string::npos) {
 					std::string value = line.substr(11);
 					shaderFileDirectory = value;
-					System::Log("When loading object, found shader directory: \"" + value + "\"");
 				}
 				else if (line.find("shaderName: ") != std::string::npos) {
 					std::string value = line.substr(12);
 					shaderFileName = value;
-					System::Log("When loading object, found shader name: \"" + value + "\"");
 				}
 				else if (line.find("ambientLight.r: ") != std::string::npos) {
 					std::string value = line.substr(16);

@@ -56,7 +56,6 @@ namespace Atlas {
 
 			Global::Variables.textureCache[textureDir + texName] = Loader::LoadTexture(textureDir, texName, GL_REPEAT, GL_REPEAT, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
 			texID = Global::Variables.textureCache[textureDir + texName];
-			System::Log("Texture dir and name: \"" + textureDir + texName + "\"");
 		}
 
 		if (Global::Variables.shaderCache.find(shaderDir + shaderFileName) != Global::Variables.shaderCache.end()) {
@@ -77,7 +76,6 @@ namespace Atlas {
 
 			Global::Variables.shaderCache[shadrDirectory + shadrName] = new Shader(shadrDirectory + shadrName);
 			shaderID = Global::Variables.shaderCache[shadrDirectory + shadrName]->GetShaderID();
-			System::Log("Shader dir and name: \"" + shadrDirectory + shadrName + "\"");
 		}
 		numIndices = (GLsizei)GetShape().numIndices;
 
@@ -107,7 +105,6 @@ namespace Atlas {
 
 			Global::Variables.textureCache[textureDir + texName] = Loader::LoadTexture(textureDir, texName, GL_REPEAT, GL_REPEAT, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
 			texID = Global::Variables.textureCache[textureDir + texName];
-			System::Log("Texture dir and name: \"" + textureDir + texName + "\"");
 		}
 
 		if (Global::Variables.shaderCache.find(shaderDir + shaderFileName) != Global::Variables.shaderCache.end()) {
@@ -128,7 +125,6 @@ namespace Atlas {
 
 			Global::Variables.shaderCache[shadrDirectory + shadrName] = new Shader(shadrDirectory + shadrName);
 			shaderID = Global::Variables.shaderCache[shadrDirectory + shadrName]->GetShaderID();
-			System::Log("Shader dir and name: \"" + shadrDirectory + shadrName + "\"");
 		}
 		numIndices = (GLsizei)GetShape().numIndices;
 
@@ -158,7 +154,6 @@ namespace Atlas {
 
 			Global::Variables.textureCache[textureDir + texName] = Loader::LoadTexture(textureDir, texName, GL_REPEAT, GL_REPEAT, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
 			texID = Global::Variables.textureCache[textureDir + texName];
-			System::Log("Texture dir and name: \"" + textureDir + texName + "\"");
 		}
 
 		if (Global::Variables.shaderCache.find(shaderDir + shaderFileName) != Global::Variables.shaderCache.end()) {
@@ -179,7 +174,6 @@ namespace Atlas {
 
 			Global::Variables.shaderCache[shadrDirectory + shadrName] = new Shader(shadrDirectory + shadrName);
 			shaderID = Global::Variables.shaderCache[shadrDirectory + shadrName]->GetShaderID();
-			System::Log("Shader dir and name: \"" + shadrDirectory + shadrName + "\"");
 		}
 		numIndices = (GLsizei)GetShape().numIndices;
 

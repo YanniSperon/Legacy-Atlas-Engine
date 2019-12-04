@@ -10,6 +10,8 @@
 
 namespace Atlas {
 
+	static std::string workingDir;
+
 	std::vector<std::string> System::GetFilesInDirectory(const std::string& directory)
 	{
 		std::string correctDirectory = directory;
@@ -88,8 +90,6 @@ namespace Atlas {
 
 		return runningName;
 	}
-
-	static std::string workingDir;
 
 	void System::SetWorkingDirectory()
 	{
