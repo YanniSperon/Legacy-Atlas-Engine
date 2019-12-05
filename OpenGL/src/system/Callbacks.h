@@ -42,5 +42,17 @@ namespace Atlas {
 		{
 			std::cerr << "Error " << error << " : " << description << std::endl;
 		}
+
+		static void APIENTRY openglCallbackFunction(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam) {
+			if (severity != GL_DEBUG_SEVERITY_LOW) {
+				(void)source; (void)type; (void)id;
+				(void)severity; (void)length; (void)userParam;
+				System::Err("GLError: \"" + std::string((const char*)message));
+				if (severity == GL_DEBUG_SEVERITY_HIGH) {
+					System::Err("    FATAL GLERROR!");
+					abort();
+				}
+			}
+		}
 	};
 }

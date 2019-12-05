@@ -27,6 +27,7 @@ namespace Atlas {
 		static bool ShouldToggleVSync = false;
 		static bool GUIEnabled = true;
 		static bool EnableObjectInfoPage = true;
+		static bool EnableWireframe = false;
 		if (Global::Variables.keyIn.leftAltPressed) {
 			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 			Global::Variables.enableMouseMove = false;
@@ -57,7 +58,7 @@ namespace Atlas {
 		}
 
 		if (EnableDebug) {
-			Window::DrawDebug(EnableConsole);
+			Window::DrawDebug(EnableConsole, EnableWireframe);
 		}
 
 		if (EnableSpawnMenu) {

@@ -22,10 +22,6 @@ extern "C"
 #include "Config.h"
 #include "Object.h"
 #include "PhysicsBody.h"
-#include "BoundingSphere.h"
-#include "AxisAlignedBoundingBox.h"
-#include "Plane.h"
-#include "AABBCollidable.h"
 #include "Loader.h"
 #include "Timer.h"
 #include "SimpleRenderer.h"
@@ -106,10 +102,6 @@ int main(void)
 
 	irrklang::ISoundEngine* engine = irrklang::createIrrKlangDevice();
 
-	
-	VRHandler::Setup();
-	
-	
 	System::Log("Vendor: " + std::string((char*)glGetString(GL_VENDOR)));
 	System::Log("Model: " + std::string((char*)glGetString(GL_RENDERER)));
 	System::Log("Version: " + std::string((char*)glGetString(GL_VERSION)));
@@ -124,6 +116,10 @@ int main(void)
 		glfwSetFramebufferSizeCallback(window, Callbacks::framebufferSizeCallback);
 		glfwSetErrorCallback(Callbacks::errorCallback);
 
+		System::Log("Register OpenGL debug callback ");
+		glEnable(GL_DEBUG_OUTPUT);
+		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+		glDebugMessageCallback(Callbacks::openglCallbackFunction, nullptr);
 		/////////////////////////////////////////////////////////////////////////////////////////////////////
 		//const char* attackSFXFilename = "res/audio/sfx/attack.wav";
 		//const char* explosionSFXFilename = "res/audio/sfx/explosion.wav";
@@ -144,6 +140,7 @@ int main(void)
 
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glEnable(GL_BLEND);
+
 		glBlendEquation(GL_FUNC_ADD);
 		glEnable(GL_DEPTH_TEST);
 
@@ -272,7 +269,7 @@ int main(void)
 			//		//vr::VRCompositorError
 			//	}
 			//}
-			VRHandler::Submit();
+			//VRHandler::Submit();
 			///////////////////////////////////////////////////////////////////////////
 			renderer.SimpleFlush(&Global::Variables.camera, Global::Variables.currentWidth, Global::Variables.currentHeight, Global::Variables.FOV, Global::Variables.currentScene.lightsOnScene.at(0));
 			///////////////////////////////////////////////////////////////////////////

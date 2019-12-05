@@ -224,6 +224,8 @@ namespace Atlas {
 	void Object::Draw()
 	{
 		Bind();
+		//glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, 0);
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, 0);
 	}
 

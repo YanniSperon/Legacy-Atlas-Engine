@@ -8,6 +8,7 @@
 #include "System.h"
 
 namespace Atlas {
+
 	class VRHandler {
 	public:
 		struct OpenVRApplication
@@ -15,32 +16,38 @@ namespace Atlas {
 			vr::IVRSystem* hmd;
 			uint32_t rtWidth;
 			uint32_t rtHeight;
+			bool initialized;
 
 			OpenVRApplication() :
-				hmd(NULL),
-				rtWidth(0), rtHeight(0)
+				hmd(NULL), rtWidth(0), rtHeight(0), initialized(false)
 			{
 				if (Global::Variables.hasVR) {
 					if (!hmdIsPresent())
 					{
-						System::Err("Error : HMD not detected on the system");
+						System::Err("Error: HMD not detected on the system");
 					}
+					else {
+						if (!vr::VR_IsRuntimeInstalled())
+						{
+							System::Err("Error: OpenVR Runtime not detected on the system");
+						}
+						else {
+							initVR();
 
-					if (!vr::VR_IsRuntimeInstalled())
-					{
-						System::Err("Error : OpenVR Runtime not detected on the system");
+							if (hmd != NULL) {
+								if (!vr::VRCompositor())
+								{
+									System::Err("Unable to initialize VR compositor!\n ");
+								}
+								else {
+
+									hmd->GetRecommendedRenderTargetSize(&rtWidth, &rtHeight);
+									initialized = true;
+									System::Warn("Initialized HMD with suggested render target size: " + std::to_string(rtWidth) + "x" + std::to_string(rtHeight));
+								}
+							}
+						}
 					}
-
-					initVR();
-
-					if (!vr::VRCompositor())
-					{
-						System::Err("Unable to initialize VR compositor!\n ");
-					}
-
-					hmd->GetRecommendedRenderTargetSize(&rtWidth, &rtHeight);
-
-					System::Warn("Initialized HMD with suggested render target size: " + std::to_string(rtWidth) + "x" + std::to_string(rtHeight));
 				}
 			}
 
@@ -85,6 +92,7 @@ namespace Atlas {
 
 			void handleVRError(vr::EVRInitError err)
 			{
+				System::Err("VR Initialization Error");
 				System::Err(vr::VR_GetVRInitErrorAsEnglishDescription(err));
 			}
 
@@ -98,9 +106,10 @@ namespace Atlas {
 					{
 						handleVRError(err);
 					}
-
-					System::Warn(GetTrackedDeviceString(hmd, vr::k_unTrackedDeviceIndex_Hmd, vr::Prop_TrackingSystemName_String));
-					System::Warn(GetTrackedDeviceString(hmd, vr::k_unTrackedDeviceIndex_Hmd, vr::Prop_SerialNumber_String));
+					else {
+						System::Warn(GetTrackedDeviceString(hmd, vr::k_unTrackedDeviceIndex_Hmd, vr::Prop_TrackingSystemName_String));
+						System::Warn(GetTrackedDeviceString(hmd, vr::k_unTrackedDeviceIndex_Hmd, vr::Prop_SerialNumber_String));
+					}
 				}
 			}
 		};

@@ -118,7 +118,8 @@ namespace Atlas {
 		ImGui::Text("");
 
 		if (current_item == "Rendering") {
-			if (ImGui::BeginCombo("Texture##texturecombo", currentSelectedTexture.c_str()))
+			ImGui::Text("Texture");
+			if (ImGui::BeginCombo("##texturecombo", currentSelectedTexture.c_str()))
 			{
 				for (auto it : Global::Variables.loadedTextureCache) {
 					bool is_selected = (currentSelectedTexture == it.first);
@@ -136,7 +137,8 @@ namespace Atlas {
 				object->SetTexture(std::string(texpath.directory), std::string(texpath.filename));
 			}
 			ImGui::Separator();
-			if (ImGui::BeginCombo("Shader##shadercombo", currentSelectedShader.c_str()))
+			ImGui::Text("Shader");
+			if (ImGui::BeginCombo("##shadercombo", currentSelectedShader.c_str()))
 			{
 				for (auto it : Global::Variables.loadedShaderCache) {
 					bool is_selected = (currentSelectedTexture == it.first);
@@ -338,18 +340,28 @@ namespace Atlas {
 		ImGui::End();
 	}
 
-	void Window::DrawDebug(bool& EnableConsole)
+	void Window::DrawDebug(bool& EnableConsole, bool& Wireframe)
 	{
 		ImGui::Begin("Debug", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::Separator();
 		ImGui::Checkbox("Enable Console##consoleControl", &EnableConsole);
+		if (ImGui::Button("Toggle display mode##wireframetoggler")) {
+			if (Wireframe) {
+				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+				Wireframe = false;
+			}
+			else {
+				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+				Wireframe = true;
+			}
+		}
 		ImGui::End();
 	}
 
 	void Window::DrawFileManager(GLFWwindow* window)
 	{
-		ImGui::Begin("File Manager", NULL);
+		ImGui::Begin("File Manager", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
 		if (ImGui::Button("Load new mesh##loadmeshbutton1")) {
 			std::string file = System::FileOpenDialog("Select a mesh to load", "OBJECT File\0*.obj\0", window);
 			std::replace(file.begin(), file.end(), '\\', '/');

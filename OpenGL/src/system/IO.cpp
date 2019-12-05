@@ -1,7 +1,6 @@
 #include "IO.h"
 #include "Light.h"
 #include "Mesh.h"
-#include "AABBCollidable.h"
 #include "PhysicsBody.h"
 #include "Global.h"
 #include "System.h"
@@ -300,9 +299,6 @@ namespace Atlas {
 			else if (strType == "PhysicsBody") {
 				value = new PhysicsBody(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), objectType, modelFileDirectory, modelFileName, textureFileDirectory, textureFileName, shaderFileDirectory, shaderFileName, false, hasLighting, rotation, translation, scale, Material(ambient, diffuse, specular, shininess), mass, linearVelocity, angularVelocity, force, torque, momentOfInertia, gravity);
 			}
-			else if (strType == "AABBCollidable") {
-				value = new AABBCollidable(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), objectType, modelFileDirectory, modelFileName, textureFileDirectory, textureFileName, shaderFileDirectory, shaderFileName, false, hasLighting, rotation, translation, scale, Material(ambient, diffuse, specular, shininess), mass, linearVelocity, angularVelocity, force, torque, momentOfInertia, gravity);
-			}
 			else if (strType == "Object") {
 				value = new Object(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), objectType, modelFileDirectory, modelFileName, textureFileDirectory, textureFileName, shaderFileDirectory, shaderFileName, false, hasLighting, rotation, translation, scale, Material(ambient, diffuse, specular, shininess));
 			}
@@ -428,16 +424,16 @@ namespace Atlas {
 				objectFile << "specularLight.b " << specular.b << "\n";
 			}
 		}
-		else if (type == "AABBCollidable" || type == "PhysicsBody") {
-			AABBCollidable* aabbcollidable = dynamic_cast<AABBCollidable*>(obj);
-			if (aabbcollidable != nullptr) {
-				float mass = aabbcollidable->GetMass();
-				glm::vec3 g = aabbcollidable->GetGravitationalForce();
-				glm::vec3 linVel = aabbcollidable->GetLinearVelocity();
-				glm::vec3 angVel = aabbcollidable->GetAngularVelocity();
-				glm::vec3 f = aabbcollidable->GetForce();
-				glm::vec3 t = aabbcollidable->GetTorque();
-				float moi = aabbcollidable->GetMomentOfInertia();
+		else if (type == "PhysicsBody") {
+			PhysicsBody* physicsBody = dynamic_cast<PhysicsBody*>(obj);
+			if (physicsBody != nullptr) {
+				float mass = physicsBody->GetMass();
+				glm::vec3 g = physicsBody->GetGravitationalForce();
+				glm::vec3 linVel = physicsBody->GetLinearVelocity();
+				glm::vec3 angVel = physicsBody->GetAngularVelocity();
+				glm::vec3 f = physicsBody->GetForce();
+				glm::vec3 t = physicsBody->GetTorque();
+				float moi = physicsBody->GetMomentOfInertia();
 
 				objectFile << "mass: " << mass << "\n";
 				objectFile << "g.x: " << g.x << "\n";
