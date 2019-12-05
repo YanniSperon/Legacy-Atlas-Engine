@@ -1,4 +1,4 @@
-//#define DGPU
+#define DGPU
 
 #ifdef DGPU
 extern "C"
@@ -63,6 +63,7 @@ int main(void)
 		return -1;
 	}
 
+	glfwWindowHint(GLFW_SAMPLES, 16);
 
 	if (Global::Variables.fullscreen) {
 		window = glfwCreateWindow(Global::Variables.initialWidth, Global::Variables.initialHeight, "Atlas", glfwGetPrimaryMonitor(), NULL);
@@ -116,7 +117,6 @@ int main(void)
 		glfwSetFramebufferSizeCallback(window, Callbacks::framebufferSizeCallback);
 		glfwSetErrorCallback(Callbacks::errorCallback);
 
-		System::Log("Register OpenGL debug callback ");
 		glEnable(GL_DEBUG_OUTPUT);
 		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 		glDebugMessageCallback(Callbacks::openglCallbackFunction, nullptr);
@@ -147,10 +147,58 @@ int main(void)
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_FRONT);
 		glFrontFace(GL_CW);
+		glEnable(GL_MULTISAMPLE);
 
 		bool GUIEnabled = true;
 
 		SimpleRenderer renderer;
+
+		unsigned int postProcessingFramebuffer;
+		glGenFramebuffers(1, &postProcessingFramebuffer);
+
+		unsigned int textureColorbuffer;
+		glGenTextures(1, &textureColorbuffer);
+		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, textureColorbuffer);
+		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 16, GL_RGB, Global::Variables.currentWidth, Global::Variables.currentHeight, GL_TRUE);
+		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
+
+		unsigned int rbo;
+		glGenRenderbuffers(1, &rbo);
+		glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+		glRenderbufferStorageMultisample(GL_RENDERBUFFER, 16, GL_DEPTH24_STENCIL8, Global::Variables.currentWidth, Global::Variables.currentHeight);
+
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, postProcessingFramebuffer);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, textureColorbuffer, 0);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
+
+		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+			System::Err("Framebuffer incomplete!");
+		}
+		
+		unsigned int intermediateFramebuffer;
+		glGenFramebuffers(1, &intermediateFramebuffer);
+
+		unsigned int screenTexture;
+		glGenTextures(1, &screenTexture);
+		glBindTexture(GL_TEXTURE_2D, screenTexture);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, Global::Variables.currentWidth, Global::Variables.currentHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, intermediateFramebuffer);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, screenTexture, 0);
+
+		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+			System::Err("Framebuffer incomplete!");
+		}
+
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		Shader postProcessingShader = Shader("res/shaders/2D.shader");
+
+		Object2D* quadForRenderingFX = new Object2D(glm::vec2(0.0f, 0.0f), glm::vec2(Global::Variables.currentWidth, Global::Variables.currentHeight), 0.0f, glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f), intermediateFramebuffer, postProcessingShader.GetShaderID(), glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f));
+
+		glm::mat4 orthographicMatrix = glm::ortho(0.0f, 1920.0f, 0.0f, 1080.0f);
 
 		LevelEditor::Mode currentMode(LevelEditor::cam);
 
@@ -208,6 +256,8 @@ int main(void)
 		
 		while (!glfwWindowShouldClose(window))
 		{
+			glBindFramebuffer(GL_FRAMEBUFFER, postProcessingFramebuffer);
+			glEnable(GL_DEPTH_TEST);
 			///////////////////////////////////////////////////////////////////////////
 			glfwPollEvents();
 			///////////////////////////////////////////////////////////////////////////
@@ -249,9 +299,24 @@ int main(void)
 			glm::mat4 viewMatrix = Global::Variables.camera.GetViewTransformMatrix();
 			Global::Variables.currentScene.Submit(&renderer, camPos, viewMatrix);
 			///////////////////////////////////////////////////////////////////////////
+			postProcessingShader.Bind();
+			///////////////////////////////////////////////////////////////////////////
+			renderer.SimpleFlush(&Global::Variables.camera, Global::Variables.currentWidth, Global::Variables.currentHeight, Global::Variables.FOV, Global::Variables.currentScene.lightsOnScene.at(0));
+			///////////////////////////////////////////////////////////////////////////
+			glBindFramebuffer(GL_READ_FRAMEBUFFER, postProcessingFramebuffer);
+			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, intermediateFramebuffer);
+			glBlitFramebuffer(0, 0, Global::Variables.currentWidth, Global::Variables.currentHeight, 0, 0, Global::Variables.currentWidth, Global::Variables.currentHeight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+			glDisable(GL_DEPTH_TEST);
+			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+			glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+			glClear(GL_COLOR_BUFFER_BIT);
+			renderer.Submit2D(quadForRenderingFX);
+			renderer.SimpleFlush(&Global::Variables.camera, Global::Variables.currentWidth, Global::Variables.currentHeight, Global::Variables.FOV, Global::Variables.currentScene.lightsOnScene.at(0));
 			if (GUIEnabled) {
 				GUI::LoadLevelEditorGUI(window, currentEditorType, currentMode, selectedObject);
 			}
+			glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+			GUI::Draw();
 			///////////////////////////////////////////////////////////////////////////
 			//if (hasVR) {
 			//	vr::TrackedDevicePose_t trackedDevicePose;
@@ -270,10 +335,6 @@ int main(void)
 			//	}
 			//}
 			//VRHandler::Submit();
-			///////////////////////////////////////////////////////////////////////////
-			renderer.SimpleFlush(&Global::Variables.camera, Global::Variables.currentWidth, Global::Variables.currentHeight, Global::Variables.FOV, Global::Variables.currentScene.lightsOnScene.at(0));
-			///////////////////////////////////////////////////////////////////////////
-			GUI::Draw();
 			glfwSwapBuffers(window);
 			///////////////////////////////////////////////////////////////////////////
 			InputHandler::Flush(&Global::Variables.keyIn, &Global::Variables.mouseIn);

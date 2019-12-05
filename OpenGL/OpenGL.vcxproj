@@ -186,7 +186,11 @@
     <None Include="imgui.ini" />
     <None Include="res\shaders\2D.shader" />
     <None Include="res\shaders\Basic.shader" />
+    <None Include="res\shaders\BlurPostFX.shader" />
+    <None Include="res\shaders\InvertPostFX.shader" />
     <None Include="res\shaders\Lighting.shader" />
+    <None Include="res\shaders\GreyscalePostFX.shader" />
+    <None Include="res\shaders\SharpenPostFX.shader" />
     <None Include="res\shaders\Text.shader" />
     <None Include="res\shaders\Window.shader" />
     <None Include="src\vendor\glm\detail\func_common.inl" />
