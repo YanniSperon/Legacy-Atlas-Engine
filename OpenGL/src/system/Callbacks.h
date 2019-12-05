@@ -37,5 +37,10 @@ namespace Atlas {
 				glViewport(0, 0, width, height);
 			}
 		}
+
+		static void errorCallback(int error, const char* description)
+		{
+			std::cerr << "Error " << error << " : " << description << std::endl;
+		}
 	};
 }

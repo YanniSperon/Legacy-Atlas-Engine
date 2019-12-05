@@ -10,7 +10,6 @@ extern "C"
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <irrKlang.h>
-#include <openvr.h>
 
 #include <iostream>
 #include <fstream>
@@ -44,6 +43,7 @@ extern "C"
 #include "GUI.h"
 #include "Scene.h"
 #include "SceneEditorControl.h"
+#include "VRHandler.h"
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
@@ -106,19 +106,8 @@ int main(void)
 
 	irrklang::ISoundEngine* engine = irrklang::createIrrKlangDevice();
 
-	vr::IVRSystem* vr_pointer = NULL;
-
-	if (Global::Variables.hasVR) {
-		vr::EVRInitError eError = vr::VRInitError_None;
-		vr_pointer = VR_Init(&eError, vr::VRApplication_Scene); // VRApplication_Background OR VRApplication_Scene OR VRApplication_Overlay OR VRApplication_Utility
-		if (eError != vr::VRInitError_None)
-		{
-			vr_pointer = NULL;
-			std::string error = VR_GetVRInitErrorAsEnglishDescription(eError);
-			System::Err("Unable to init VR runtime: \"" + error + "\"");
-		}
-	}
-
+	
+	VRHandler::Setup();
 	
 	
 	System::Log("Vendor: " + std::string((char*)glGetString(GL_VENDOR)));
@@ -133,6 +122,7 @@ int main(void)
 		}
 		glfwSetCursorPosCallback(window, Callbacks::cursorPositionCallback);
 		glfwSetFramebufferSizeCallback(window, Callbacks::framebufferSizeCallback);
+		glfwSetErrorCallback(Callbacks::errorCallback);
 
 		/////////////////////////////////////////////////////////////////////////////////////////////////////
 		//const char* attackSFXFilename = "res/audio/sfx/attack.wav";
@@ -214,9 +204,11 @@ int main(void)
 		else {
 			selectedObject = 0;
 		}
-		
-		//System::Warn(System::GetWorkingDirectory());
 
+		if (Global::Variables.hasVR) {
+			VRHandler::Setup();
+		}
+		
 		while (!glfwWindowShouldClose(window))
 		{
 			///////////////////////////////////////////////////////////////////////////
@@ -280,6 +272,7 @@ int main(void)
 			//		//vr::VRCompositorError
 			//	}
 			//}
+			VRHandler::Submit();
 			///////////////////////////////////////////////////////////////////////////
 			renderer.SimpleFlush(&Global::Variables.camera, Global::Variables.currentWidth, Global::Variables.currentHeight, Global::Variables.FOV, Global::Variables.currentScene.lightsOnScene.at(0));
 			///////////////////////////////////////////////////////////////////////////
@@ -293,6 +286,7 @@ int main(void)
 		Global::Variables.config.WriteConfig("res/other/", "config.cfg");
 		Mesh::FlushCache();
 		Object::FlushCache();
+		VRHandler::Cleanup();
 	}
 	GUI::Terminate();
 	glfwTerminate();

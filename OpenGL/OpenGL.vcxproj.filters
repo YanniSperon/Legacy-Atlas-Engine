@@ -126,6 +126,9 @@
     <ClCompile Include="src\leveleditor\SceneEditorControl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\rendering\vr\VRHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\Basic.shader" />
@@ -467,6 +470,7 @@
     <None Include="res\shaders\2D.shader" />
     <None Include="res\shaders\Text.shader" />
     <None Include="res\shaders\Lighting.shader" />
+    <None Include="cpp.hint" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\vendor\glm\detail\_features.hpp">
@@ -1031,6 +1035,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\leveleditor\SceneEditorControl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rendering\vr\VRHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rendering\vr\Target.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

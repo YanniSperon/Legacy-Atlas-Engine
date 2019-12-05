@@ -94,7 +94,7 @@ namespace Atlas {
 		static glm::vec3 InputModificationDiffuse = glm::vec3(0.5f, 0.5f, 0.5f);
 		static glm::vec3 InputModificationSpecular = glm::vec3(0.5f, 0.5f, 0.5f);
 		static int InputModificationShininess = 32;
-		static char* items[] = { "Position", "Lighting", "Rendering" };
+		static char* items[] = { "Rendering", "Lighting", "Position" };
 		static char* current_item = items[0];
 		static std::string currentSelectedTexture = "";
 		static std::string currentSelectedShader = "";
@@ -135,9 +135,7 @@ namespace Atlas {
 				Filepath texpath = System::SeperateFilepath(Global::Variables.loadedTextureCache[currentSelectedTexture]);
 				object->SetTexture(std::string(texpath.directory), std::string(texpath.filename));
 			}
-			ImGui::Text("");
 			ImGui::Separator();
-			ImGui::Text("");
 			if (ImGui::BeginCombo("Shader##shadercombo", currentSelectedShader.c_str()))
 			{
 				for (auto it : Global::Variables.loadedShaderCache) {
@@ -181,12 +179,6 @@ namespace Atlas {
 			}
 		}
 		else if (current_item == "Lighting") {
-
-			if (ImGui::Button("Toggle Lighting##l1")) {
-				object->SetHasLighting(!object->GetHasLighting());
-			}
-
-			ImGui::Separator();
 
 			ImGui::Text("Ambient Reflection");
 			ImGui::InputFloat3("##lin2", &InputModificationAmbient[0]);
@@ -362,6 +354,8 @@ namespace Atlas {
 			std::string file = System::FileOpenDialog("Select a mesh to load", "OBJECT File\0*.obj\0", window);
 			std::replace(file.begin(), file.end(), '\\', '/');
 			if (file != "INVALID") {
+				System::Log("");
+				System::Warn("Loading mesh \"" + file + "\"");
 				std::string physicalLocation = "";
 				std::size_t lastSlashPos = file.find_last_of("/");
 				std::string meshDir = "";
@@ -411,31 +405,19 @@ namespace Atlas {
 				}
 				std::string val = std::to_string(AddValueMesh(meshName, 0));
 				if (val == "0") {
-					System::Warn("Mesh loaded cache loading at:");
-					System::Err(meshName);
-					System::Err(physicalLocation);
 					Global::Variables.loadedMeshCache[meshName] = (physicalLocation);
 				}
 				else {
-					System::Warn("Mesh loaded cache loading at:");
-					System::Err(val + meshName);
-					System::Err(physicalLocation);
 					Global::Variables.loadedMeshCache[val + meshName] = (physicalLocation);
 				}
 				try {
 					if (Global::Variables.meshCache.find(meshDir + meshName) == Global::Variables.meshCache.end()) {
-						System::Warn("Actual untextured mesh loading at:");
-						System::Err(meshDir + meshName);
-						System::Err(physicalLocation);
 						Global::Variables.meshCache[meshDir + meshName] = ShapeGenerator::loadShape(physicalLocation, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 					}
 				}
 				catch (const std::exception & e) {
 					try {
 						if (Global::Variables.meshCache.find(meshDir + meshName) == Global::Variables.meshCache.end()) {
-							System::Warn("Actual textured mesh loading at:");
-							System::Err(meshDir + meshName);
-							System::Err(physicalLocation);
 							Global::Variables.meshCache[meshDir + meshName] = ShapeGenerator::loadTexturedShape(meshDir, meshName, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 						}
 					}
@@ -443,12 +425,15 @@ namespace Atlas {
 						System::Err("Unrecognized file type, must be wavefront .obj file following the specified format");
 					}
 				}
+				System::Warn("Mesh \"" + file + "\" loaded");
 			}
 		}
 		if (ImGui::Button("Load new texture##loadtexturebutton1")) {
 			std::string file = System::FileOpenDialog("Select a texture to load", "Portable Network Graphics\0*.png\0", window);
 			std::replace(file.begin(), file.end(), '\\', '/');
 			if (file != "INVALID") {
+				System::Log("");
+				System::Warn("Loading texture \"" + file + "\"");
 				std::string physicalLocation = "";
 				std::size_t lastSlashPos = file.find_last_of("/");
 				std::string textureDir = "";
@@ -506,12 +491,15 @@ namespace Atlas {
 				if (Global::Variables.textureCache.find(textureDir + textureName) == Global::Variables.textureCache.end()) {
 					Global::Variables.textureCache[textureDir + textureName] = Loader::LoadTexture(physicalLocation, GL_REPEAT, GL_REPEAT, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
 				}
+				System::Warn("Texture \"" + file + "\" loaded");
 			}
 		}
 		if (ImGui::Button("Load new shader##loadshaderbutton1")) {
 			std::string file = System::FileOpenDialog("Select a shader to load", "SHADER File\0*.shader\0", window);
 			std::replace(file.begin(), file.end(), '\\', '/');
 			if (file != "INVALID") {
+				System::Log("");
+				System::Warn("Loading shader \"" + file + "\"");
 				std::string physicalLocation = "";
 				std::size_t lastSlashPos = file.find_last_of("/");
 				std::string shaderDir = "";
@@ -570,6 +558,7 @@ namespace Atlas {
 				if (Global::Variables.shaderCache.find(shaderDir + shaderName) == Global::Variables.shaderCache.end()) {
 					Global::Variables.shaderCache[shaderDir + shaderName] = new Shader(physicalLocation);
 				}
+				System::Warn("Shader \"" + file + "\" loaded");
 			}
 		}
 		ImGui::End();
