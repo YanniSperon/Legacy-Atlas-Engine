@@ -5,6 +5,7 @@
 #include "Input.h"
 #include "Shader.h"
 #include "Scene.h"
+#include "Object2D.h"
 #include <chrono>
 #include <unordered_map>
 #include <vector>
@@ -60,6 +61,8 @@ namespace Atlas {
 		std::unordered_map<std::string, std::string> loadedTextureCache;
 
 		std::unordered_map<std::string, std::string> loadedShaderCache;
+
+		std::unordered_map<std::string, std::string> loadedPostProcessingShaderCache;
 
 		Scene currentScene;
 	};

@@ -40,6 +40,7 @@ extern "C"
 #include "Scene.h"
 #include "SceneEditorControl.h"
 #include "VRHandler.h"
+#include "PostProcessor.h"
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
@@ -63,11 +64,12 @@ int main(void)
 		return -1;
 	}
 
-	glfwWindowHint(GLFW_SAMPLES, 16);
+	glfwWindowHint(GLFW_SAMPLES, 4);
 
 	if (Global::Variables.fullscreen) {
 		window = glfwCreateWindow(Global::Variables.initialWidth, Global::Variables.initialHeight, "Atlas", glfwGetPrimaryMonitor(), NULL);
 	}
+
 	else {
 		if (Global::Variables.forceFullscreen) {
 			const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
@@ -153,52 +155,14 @@ int main(void)
 
 		SimpleRenderer renderer;
 
-		unsigned int postProcessingFramebuffer;
-		glGenFramebuffers(1, &postProcessingFramebuffer);
 
-		unsigned int textureColorbuffer;
-		glGenTextures(1, &textureColorbuffer);
-		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, textureColorbuffer);
-		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 16, GL_RGB, Global::Variables.currentWidth, Global::Variables.currentHeight, GL_TRUE);
-		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
-
-		unsigned int rbo;
-		glGenRenderbuffers(1, &rbo);
-		glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-		glRenderbufferStorageMultisample(GL_RENDERBUFFER, 16, GL_DEPTH24_STENCIL8, Global::Variables.currentWidth, Global::Variables.currentHeight);
-
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, postProcessingFramebuffer);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, textureColorbuffer, 0);
-		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
-
-		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-			System::Err("Framebuffer incomplete!");
-		}
+		PostProcessor::Initialize("res/shaders/FXAAPostFX.shader");
+		//PostProcessor::Initialize("res/shaders/2D.shader");
+		//PostProcessor::Initialize("res/shaders/BlurPostFX.shader");
+		//PostProcessor::Initialize("res/shaders/GreyscalePostFX.shader");
+		//PostProcessor::Initialize("res/shaders/InvertPostFX.shader");
+		//PostProcessor::Initialize("res/shaders/SharpenPostFX.shader");
 		
-		unsigned int intermediateFramebuffer;
-		glGenFramebuffers(1, &intermediateFramebuffer);
-
-		unsigned int screenTexture;
-		glGenTextures(1, &screenTexture);
-		glBindTexture(GL_TEXTURE_2D, screenTexture);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, Global::Variables.currentWidth, Global::Variables.currentHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, intermediateFramebuffer);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, screenTexture, 0);
-
-		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-			System::Err("Framebuffer incomplete!");
-		}
-
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-		Shader postProcessingShader = Shader("res/shaders/2D.shader");
-
-		Object2D* quadForRenderingFX = new Object2D(glm::vec2(0.0f, 0.0f), glm::vec2(Global::Variables.currentWidth, Global::Variables.currentHeight), 0.0f, glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f), intermediateFramebuffer, postProcessingShader.GetShaderID(), glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f));
-
-		glm::mat4 orthographicMatrix = glm::ortho(0.0f, 1920.0f, 0.0f, 1080.0f);
 
 		LevelEditor::Mode currentMode(LevelEditor::cam);
 
@@ -256,8 +220,7 @@ int main(void)
 		
 		while (!glfwWindowShouldClose(window))
 		{
-			glBindFramebuffer(GL_FRAMEBUFFER, postProcessingFramebuffer);
-			glEnable(GL_DEPTH_TEST);
+			PostProcessor::Prepare();
 			///////////////////////////////////////////////////////////////////////////
 			glfwPollEvents();
 			///////////////////////////////////////////////////////////////////////////
@@ -271,9 +234,21 @@ int main(void)
 			///////////////////////////////////////////////////////////////////////////
 			if (Global::Variables.keyIn.sixPressed) {
 				System::Warn("--------------------------------");
-				for (auto it : Global::Variables.meshCache) {
+				for (auto it : Global::Variables.loadedPostProcessingShaderCache) {
 					System::Log("First: " + it.first);
 				}
+			}
+			if (Global::Variables.keyIn.onePressed) {
+				PostProcessor::ChangeEffect("res/shaders/InvertPostFX.shader");
+			}
+			if (Global::Variables.keyIn.twoPressed) {
+				PostProcessor::ChangeEffect("res/shaders/GreyscalePostFX.shader");
+			}
+			if (Global::Variables.keyIn.threePressed) {
+				PostProcessor::ChangeEffect("res/shaders/FXAAPostFX.shader");
+			}
+			if (Global::Variables.keyIn.fourPressed) {
+				PostProcessor::ChangeEffect("res/shaders/2D.shader");
 			}
 			///////////////////////////////////////////////////////////////////////////
 			float deltaTime = (float)deltaT * timeConstant;
@@ -299,19 +274,10 @@ int main(void)
 			glm::mat4 viewMatrix = Global::Variables.camera.GetViewTransformMatrix();
 			Global::Variables.currentScene.Submit(&renderer, camPos, viewMatrix);
 			///////////////////////////////////////////////////////////////////////////
-			postProcessingShader.Bind();
-			///////////////////////////////////////////////////////////////////////////
 			renderer.SimpleFlush(&Global::Variables.camera, Global::Variables.currentWidth, Global::Variables.currentHeight, Global::Variables.FOV, Global::Variables.currentScene.lightsOnScene.at(0));
 			///////////////////////////////////////////////////////////////////////////
-			glBindFramebuffer(GL_READ_FRAMEBUFFER, postProcessingFramebuffer);
-			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, intermediateFramebuffer);
-			glBlitFramebuffer(0, 0, Global::Variables.currentWidth, Global::Variables.currentHeight, 0, 0, Global::Variables.currentWidth, Global::Variables.currentHeight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-			glDisable(GL_DEPTH_TEST);
-			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-			glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT);
-			renderer.Submit2D(quadForRenderingFX);
-			renderer.SimpleFlush(&Global::Variables.camera, Global::Variables.currentWidth, Global::Variables.currentHeight, Global::Variables.FOV, Global::Variables.currentScene.lightsOnScene.at(0));
+			PostProcessor::Render(&renderer);
+			///////////////////////////////////////////////////////////////////////////
 			if (GUIEnabled) {
 				GUI::LoadLevelEditorGUI(window, currentEditorType, currentMode, selectedObject);
 			}

@@ -114,16 +114,7 @@
     <ClCompile Include="src\rendering\vr\VRHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\rendering\Framebuffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\rendering\fx\ImageRenderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\rendering\fx\PostProcessing.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\rendering\fx\PostProcessingEffect.cpp">
+    <ClCompile Include="src\rendering\fx\PostProcessor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -472,6 +463,7 @@
     <None Include="res\shaders\BlurPostFX.shader" />
     <None Include="res\shaders\InvertPostFX.shader" />
     <None Include="res\shaders\SharpenPostFX.shader" />
+    <None Include="res\shaders\FXAAPostFX.shader" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\vendor\glm\detail\_features.hpp">
@@ -1029,16 +1021,7 @@
     <ClInclude Include="src\rendering\vr\Target.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\rendering\fx\PostProcessing.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\rendering\Framebuffer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\rendering\fx\ImageRenderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\rendering\fx\PostProcessingEffect.h">
+    <ClInclude Include="src\rendering\fx\PostProcessor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
