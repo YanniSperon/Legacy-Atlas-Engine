@@ -47,10 +47,13 @@ namespace Atlas {
 			if (severity != GL_DEBUG_SEVERITY_LOW) {
 				(void)source; (void)type; (void)id;
 				(void)severity; (void)length; (void)userParam;
-				System::Err("GLError: \"" + std::string((const char*)message));
-				if (severity == GL_DEBUG_SEVERITY_HIGH) {
-					System::Err("    FATAL GLERROR!");
-					abort();
+				std::string sMessage = std::string((const char*)message);
+				if (sMessage.find("Buffer detailed info") == std::string::npos) {
+					System::Err("GLError: \"" + sMessage);
+					if (severity == GL_DEBUG_SEVERITY_HIGH) {
+						System::Err("    FATAL GLERROR!");
+						abort();
+					}
 				}
 			}
 		}

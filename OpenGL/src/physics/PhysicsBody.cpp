@@ -29,20 +29,6 @@ namespace Atlas {
 		angularVelocity += tempLin * 2.0f;
 	}
 
-	Position PhysicsBody::UpdateValues(float deltaT, Position oldPosition)
-	{
-		Position newPosition = oldPosition;
-		glm::vec3 tempLin = ((newPosition.force + newPosition.gravitationalForce) * deltaT) / (mass * 2.0f);
-		newPosition.translation = (tempLin + newPosition.linearVel) * deltaT;
-		newPosition.linearVel += tempLin * 2.0f;
-
-		glm::vec3 tempAng = (newPosition.torque * deltaT) / (newPosition.momentOfInertia * 2.0f);
-		newPosition.rotation = (tempAng + newPosition.angularVel) * deltaT;
-		newPosition.angularVel += tempLin * 2.0f;
-
-		return newPosition;
-	}
-
 	void PhysicsBody::Stop()
 	{
 		linearVelocity = angularVelocity = force = torque = glm::vec3(0.0f, 0.0f, 0.0f);

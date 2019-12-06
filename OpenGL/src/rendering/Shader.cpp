@@ -22,6 +22,7 @@ namespace Atlas {
 
 	Shader::~Shader()
 	{
+		Unbind();
 		glDeleteProgram(m_RendererID);
 	}
 

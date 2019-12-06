@@ -3,11 +3,6 @@
 #include "glm/glm.hpp"
 
 namespace Atlas {
-	struct Position {
-		glm::vec3 translation, rotation, scale, linearVel, force, angularVel, torque, gravitationalForce;
-		float mass, momentOfInertia;
-	};
-
 	class PhysicsBody : public Atlas::Object {
 	private:
 		float mass;
@@ -22,7 +17,6 @@ namespace Atlas {
 		PhysicsBody(glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderName, bool glInit, bool hasLighting, glm::vec3 rot, glm::vec3 trans, glm::vec3 s, Material mat, float m, glm::vec3 linearVel, glm::vec3 angularVel, glm::vec3 f, glm::vec3 t, float MOI, glm::vec3 gravity);
 
 		void Update(float delta);
-		Position UpdateValues(float deltaT, Position oldPosition);
 
 		void Stop();
 
