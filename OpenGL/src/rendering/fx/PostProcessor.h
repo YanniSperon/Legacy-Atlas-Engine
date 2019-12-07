@@ -9,6 +9,7 @@ namespace Atlas {
 		static void Prepare();
 		static void Render(Renderer* renderer);
 
-		static void ChangeEffect(std::string newShader);
+		static void ChangeEffect(std::string newShaderShortenedName);
+		static void Cleanup();
 	};
 }

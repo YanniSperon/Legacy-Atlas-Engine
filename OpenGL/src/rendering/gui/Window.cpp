@@ -1,10 +1,13 @@
 #include "Window.h"
+#define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw_gl3.h"
+#include "imgui/imgui_internal.h"
 #include "System.h"
 #include "Global.h"
 #include "Loader.h"
 #include "ShapeGenerator.h"
+#include "PostProcessor.h"
 #include <algorithm>
 
 namespace Atlas {
@@ -120,10 +123,13 @@ namespace Atlas {
 	void Window::DrawDebug(bool& EnableConsole, bool& Wireframe)
 	{
 		ImGui::Begin("Debug", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
-		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.12f).x);
+		ImGui::Text("%.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::Separator();
+		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.25f).x);
 		ImGui::Checkbox("Enable Console##consoleControl", &EnableConsole);
-		if (ImGui::Button("Toggle display mode##wireframetoggler")) {
+		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.125f).x);
+		if (ImGui::Button("Toggle display mode##wireframetoggler", ImVec2(ImGui::GetWindowSize().x * 0.75f, 0.0f))) {
 			if (Wireframe) {
 				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 				Wireframe = false;
@@ -139,11 +145,11 @@ namespace Atlas {
 	void Window::DrawFileManager(GLFWwindow* window)
 	{
 		ImGui::Begin("File Manager", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
-		if (ImGui::Button("Load new mesh##loadmeshbutton1")) {
+		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.125f).x);
+		if (ImGui::Button("Load new mesh##loadmeshbutton1", ImVec2(ImGui::GetWindowSize().x * 0.75f, 0.0f))) {
 			std::string file = System::FileOpenDialog("Select a mesh to load", "OBJECT File\0*.obj\0", window);
 			std::replace(file.begin(), file.end(), '\\', '/');
 			if (file != "INVALID") {
-				System::Log("");
 				System::Warn("Loading mesh \"" + file + "\"");
 				std::string physicalLocation = "";
 				std::size_t lastSlashPos = file.find_last_of("/");
@@ -217,11 +223,11 @@ namespace Atlas {
 				System::Warn("Mesh \"" + file + "\" loaded");
 			}
 		}
-		if (ImGui::Button("Load new texture##loadtexturebutton1")) {
+		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.125f).x);
+		if (ImGui::Button("Load new texture##loadtexturebutton1", ImVec2(ImGui::GetWindowSize().x * 0.75f, 0.0f))) {
 			std::string file = System::FileOpenDialog("Select a texture to load", "Portable Network Graphics\0*.png\0", window);
 			std::replace(file.begin(), file.end(), '\\', '/');
 			if (file != "INVALID") {
-				System::Log("");
 				System::Warn("Loading texture \"" + file + "\"");
 				std::string physicalLocation = "";
 				std::size_t lastSlashPos = file.find_last_of("/");
@@ -283,11 +289,11 @@ namespace Atlas {
 				System::Warn("Texture \"" + file + "\" loaded");
 			}
 		}
-		if (ImGui::Button("Load new shader##loadshaderbutton1")) {
+		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.125f).x);
+		if (ImGui::Button("Load new shader##loadshaderbutton1", ImVec2(ImGui::GetWindowSize().x * 0.75f, 0.0f))) {
 			std::string file = System::FileOpenDialog("Select a shader to load", "SHADER File\0*.shader\0", window);
 			std::replace(file.begin(), file.end(), '\\', '/');
 			if (file != "INVALID") {
-				System::Log("");
 				System::Warn("Loading shader \"" + file + "\"");
 				std::string physicalLocation = "";
 				std::size_t lastSlashPos = file.find_last_of("/");
@@ -355,156 +361,13 @@ namespace Atlas {
 
 	void Window::DrawPostProcessingManager(GLFWwindow* window)
 	{
-		ImGui::Begin("Post-Processing Manager", NULL/*, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove*/);
-		if (ImGui::Button("Load new mesh##loadmeshbutton1")) {
-			std::string file = System::FileOpenDialog("Select a mesh to load", "OBJECT File\0*.obj\0", window);
+		static std::string currentSelectedPSFX = "";
+		ImGui::Begin("Post-Processing Manager", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.125f).x);
+		if (ImGui::Button("Load new post-processing shader##loadpsfxshader", ImVec2(ImGui::GetWindowSize().x * 0.75f, 0.0f))) {
+			std::string file = System::FileOpenDialog("Select a mesh to load", "SHADER File\0*.shader\0", window);
 			std::replace(file.begin(), file.end(), '\\', '/');
 			if (file != "INVALID") {
-				System::Log("");
-				System::Warn("Loading mesh \"" + file + "\"");
-				std::string physicalLocation = "";
-				std::size_t lastSlashPos = file.find_last_of("/");
-				std::string meshDir = "";
-				std::string meshName = "";
-				if (lastSlashPos != std::string::npos) {
-					meshDir = file.substr(0, lastSlashPos + 1);
-					meshName = file.substr(lastSlashPos + 1);
-				}
-				else {
-					meshName = file;
-				}
-				physicalLocation = meshDir + meshName;
-				if (System::IsFilePathInWorkingDirectory(file)) {
-					file = System::ConvertFilePathToLocal(file);
-					lastSlashPos = file.find_last_of("/");
-					meshDir = "";
-					meshName = "";
-					if (lastSlashPos != std::string::npos) {
-						meshDir = file.substr(0, lastSlashPos + 1);
-						meshName = file.substr(lastSlashPos + 1);
-					}
-					else {
-						meshName = file;
-					}
-					physicalLocation = meshDir + meshName;
-				}
-				else {
-					std::string val = std::to_string(AddValueFile("res/models/", meshName, 0));
-					if (val == "0") {
-						physicalLocation = System::ConvertFilePathToAbsolute("res/models/" + meshName);
-					}
-					else {
-						physicalLocation = System::ConvertFilePathToAbsolute("res/models/" + val + meshName);
-					}
-					System::CopyFileAtlas(file, physicalLocation);
-					physicalLocation = System::ConvertFilePathToLocal(physicalLocation);
-					lastSlashPos = physicalLocation.find_last_of("/");
-					meshDir = "";
-					meshName = "";
-					if (lastSlashPos != std::string::npos) {
-						meshDir = physicalLocation.substr(0, lastSlashPos + 1);
-						meshName = physicalLocation.substr(lastSlashPos + 1);
-					}
-					else {
-						meshName = physicalLocation;
-					}
-				}
-				std::string val = std::to_string(AddValueMesh(meshName, 0));
-				if (val == "0") {
-					Global::Variables.loadedMeshCache[meshName] = (physicalLocation);
-				}
-				else {
-					Global::Variables.loadedMeshCache[val + meshName] = (physicalLocation);
-				}
-				try {
-					if (Global::Variables.meshCache.find(meshDir + meshName) == Global::Variables.meshCache.end()) {
-						Global::Variables.meshCache[meshDir + meshName] = ShapeGenerator::loadShape(physicalLocation, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f));
-					}
-				}
-				catch (const std::exception & e) {
-					try {
-						if (Global::Variables.meshCache.find(meshDir + meshName) == Global::Variables.meshCache.end()) {
-							Global::Variables.meshCache[meshDir + meshName] = ShapeGenerator::loadTexturedShape(meshDir, meshName, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f));
-						}
-					}
-					catch (const std::exception & e) {
-						System::Err("Unrecognized file type, must be wavefront .obj file following the specified format");
-					}
-				}
-				System::Warn("Mesh \"" + file + "\" loaded");
-			}
-		}
-		if (ImGui::Button("Load new texture##loadtexturebutton1")) {
-			std::string file = System::FileOpenDialog("Select a texture to load", "Portable Network Graphics\0*.png\0", window);
-			std::replace(file.begin(), file.end(), '\\', '/');
-			if (file != "INVALID") {
-				System::Log("");
-				System::Warn("Loading texture \"" + file + "\"");
-				std::string physicalLocation = "";
-				std::size_t lastSlashPos = file.find_last_of("/");
-				std::string textureDir = "";
-				std::string textureName = "";
-				if (lastSlashPos != std::string::npos) {
-					textureDir = file.substr(0, lastSlashPos + 1);
-					textureName = file.substr(lastSlashPos + 1);
-				}
-				else {
-					textureName = file;
-				}
-				physicalLocation = textureDir + textureName;
-				if (System::IsFilePathInWorkingDirectory(file)) {
-					file = System::ConvertFilePathToLocal(file);
-					lastSlashPos = file.find_last_of("/");
-					textureDir = "";
-					textureName = "";
-					if (lastSlashPos != std::string::npos) {
-						textureDir = file.substr(0, lastSlashPos + 1);
-						textureName = file.substr(lastSlashPos + 1);
-					}
-					else {
-						textureName = file;
-					}
-					physicalLocation = textureDir + textureName;
-				}
-				else {
-					std::string val = std::to_string(AddValueFile("res/images/textures/", textureName, 0));
-					if (val == "0") {
-						physicalLocation = System::ConvertFilePathToAbsolute("res/images/textures/" + textureName);
-					}
-					else {
-						physicalLocation = System::ConvertFilePathToAbsolute("res/images/textures/" + val + textureName);
-					}
-					System::CopyFileAtlas(file, physicalLocation);
-					physicalLocation = System::ConvertFilePathToLocal(physicalLocation);
-					lastSlashPos = physicalLocation.find_last_of("/");
-					textureDir = "";
-					textureName = "";
-					if (lastSlashPos != std::string::npos) {
-						textureDir = physicalLocation.substr(0, lastSlashPos + 1);
-						textureName = physicalLocation.substr(lastSlashPos + 1);
-					}
-					else {
-						textureName = physicalLocation;
-					}
-				}
-				std::string val = std::to_string(AddValueTexture(textureName, 0));
-				if (val == "0") {
-					Global::Variables.loadedTextureCache[textureName] = physicalLocation;
-				}
-				else {
-					Global::Variables.loadedTextureCache[val + textureName] = physicalLocation;
-				}
-				if (Global::Variables.textureCache.find(textureDir + textureName) == Global::Variables.textureCache.end()) {
-					Global::Variables.textureCache[textureDir + textureName] = Loader::LoadTexture(physicalLocation, GL_REPEAT, GL_REPEAT, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
-				}
-				System::Warn("Texture \"" + file + "\" loaded");
-			}
-		}
-		if (ImGui::Button("Load new shader##loadshaderbutton1")) {
-			std::string file = System::FileOpenDialog("Select a shader to load", "SHADER File\0*.shader\0", window);
-			std::replace(file.begin(), file.end(), '\\', '/');
-			if (file != "INVALID") {
-				System::Log("");
 				System::Warn("Loading shader \"" + file + "\"");
 				std::string physicalLocation = "";
 				std::size_t lastSlashPos = file.find_last_of("/");
@@ -555,10 +418,10 @@ namespace Atlas {
 				}
 				std::string val = std::to_string(AddValueShader(shaderName, 0));
 				if (val == "0") {
-					Global::Variables.loadedShaderCache[shaderName] = physicalLocation;
+					Global::Variables.loadedPostProcessingShaderCache[shaderName] = physicalLocation;
 				}
 				else {
-					Global::Variables.loadedShaderCache[val + shaderName] = physicalLocation;
+					Global::Variables.loadedPostProcessingShaderCache[val + shaderName] = physicalLocation;
 				}
 
 				if (Global::Variables.shaderCache.find(shaderDir + shaderName) == Global::Variables.shaderCache.end()) {
@@ -566,6 +429,27 @@ namespace Atlas {
 				}
 				System::Warn("Shader \"" + file + "\" loaded");
 			}
+		}
+		ImGui::Separator();
+		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.15f).x);
+		ImGui::Text("Current post-processing shader");
+		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.175f).x);
+		if (ImGui::BeginCombo("##psfxcombo", currentSelectedPSFX.c_str()))
+		{
+			for (auto it : Global::Variables.loadedPostProcessingShaderCache) {
+				bool is_selected = (currentSelectedPSFX == it.first);
+				if (ImGui::Selectable(it.first.c_str(), is_selected)) {
+					currentSelectedPSFX = it.first;
+					if (is_selected) {
+						ImGui::SetItemDefaultFocus();
+					}
+				}
+			}
+			ImGui::EndCombo();
+		}
+		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.25f).x);
+		if (ImGui::Button("Apply##t1", ImVec2(ImGui::GetWindowSize().x * 0.50f, 0.0f))) {
+			PostProcessor::ChangeEffect(Global::Variables.loadedPostProcessingShaderCache[currentSelectedPSFX]);
 		}
 		ImGui::End();
 	}
@@ -584,6 +468,7 @@ namespace Atlas {
 		static std::string currentSelectedShader = "";
 
 		ImGui::Begin("Spawn Menu", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.1f).x);
 		if (ImGui::BeginCombo("Mesh##meshcombo", currentSelectedMesh.c_str()))
 		{
 			for (auto it : Global::Variables.loadedMeshCache) {
@@ -598,6 +483,7 @@ namespace Atlas {
 			ImGui::EndCombo();
 		}
 		ImGui::Separator();
+		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.1f).x);
 		if (ImGui::BeginCombo("Texture##texturecombo", currentSelectedTexture.c_str()))
 		{
 			for (auto it : Global::Variables.loadedTextureCache) {
@@ -612,6 +498,7 @@ namespace Atlas {
 			ImGui::EndCombo();
 		}
 		ImGui::Separator();
+		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.1f).x);
 		if (ImGui::BeginCombo("Shader##shadercombo", currentSelectedShader.c_str()))
 		{
 			for (auto it : Global::Variables.loadedShaderCache) {
@@ -626,18 +513,28 @@ namespace Atlas {
 			ImGui::EndCombo();
 		}
 		ImGui::Separator();
+		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.4f).x);
 		ImGui::Text("Position");
+		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.05f).x);
 		ImGui::InputFloat3("Rotation##rotfloatin", &InputRotation[0]);
+		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.05f).x);
 		ImGui::InputFloat3("Translation##transfloatin", &InputTranslation[0]);
+		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.05f).x);
 		ImGui::InputFloat3("Scale##scalefloatin", &InputScale[0]);
 		ImGui::Separator();
+		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.4f).x);
 		ImGui::Text("Lighting");
+		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.05f).x);
 		ImGui::InputFloat3("Ambient##ambientfloatin", &InputAmbient[0]);
+		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.05f).x);
 		ImGui::InputFloat3("Diffuse##diffusefloatin", &InputDiffuse[0]);
+		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.05f).x);
 		ImGui::InputFloat3("Specular##specularfloatin", &InputSpecular[0]);
+		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.05f).x);
 		ImGui::SliderInt("Shininess##shininessintslider", &InputShininess, 0, 512);
 		ImGui::Separator();
-		if (ImGui::Button("Spawn##spawn")) {
+		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.25f).x);
+		if (ImGui::Button("Spawn##spawn", ImVec2(ImGui::GetWindowSize().x * 0.50f, 0.0f))) {
 			if (Global::Variables.loadedMeshCache.find(currentSelectedMesh) != Global::Variables.loadedMeshCache.end() && Global::Variables.loadedTextureCache.find(currentSelectedTexture) != Global::Variables.loadedTextureCache.end() && Global::Variables.loadedShaderCache.find(currentSelectedShader) != Global::Variables.loadedShaderCache.end()) {
 				Filepath meshpath = System::SeperateFilepath(Global::Variables.loadedMeshCache[currentSelectedMesh]);
 				Filepath texpath = System::SeperateFilepath(Global::Variables.loadedTextureCache[currentSelectedTexture]);
@@ -656,6 +553,8 @@ namespace Atlas {
 	
 	void Window::DrawObjectSettingsWindow(Object* object)
 	{
+		//ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.25f).x);
+		//if (ImGui::Button("Spawn##spawn", ImVec2(ImGui::GetWindowSize().x * 0.50f, 0.0f))) {
 		static glm::vec3 InputModificationRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 		static glm::vec3 InputModificationTranslation = glm::vec3(0.0f, 0.0f, 0.0f);
 		static glm::vec3 InputModificationScale = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -669,7 +568,7 @@ namespace Atlas {
 		static std::string currentSelectedShader = "";
 
 		ImGui::Begin("Object Settings", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
-
+		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.17f).x);
 		if (ImGui::BeginCombo("##combo", current_item)) // The second parameter is the label previewed before opening the combo.
 		{
 			for (int n = 0; n < IM_ARRAYSIZE(items); n++)
@@ -684,10 +583,15 @@ namespace Atlas {
 			}
 			ImGui::EndCombo();
 		}
+		
+		ImGui::Text("");
+		ImGui::Separator();
 		ImGui::Text("");
 
 		if (current_item == "Rendering") {
+			ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.4f).x);
 			ImGui::Text("Texture");
+			ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.17f).x);
 			if (ImGui::BeginCombo("##texturecombo", currentSelectedTexture.c_str()))
 			{
 				for (auto it : Global::Variables.loadedTextureCache) {
@@ -701,12 +605,15 @@ namespace Atlas {
 				}
 				ImGui::EndCombo();
 			}
-			if (ImGui::Button("Apply##t1")) {
+			ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.25f).x);
+			if (ImGui::Button("Apply##t1", ImVec2(ImGui::GetWindowSize().x * 0.50f, 0.0f))) {
 				Filepath texpath = System::SeperateFilepath(Global::Variables.loadedTextureCache[currentSelectedTexture]);
 				object->SetTexture(std::string(texpath.directory), std::string(texpath.filename));
 			}
 			ImGui::Separator();
+			ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.4f).x);
 			ImGui::Text("Shader");
+			ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.17f).x);
 			if (ImGui::BeginCombo("##shadercombo", currentSelectedShader.c_str()))
 			{
 				for (auto it : Global::Variables.loadedShaderCache) {
@@ -720,40 +627,52 @@ namespace Atlas {
 				}
 				ImGui::EndCombo();
 			}
-			if (ImGui::Button("Apply##s1")) {
+			ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.25f).x);
+			if (ImGui::Button("Apply##s1", ImVec2(ImGui::GetWindowSize().x * 0.50f, 0.0f))) {
 				Filepath shaderpath = System::SeperateFilepath(Global::Variables.loadedShaderCache[currentSelectedShader]);
 				object->SetShader(std::string(shaderpath.directory), std::string(shaderpath.filename));
 			}
 		}
 		else if (current_item == "Position") {
 
+			ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.38f).x);
 			ImGui::Text("Rotation");
+			ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.17f).x);
 			ImGui::InputFloat3("##in1", &InputModificationRotation[0]);
-			if (ImGui::Button("Apply##in1")) {
+			ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.25f).x);
+			if (ImGui::Button("Apply##in1", ImVec2(ImGui::GetWindowSize().x * 0.50f, 0.0f))) {
 				object->RotateVec3(InputModificationRotation);
 			}
 
 			ImGui::Separator();
 
+			ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.36f).x);
 			ImGui::Text("Translation");
+			ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.17f).x);
 			ImGui::InputFloat3("##in2", &InputModificationTranslation[0]);
-			if (ImGui::Button("Apply##in2")) {
+			ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.25f).x);
+			if (ImGui::Button("Apply##in2", ImVec2(ImGui::GetWindowSize().x * 0.50f, 0.0f))) {
 				object->TranslateVec3(InputModificationTranslation);
 			}
 
 			ImGui::Separator();
 
+			ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.41f).x);
 			ImGui::Text("Scale");
+			ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.17f).x);
 			ImGui::InputFloat3("##in3", &InputModificationScale[0]);
-			if (ImGui::Button("Apply##in3")) {
+			ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.25f).x);
+			if (ImGui::Button("Apply##in3", ImVec2(ImGui::GetWindowSize().x * 0.50f, 0.0f))) {
 				object->ScaleVec3(InputModificationScale);
 			}
 		}
 		else if (current_item == "Lighting") {
-
+			ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.27f).x);
 			ImGui::Text("Ambient Reflection");
+			ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.17f).x);
 			ImGui::InputFloat3("##lin2", &InputModificationAmbient[0]);
-			if (ImGui::Button("Apply##lin2")) {
+			ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.25f).x);
+			if (ImGui::Button("Apply##lin2", ImVec2(ImGui::GetWindowSize().x * 0.50f, 0.0f))) {
 				auto temp = object->GetMaterial();
 				temp.ambient = InputModificationAmbient;
 				object->SetMaterial(temp);
@@ -761,9 +680,12 @@ namespace Atlas {
 
 			ImGui::Separator();
 
+			ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.27f).x);
 			ImGui::Text("Diffuse Reflection");
+			ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.17f).x);
 			ImGui::InputFloat3("##lin3", &InputModificationDiffuse[0]);
-			if (ImGui::Button("Apply##lin3")) {
+			ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.25f).x);
+			if (ImGui::Button("Apply##lin3", ImVec2(ImGui::GetWindowSize().x * 0.50f, 0.0f))) {
 				auto temp = object->GetMaterial();
 				temp.diffuse = InputModificationDiffuse;
 				object->SetMaterial(temp);
@@ -771,9 +693,12 @@ namespace Atlas {
 
 			ImGui::Separator();
 
+			ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.27f).x);
 			ImGui::Text("Specular Reflection");
+			ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.17f).x);
 			ImGui::InputFloat3("##lin4", &InputModificationSpecular[0]);
-			if (ImGui::Button("Apply##lin4")) {
+			ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.25f).x);
+			if (ImGui::Button("Apply##lin4", ImVec2(ImGui::GetWindowSize().x * 0.50f, 0.0f))) {
 				auto temp = object->GetMaterial();
 				temp.ambient = InputModificationSpecular;
 				object->SetMaterial(temp);
@@ -781,9 +706,12 @@ namespace Atlas {
 
 			ImGui::Separator();
 
+			ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.27f).x);
 			ImGui::Text("Reflection Shininess");
+			ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.17f).x);
 			ImGui::SliderInt("##lin5", &InputModificationShininess, 0, 512);
-			if (ImGui::Button("Apply##lin5")) {
+			ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.25f).x);
+			if (ImGui::Button("Apply##lin5", ImVec2(ImGui::GetWindowSize().x * 0.50f, 0.0f))) {
 				auto temp = object->GetMaterial();
 				temp.shininess = InputModificationShininess;
 				object->SetMaterial(temp);

@@ -1,6 +1,7 @@
 #include "SimpleRenderer.h"
 #include "glm/gtx/quaternion.hpp"
 #include "glm/gtc/matrix_transform.hpp"
+#include "Global.h"
 
 namespace Atlas {
 
@@ -79,7 +80,7 @@ namespace Atlas {
 		if (width != localWidthBuffer || height != localHeightBuffer) {
 			if (width > 0 && height > 0) {
 				projectionMatrix = glm::perspective(glm::radians(FOV), (float)width / (float)height, 0.1f, 100.0f);
-				orthographicMatrix = glm::ortho(0.0f, 1920.0f, 0.0f, 1080.0f);
+				orthographicMatrix = glm::ortho(0.0f, (float)width, 0.0f, (float)height);
 			}
 		}
 		while (!renderQueue3D.empty()) {

@@ -3,8 +3,12 @@
 #include "IO.h"
 #include "Window.h"
 #include "System.h"
+
+#define IMGUI_DEFINE_MATH_OPERATORS
+
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw_gl3.h"
+#include "imgui/imgui_internal.h"
 
 namespace Atlas {
 
@@ -27,6 +31,7 @@ namespace Atlas {
 		static bool ShouldToggleVSync = false;
 		static bool GUIEnabled = true;
 		static bool EnableObjectInfoPage = true;
+		static bool EnablePostProcessingManager = true;
 		static bool EnableWireframe = false;
 		if (Global::Variables.keyIn.leftAltPressed) {
 			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
@@ -43,15 +48,19 @@ namespace Atlas {
 
 		{
 			ImGui::Begin("File", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
-			ImGui::Checkbox("Enable Info Page##infoControl", &EnableInfoPage);
-			ImGui::Checkbox("Enable Spawn Menu##spawnControl", &EnableSpawnMenu);
 			ImGui::Checkbox("Enable Debug Options##debugControl", &EnableDebug);
+			ImGui::Checkbox("Enable File Manager##filemanager", &EnableFileManager);
+			ImGui::Checkbox("Enable Spawn Menu##spawnControl", &EnableSpawnMenu);
+			ImGui::Checkbox("Enable Info Page##infoControl", &EnableInfoPage);
 			ImGui::Checkbox("Enable Object Settings##objectSettingsControl", &EnableObjectInfoPage);
+			ImGui::Checkbox("Enable PSFX Manager##psfxmanager", &EnablePostProcessingManager);
 			ImGui::Separator();
-			if (ImGui::Button("Save##saveButton")) {
+			ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.25f).x);
+			if (ImGui::Button("Save##saveButton", ImVec2(ImGui::GetWindowSize().x * 0.5f, 0.0f))) {
 				Global::Variables.currentScene.Save("res/other/", "level.lvl");
 			}
-			if (ImGui::Button("Close##closeButton")) {
+			ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.25f).x);
+			if (ImGui::Button("Close##closeButton", ImVec2(ImGui::GetWindowSize().x * 0.5f, 0.0f))) {
 				glfwSetWindowShouldClose(window, GLFW_TRUE);
 			}
 			ImGui::End();
@@ -81,6 +90,10 @@ namespace Atlas {
 
 		if (EnableFileManager) {
 			Window::DrawFileManager(window);
+		}
+
+		if (EnablePostProcessingManager) {
+			Window::DrawPostProcessingManager(window);
 		}
 	}
 

@@ -1,5 +1,6 @@
 #include "Object2D.h"
 #include "System.h"
+#include "Global.h"
 
 namespace Atlas {
 	Object2D::Object2D()

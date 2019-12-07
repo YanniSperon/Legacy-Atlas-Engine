@@ -185,7 +185,7 @@
   <ItemGroup>
     <None Include="cpp.hint" />
     <None Include="imgui.ini" />
-    <None Include="res\shaders\2D.shader" />
+    <None Include="res\shaders\NoPostFX.shader" />
     <None Include="res\shaders\Basic.shader" />
     <None Include="res\shaders\BlurPostFX.shader" />
     <None Include="res\shaders\FXAAPostFX.shader" />

@@ -455,7 +455,6 @@
     </None>
     <None Include="imgui.ini" />
     <None Include="res\shaders\Window.shader" />
-    <None Include="res\shaders\2D.shader" />
     <None Include="res\shaders\Text.shader" />
     <None Include="res\shaders\Lighting.shader" />
     <None Include="cpp.hint" />
@@ -464,6 +463,7 @@
     <None Include="res\shaders\InvertPostFX.shader" />
     <None Include="res\shaders\SharpenPostFX.shader" />
     <None Include="res\shaders\FXAAPostFX.shader" />
+    <None Include="res\shaders\NoPostFX.shader" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\vendor\glm\detail\_features.hpp">

@@ -112,8 +112,9 @@ int main(void)
 	{
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		if (Global::Variables.mouseMode == MouseMode::raw) {
-			if (glfwRawMouseMotionSupported())
+			if (glfwRawMouseMotionSupported()) {
 				glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
+			}
 		}
 		glfwSetCursorPosCallback(window, Callbacks::cursorPositionCallback);
 		glfwSetFramebufferSizeCallback(window, Callbacks::framebufferSizeCallback);
@@ -153,16 +154,22 @@ int main(void)
 
 		bool GUIEnabled = true;
 
+
 		SimpleRenderer renderer;
 
 
-		PostProcessor::Initialize("res/shaders/FXAAPostFX.shader");
+		PostProcessor::Initialize("res/shaders/NoPostFX.shader");
 		//PostProcessor::Initialize("res/shaders/2D.shader");
 		//PostProcessor::Initialize("res/shaders/BlurPostFX.shader");
 		//PostProcessor::Initialize("res/shaders/GreyscalePostFX.shader");
 		//PostProcessor::Initialize("res/shaders/InvertPostFX.shader");
 		//PostProcessor::Initialize("res/shaders/SharpenPostFX.shader");
-		
+		PostProcessor::ChangeEffect("res/shaders/BlurPostFX.shader");
+		PostProcessor::ChangeEffect("res/shaders/GreyscalePostFX.shader");
+		PostProcessor::ChangeEffect("res/shaders/InvertPostFX.shader");
+		PostProcessor::ChangeEffect("res/shaders/SharpenPostFX.shader");
+		PostProcessor::ChangeEffect("res/shaders/NoPostFX.shader");
+
 
 		LevelEditor::Mode currentMode(LevelEditor::cam);
 
@@ -217,6 +224,8 @@ int main(void)
 		if (Global::Variables.hasVR) {
 			VRHandler::Setup();
 		}
+
+		glfwSetCursorPos(window, 36000000.0, 0.0);
 		
 		while (!glfwWindowShouldClose(window))
 		{
@@ -233,9 +242,11 @@ int main(void)
 			InputHandler::ProcessEvents(&Global::Variables.keyIn, &Global::Variables.mouseIn);
 			///////////////////////////////////////////////////////////////////////////
 			if (Global::Variables.keyIn.sixPressed) {
-				System::Warn("--------------------------------");
+				System::Warn("---------------------------------");
+				System::Warn("-LoadedPostProcessingShaderCache-");
 				for (auto it : Global::Variables.loadedPostProcessingShaderCache) {
 					System::Log("First: " + it.first);
+					System::Log("Second: " + it.second);
 				}
 			}
 			if (Global::Variables.keyIn.onePressed) {
@@ -249,6 +260,22 @@ int main(void)
 			}
 			if (Global::Variables.keyIn.fourPressed) {
 				PostProcessor::ChangeEffect("res/shaders/2D.shader");
+			}
+			if (Global::Variables.keyIn.eightPressed) {
+				System::Warn("---------------------------------");
+				System::Warn("-----------ShaderCache-----------");
+				for (auto it : Global::Variables.shaderCache) {
+					System::Log("First: " + it.first);
+					System::Log("Second: " + std::to_string(it.second->GetShaderID()));
+				}
+			}
+			if (Global::Variables.keyIn.ninePressed) {
+				System::Warn("---------------------------------");
+				System::Warn("--------LoadedShaderCache--------");
+				for (auto it : Global::Variables.loadedShaderCache) {
+					System::Log("First: " + it.first);
+					System::Log("Second: " + it.second);
+				}
 			}
 			///////////////////////////////////////////////////////////////////////////
 			float deltaTime = (float)deltaT * timeConstant;
@@ -311,6 +338,7 @@ int main(void)
 		Mesh::FlushCache();
 		Object::FlushCache();
 		VRHandler::Cleanup();
+		PostProcessor::Cleanup();
 	}
 	GUI::Terminate();
 	glfwTerminate();
