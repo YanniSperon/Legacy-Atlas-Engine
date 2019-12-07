@@ -535,17 +535,22 @@ namespace Atlas {
 		ImGui::Separator();
 		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.25f).x);
 		if (ImGui::Button("Spawn##spawn", ImVec2(ImGui::GetWindowSize().x * 0.50f, 0.0f))) {
-			if (Global::Variables.loadedMeshCache.find(currentSelectedMesh) != Global::Variables.loadedMeshCache.end() && Global::Variables.loadedTextureCache.find(currentSelectedTexture) != Global::Variables.loadedTextureCache.end() && Global::Variables.loadedShaderCache.find(currentSelectedShader) != Global::Variables.loadedShaderCache.end()) {
-				Filepath meshpath = System::SeperateFilepath(Global::Variables.loadedMeshCache[currentSelectedMesh]);
-				Filepath texpath = System::SeperateFilepath(Global::Variables.loadedTextureCache[currentSelectedTexture]);
-				Filepath shaderpath = System::SeperateFilepath(Global::Variables.loadedShaderCache[currentSelectedShader]);
-
-				System::Log("Spawned object with model \"" + meshpath.directory + meshpath.filename + "\" at (" + std::to_string(InputTranslation.x) + ", " + std::to_string(InputTranslation.y) + ", " + std::to_string(InputTranslation.z) + ")");
-				objectsOnScene.push_back(new Object(glm::vec3(-5.0f, -5.0f, -5.0f), glm::vec3(5.0f, 5.0f, 5.0f), type::normalModel, meshpath.directory, meshpath.filename, texpath.directory, texpath.filename, shaderpath.directory, shaderpath.filename, true, true, InputRotation, InputTranslation, InputScale, Material(InputAmbient, InputDiffuse, InputSpecular, ((float)InputShininess))));
-				selectedObject = objectsOnScene.size() - 1;
+			if (currentSelectedTexture == "" || currentSelectedMesh == "" || currentSelectedShader == "") {
+				System::Log("Please select a mesh, texture, and shader");
 			}
 			else {
-				System::Err("Invalid or corrupted cache files!");
+				if (Global::Variables.loadedMeshCache.find(currentSelectedMesh) != Global::Variables.loadedMeshCache.end() && Global::Variables.loadedTextureCache.find(currentSelectedTexture) != Global::Variables.loadedTextureCache.end() && Global::Variables.loadedShaderCache.find(currentSelectedShader) != Global::Variables.loadedShaderCache.end()) {
+					Filepath meshpath = System::SeperateFilepath(Global::Variables.loadedMeshCache[currentSelectedMesh]);
+					Filepath texpath = System::SeperateFilepath(Global::Variables.loadedTextureCache[currentSelectedTexture]);
+					Filepath shaderpath = System::SeperateFilepath(Global::Variables.loadedShaderCache[currentSelectedShader]);
+
+					System::Log("Spawned object with model \"" + meshpath.directory + meshpath.filename + "\" at (" + std::to_string(InputTranslation.x) + ", " + std::to_string(InputTranslation.y) + ", " + std::to_string(InputTranslation.z) + ")");
+					objectsOnScene.push_back(new Object(glm::vec3(-5.0f, -5.0f, -5.0f), glm::vec3(5.0f, 5.0f, 5.0f), type::normalModel, meshpath.directory, meshpath.filename, texpath.directory, texpath.filename, shaderpath.directory, shaderpath.filename, true, true, InputRotation, InputTranslation, InputScale, Material(InputAmbient, InputDiffuse, InputSpecular, ((float)InputShininess))));
+					selectedObject = objectsOnScene.size() - 1;
+				}
+				else {
+					System::Err("Invalid or corrupted cache files!");
+				}
 			}
 		}
 		ImGui::End();
