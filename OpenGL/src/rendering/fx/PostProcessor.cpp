@@ -19,12 +19,12 @@ namespace Atlas {
 		glGenFramebuffers(1, &postProcessingFramebuffer);
 		glGenTextures(1, &textureColorbuffer);
 		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, textureColorbuffer);
-		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, GL_RGB, Global::Variables.currentWidth, Global::Variables.currentHeight, GL_TRUE);
+		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 16, GL_RGB, Global::Variables.currentWidth, Global::Variables.currentHeight, GL_TRUE);
 		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
 
 		glGenRenderbuffers(1, &rbo);
 		glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-		glRenderbufferStorageMultisample(GL_RENDERBUFFER, 4, GL_DEPTH24_STENCIL8, Global::Variables.currentWidth, Global::Variables.currentHeight);
+		glRenderbufferStorageMultisample(GL_RENDERBUFFER, 16, GL_DEPTH24_STENCIL8, Global::Variables.currentWidth, Global::Variables.currentHeight);
 
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, postProcessingFramebuffer);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, textureColorbuffer, 0);
@@ -93,6 +93,7 @@ namespace Atlas {
 		glClear(GL_COLOR_BUFFER_BIT);
 		renderer->Submit2D(quadForRenderingFX);
 		renderer->SimpleFlush(&Global::Variables.camera, Global::Variables.currentWidth, Global::Variables.currentHeight, Global::Variables.FOV, Global::Variables.currentScene.lightsOnScene.at(0));
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
 	}
 
 	void PostProcessor::ChangeEffect(std::string newShaderShortenedName)

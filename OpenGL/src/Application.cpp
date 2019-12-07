@@ -41,6 +41,7 @@ extern "C"
 #include "SceneEditorControl.h"
 #include "VRHandler.h"
 #include "PostProcessor.h"
+#include "btBulletDynamicsCommon.h"
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
@@ -64,12 +65,11 @@ int main(void)
 		return -1;
 	}
 
-	glfwWindowHint(GLFW_SAMPLES, 4);
+	glfwWindowHint(GLFW_SAMPLES, 16);
 
 	if (Global::Variables.fullscreen) {
 		window = glfwCreateWindow(Global::Variables.initialWidth, Global::Variables.initialHeight, "Atlas", glfwGetPrimaryMonitor(), NULL);
 	}
-
 	else {
 		if (Global::Variables.forceFullscreen) {
 			const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
@@ -176,6 +176,61 @@ int main(void)
 		Font arial24pt = Font("res/fonts/arial/", "arial.ttf", 24);
 		Font timesnewroman32pt = Font("res/fonts/times new roman/", "times.ttf", 32);
 
+
+
+		btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
+		btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfiguration);
+		btBroadphaseInterface* overlappingPairCache = new btDbvtBroadphase();
+		btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
+		btDiscreteDynamicsWorld* dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
+		dynamicsWorld->setGravity(btVector3(0, -9.81, 0));
+		btAlignedObjectArray<btCollisionShape*> collisionShapes;
+
+		{
+			btCollisionShape* floor = new btBoxShape(btVector3(btScalar(50.0), btScalar(50.0), btScalar(50.0)));
+			collisionShapes.push_back(floor);
+
+			btTransform floorTransformation;
+			floorTransformation.setIdentity();
+			floorTransformation.setOrigin(btVector3(0.0, -56.0, 0.0));
+
+			btScalar mass(0.0);
+			bool isDynamic = (mass != 0.0f);
+			btVector3 localInertia(0.0, 0.0, 0.0);
+			if (isDynamic) {
+				floor->calculateLocalInertia(mass, localInertia);
+			}
+
+			btDefaultMotionState* myMotionState = new btDefaultMotionState(floorTransformation);
+			btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, floor, localInertia);
+			btRigidBody* body = new btRigidBody(rbInfo);
+
+			dynamicsWorld->addRigidBody(body);
+		}
+
+		{
+			btCollisionShape* colShape = new btSphereShape(btScalar(1.0));
+			collisionShapes.push_back(colShape);
+
+			btTransform startTransform;
+			startTransform.setIdentity();
+
+			btScalar mass(1.0);
+			bool isDynamic = (mass != 0.0f);
+			btVector3 localInertia(0.0, 0.0, 0.0);
+			if (isDynamic) {
+				colShape->calculateLocalInertia(mass, localInertia);
+			}
+
+			btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
+			btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, colShape, localInertia);
+			btRigidBody* body = new btRigidBody(rbInfo);
+
+			dynamicsWorld->addRigidBody(body);
+		}
+
+
+
 		Global::Variables.currentScene.lightsOnScene.push_back(new Light(LightIntensity(glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(1.0f, 1.0f, 1.0f)), glm::vec3(-0.1f, -0.1f, -0.1f), glm::vec3(0.1f, 0.1f, 0.1f), type::cubeInvertedLighting, "", "", "res/images/colors/", "yellow.png", "res/shaders/", "Lighting.shader", true, true, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 5.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), Material(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), 32.0f)));
 
 		Global::Variables.currentScene.preloadedObjectsOnScene.push_back(new Object(glm::vec3(-50.0f, -50.0f, -50.0f), glm::vec3(50.0f, 50.0f, 50.0f), type::skyBox, "", "", "res/images/textures/", "skybox.png", "res/shaders/", "Basic.shader", true, false, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f)));
@@ -241,41 +296,21 @@ int main(void)
 			///////////////////////////////////////////////////////////////////////////
 			InputHandler::ProcessEvents(&Global::Variables.keyIn, &Global::Variables.mouseIn);
 			///////////////////////////////////////////////////////////////////////////
-			if (Global::Variables.keyIn.sixPressed) {
-				System::Warn("---------------------------------");
-				System::Warn("-LoadedPostProcessingShaderCache-");
-				for (auto it : Global::Variables.loadedPostProcessingShaderCache) {
-					System::Log("First: " + it.first);
-					System::Log("Second: " + it.second);
+			dynamicsWorld->stepSimulation(deltaT, 10);
+			for (int j = dynamicsWorld->getNumCollisionObjects() - 1; j >= 0; j--)
+			{
+				btCollisionObject* obj = dynamicsWorld->getCollisionObjectArray()[j];
+				btRigidBody* body = btRigidBody::upcast(obj);
+				btTransform trans;
+				if (body && body->getMotionState())
+				{
+					body->getMotionState()->getWorldTransform(trans);
 				}
-			}
-			if (Global::Variables.keyIn.onePressed) {
-				PostProcessor::ChangeEffect("res/shaders/InvertPostFX.shader");
-			}
-			if (Global::Variables.keyIn.twoPressed) {
-				PostProcessor::ChangeEffect("res/shaders/GreyscalePostFX.shader");
-			}
-			if (Global::Variables.keyIn.threePressed) {
-				PostProcessor::ChangeEffect("res/shaders/FXAAPostFX.shader");
-			}
-			if (Global::Variables.keyIn.fourPressed) {
-				PostProcessor::ChangeEffect("res/shaders/2D.shader");
-			}
-			if (Global::Variables.keyIn.eightPressed) {
-				System::Warn("---------------------------------");
-				System::Warn("-----------ShaderCache-----------");
-				for (auto it : Global::Variables.shaderCache) {
-					System::Log("First: " + it.first);
-					System::Log("Second: " + std::to_string(it.second->GetShaderID()));
+				else
+				{
+					trans = obj->getWorldTransform();
 				}
-			}
-			if (Global::Variables.keyIn.ninePressed) {
-				System::Warn("---------------------------------");
-				System::Warn("--------LoadedShaderCache--------");
-				for (auto it : Global::Variables.loadedShaderCache) {
-					System::Log("First: " + it.first);
-					System::Log("Second: " + it.second);
-				}
+				printf("world pos object %d = %f,%f,%f\n", j, float(trans.getOrigin().getX()), float(trans.getOrigin().getY()), float(trans.getOrigin().getZ()));
 			}
 			///////////////////////////////////////////////////////////////////////////
 			float deltaTime = (float)deltaT * timeConstant;
@@ -308,7 +343,6 @@ int main(void)
 			if (GUIEnabled) {
 				GUI::LoadLevelEditorGUI(window, currentEditorType, currentMode, selectedObject);
 			}
-			glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
 			GUI::Draw();
 			///////////////////////////////////////////////////////////////////////////
 			//if (hasVR) {
