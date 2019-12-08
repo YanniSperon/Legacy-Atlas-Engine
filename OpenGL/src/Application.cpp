@@ -64,7 +64,7 @@ int main(void)
 		return -1;
 	}
 
-	glfwWindowHint(GLFW_SAMPLES, 16);
+	PostProcessor::PrepareForInitialization(MSAA(false, 0));
 
 	if (Global::Variables.fullscreen) {
 		window = glfwCreateWindow(Global::Variables.initialWidth, Global::Variables.initialHeight, "Atlas", glfwGetPrimaryMonitor(), NULL);
@@ -121,7 +121,7 @@ int main(void)
 
 		glEnable(GL_DEBUG_OUTPUT);
 		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-		glDebugMessageCallback(Callbacks::openglCallbackFunction, nullptr);
+		glDebugMessageCallback(Callbacks::openglCallbackFunction, NULL);
 		/////////////////////////////////////////////////////////////////////////////////////////////////////
 		//const char* attackSFXFilename = "res/audio/sfx/attack.wav";
 		//const char* explosionSFXFilename = "res/audio/sfx/explosion.wav";
@@ -145,11 +145,18 @@ int main(void)
 
 		glBlendEquation(GL_FUNC_ADD);
 		glEnable(GL_DEPTH_TEST);
-
+		// TEMP STUFF HERE EDIT HERE FIND ME
+		//glShadeModel(GL_SMOOTH);
+		// MAKE dynamicworld->debugDrawWorld() after the scene has rendered
+		// AT BEGINNING
+		//m_pDebugDrawer = new DebugDrawer();
+		//// set the initial debug level to 0
+		//m_pDebugDrawer->setDebugMode(0);
+		//// add the debug drawer to the world
+		//m_pWorld->setDebugDrawer(m_pDebugDrawer);
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_FRONT);
 		glFrontFace(GL_CW);
-		glEnable(GL_MULTISAMPLE);
 
 		bool GUIEnabled = true;
 
@@ -158,11 +165,13 @@ int main(void)
 
 
 		PostProcessor::Initialize("res/shaders/NoPostFX.shader");
+
 		//PostProcessor::Initialize("res/shaders/2D.shader");
 		//PostProcessor::Initialize("res/shaders/BlurPostFX.shader");
 		//PostProcessor::Initialize("res/shaders/GreyscalePostFX.shader");
 		//PostProcessor::Initialize("res/shaders/InvertPostFX.shader");
 		//PostProcessor::Initialize("res/shaders/SharpenPostFX.shader");
+
 		PostProcessor::ChangeEffect("res/shaders/BlurPostFX.shader");
 		PostProcessor::ChangeEffect("res/shaders/GreyscalePostFX.shader");
 		PostProcessor::ChangeEffect("res/shaders/InvertPostFX.shader");
@@ -175,12 +184,10 @@ int main(void)
 		Font arial24pt = Font("res/fonts/arial/", "arial.ttf", 24);
 		Font timesnewroman32pt = Font("res/fonts/times new roman/", "times.ttf", 32);
 
-		PhysicsEngine::Initialize();
+		Global::Variables.currentScene.lightsOnScene.push_back(new Light(LightIntensity(glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(1.0f, 1.0f, 1.0f)), glm::vec3(-0.1f, -0.1f, -0.1f), glm::vec3(0.1f, 0.1f, 0.1f), type::cubeInvertedLighting, "", "", "res/images/colors/", "yellow.png", "res/shaders/", "Lighting.shader", true, true, true, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 5.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 0.0f, Material(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), 32.0f)));
 
-		Global::Variables.currentScene.lightsOnScene.push_back(new Light(LightIntensity(glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(1.0f, 1.0f, 1.0f)), glm::vec3(-0.1f, -0.1f, -0.1f), glm::vec3(0.1f, 0.1f, 0.1f), type::cubeInvertedLighting, "", "", "res/images/colors/", "yellow.png", "res/shaders/", "Lighting.shader", true, true, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 5.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), Material(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), 32.0f)));
-
-		Global::Variables.currentScene.preloadedObjectsOnScene.push_back(new Object(glm::vec3(-50.0f, -50.0f, -50.0f), glm::vec3(50.0f, 50.0f, 50.0f), type::skyBox, "", "", "res/images/textures/", "skybox.png", "res/shaders/", "Basic.shader", true, false, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f)));
-		Global::Variables.currentScene.preloadedObjectsOnScene.push_back(new Object(glm::vec3(-5.0f, -5.0f, -5.0f), glm::vec3(5.0f, 5.0f, 5.0f), type::normalModel, "res/models/", "plane.obj", "res/images/colors/", "white.png", "res/shaders/", "Lighting.shader", true, true, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -3.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), Material(glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(0.5f, 0.5f, 0.5f), 32.0f)));
+		Global::Variables.currentScene.preloadedObjectsOnScene.push_back(new Object(glm::vec3(-50.0f, -50.0f, -50.0f), glm::vec3(50.0f, 50.0f, 50.0f), type::skyBox, "", "", "res/images/textures/", "skybox.png", "res/shaders/", "Basic.shader", true, false, true, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 0.0f));
+		Global::Variables.currentScene.preloadedObjectsOnScene.push_back(new Object(glm::vec3(-5.0f, -5.0f, -5.0f), glm::vec3(5.0f, 5.0f, 5.0f), type::normalModel, "res/models/", "plane.obj", "res/images/colors/", "white.png", "res/shaders/", "Lighting.shader", true, true, true, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -3.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 0.0f, Material(glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(0.5f, 0.5f, 0.5f), 32.0f)));
 
 		bool loadFile = true;
 		if (loadFile) {
@@ -205,7 +212,6 @@ int main(void)
 
 
 		glm::vec3 camPos(0.0f, 0.0f, 0.0f);
-		glfwSetCursorPos(window, 0.0, 0.0);
 
 		bool EditorEnabled = true;
 
@@ -227,11 +233,13 @@ int main(void)
 		}
 
 		// Move cursor over so far that it has no chance of accidentally hovering over imgui elements without hitting alt
+		Global::Variables.mouseX = 36000000.0;
+		Global::Variables.mouseY = 0.0;
 		glfwSetCursorPos(window, 36000000.0, 0.0);
 		
 		while (!glfwWindowShouldClose(window))
 		{
-			PostProcessor::Prepare();
+			PostProcessor::PrepareForRendering();
 			///////////////////////////////////////////////////////////////////////////
 			glfwPollEvents();
 			///////////////////////////////////////////////////////////////////////////
@@ -244,7 +252,11 @@ int main(void)
 			///////////////////////////////////////////////////////////////////////////
 			InputHandler::ProcessEvents(&Global::Variables.keyIn, &Global::Variables.mouseIn);
 			///////////////////////////////////////////////////////////////////////////
-			PhysicsEngine::Update(deltaTime);
+			if (Global::Variables.keyIn.minusPressed) {
+				Global::Variables.currentScene.preloadedObjectsOnScene.at(1)->test();
+			}
+			///////////////////////////////////////////////////////////////////////////
+			Global::Variables.physicsEngine.Update(deltaTime);
 			///////////////////////////////////////////////////////////////////////////
 			///////////////////////////////////////////////////////////////////////////
 			if ((Global::Variables.keyIn.leftControlHeld && Global::Variables.keyIn.fHeld) || (Global::Variables.keyIn.leftControlPressed && Global::Variables.keyIn.fPressed)) {
@@ -269,6 +281,7 @@ int main(void)
 			Global::Variables.currentScene.Submit(&renderer, camPos, viewMatrix);
 			///////////////////////////////////////////////////////////////////////////
 			renderer.SimpleFlush(&Global::Variables.camera, Global::Variables.currentWidth, Global::Variables.currentHeight, Global::Variables.FOV, Global::Variables.currentScene.lightsOnScene.at(0));
+			Global::Variables.physicsEngine.DrawDebug();
 			///////////////////////////////////////////////////////////////////////////
 			PostProcessor::Render(&renderer);
 			///////////////////////////////////////////////////////////////////////////
@@ -303,7 +316,6 @@ int main(void)
 		Global::Variables.config.WriteConfig("res/other/", "config.cfg");
 		Mesh::FlushCache();
 		Object::FlushCache();
-		PhysicsEngine::Cleanup();
 		VRHandler::Cleanup();
 		PostProcessor::Cleanup();
 	}

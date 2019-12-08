@@ -55,5 +55,7 @@ namespace Atlas {
 		loadedPostProcessingShaderCache = std::unordered_map<std::string, std::string>();
 
 		currentScene = Scene();
+
+		physicsEngine = PhysicsEngine();
 	}
 }

@@ -23,14 +23,16 @@ namespace Atlas {
 		glm::vec3 minExtents;
 		glm::vec3 maxExtents;
 		type objectType;
+		float mass;
 		btCollisionObject* physicsObject;
 	public:
 		Mesh();
-		Mesh(glm::vec3 min, glm::vec3 max, type type, std::string dir, std::string name);
-		Mesh(glm::vec3 min, glm::vec3 max, type type, std::string dir, std::string name, glm::vec3 rot, glm::vec3 trans, glm::vec3 s);
+		Mesh(glm::vec3 min, glm::vec3 max, type type, std::string dir, std::string name, bool enablePhysics);
+		Mesh(glm::vec3 min, glm::vec3 max, type type, std::string dir, std::string name, bool enablePhysics, glm::vec3 rot, glm::vec3 trans, glm::vec3 s, float objectMass);
 		~Mesh();
 
 		glm::mat4 GetModelTransformMatrix();
+		glm::mat4 GetModelTransRotMatrix();
 		void RotateX(float x);
 		void RotateY(float y);
 		void RotateZ(float z);
@@ -62,10 +64,13 @@ namespace Atlas {
 		std::string GetModelFileName();
 		std::string GetModelFileDirectory();
 		void SetShape(ShapeData newShape);
+		float GetMass();
 
 		std::string GetModelType();
 		virtual std::string GetType();
 
 		static void FlushCache();
+
+		void test();
 	};
 }

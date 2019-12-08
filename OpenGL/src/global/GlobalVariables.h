@@ -9,6 +9,7 @@
 #include <chrono>
 #include <unordered_map>
 #include <vector>
+#include "PhysicsEngine.h"
 
 namespace Atlas {
 
@@ -65,6 +66,8 @@ namespace Atlas {
 		std::unordered_map<std::string, std::string> loadedPostProcessingShaderCache;
 
 		Scene currentScene;
+
+		PhysicsEngine physicsEngine;
 	};
 
 }

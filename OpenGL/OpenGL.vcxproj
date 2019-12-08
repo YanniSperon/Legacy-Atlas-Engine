@@ -153,6 +153,7 @@
     <ClCompile Include="src\input\InputHandler.cpp" />
     <ClCompile Include="src\leveleditor\SceneEditorControl.cpp" />
     <ClCompile Include="src\other\Convert.cpp" />
+    <ClCompile Include="src\physics\PhysicsDebugDrawer.cpp" />
     <ClCompile Include="src\physics\PhysicsEngine.cpp" />
     <ClCompile Include="src\rendering\fx\PostProcessor.cpp" />
     <ClCompile Include="src\rendering\gui\GUI.cpp" />
@@ -502,6 +503,7 @@
     <ClInclude Include="src\input\InputHandler.h" />
     <ClInclude Include="src\leveleditor\SceneEditorControl.h" />
     <ClInclude Include="src\other\Convert.h" />
+    <ClInclude Include="src\physics\PhysicsDebugDrawer.h" />
     <ClInclude Include="src\physics\PhysicsEngine.h" />
     <ClInclude Include="src\rendering\fx\PostProcessor.h" />
     <ClInclude Include="src\rendering\gui\GUI.h" />

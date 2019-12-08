@@ -1,14 +1,18 @@
 #include "PhysicsEngine.h"
 #include "Global.h"
+#include "System.h"
 
 namespace Atlas {
 
-	static btDefaultCollisionConfiguration* collisionConfiguration;
-	static btCollisionDispatcher* dispatcher;
-	static btBroadphaseInterface* overlappingPairCache;
-	static btSequentialImpulseConstraintSolver* solver;
-	static btDiscreteDynamicsWorld* dynamicsWorld;
-	static btAlignedObjectArray<btCollisionShape*> collisionShapes;
+	PhysicsEngine::PhysicsEngine()
+	{
+		Initialize();
+	}
+
+	PhysicsEngine::~PhysicsEngine()
+	{
+		Cleanup();
+	}
 
 	void PhysicsEngine::Initialize()
 	{
@@ -18,7 +22,12 @@ namespace Atlas {
 		solver = new btSequentialImpulseConstraintSolver;
 		dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
 		dynamicsWorld->setGravity(btVector3(0, -9.80665, 0));
-
+		// add debugger
+		debugDrawer = new PhysicsDebugDrawer();
+		// set the initial debug level to 0
+		debugDrawer->setDebugMode(0);
+		// add the debug drawer to the world
+		dynamicsWorld->setDebugDrawer(debugDrawer);
 		/*{
 			btCollisionShape* floor = new btBoxShape(btVector3(btScalar(50.0), btScalar(50.0), btScalar(50.0)));
 			collisionShapes.push_back(floor);
@@ -67,6 +76,7 @@ namespace Atlas {
 
 	void PhysicsEngine::Update(float deltaT)
 	{
+		ToggleDebugger();
 		//dynamicsWorld->stepSimulation(deltaT, 10);
 		//for (int j = dynamicsWorld->getNumCollisionObjects() - 1; j >= 0; j--)
 		//{
@@ -115,7 +125,7 @@ namespace Atlas {
 		//////////////////////////////////////////////////////////////////////////
 	}
 
-	btCollisionObject* PhysicsEngine::AddRigidBody(btCollisionShape* shape, btTransform& transformation, float mass)
+	btCollisionObject* PhysicsEngine::AddPhysicsBody(btCollisionShape* shape, btTransform& transformation, float mass)
 	{
 		if (shape != NULL) {
 			collisionShapes.push_back(shape);
@@ -136,6 +146,16 @@ namespace Atlas {
 		else {
 			return NULL;
 		}
+	}
+
+	void PhysicsEngine::Recalculate(btCollisionObject* object)
+	{
+		dynamicsWorld->updateSingleAabb(object);
+	}
+
+	void PhysicsEngine::DrawDebug()
+	{
+		dynamicsWorld->debugDrawWorld();
 	}
 
 	void PhysicsEngine::Cleanup()
@@ -165,5 +185,70 @@ namespace Atlas {
 		delete dispatcher;
 		delete collisionConfiguration;
 		collisionShapes.clear();
+	}
+
+	void PhysicsEngine::ToggleDebugger()
+	{
+		if (Global::Variables.keyIn.ninePressed) {
+			System::Log("Toggling debug wireframe");
+			debugDrawer->ToggleDebugFlag(btIDebugDraw::DBG_DrawWireframe);
+		}
+		if (Global::Variables.keyIn.zeroPressed) {
+			System::Log("Toggling debug AABB");
+			debugDrawer->ToggleDebugFlag(btIDebugDraw::DBG_DrawAabb);
+		}
+	}
+
+	void PhysicsEngine::RemovePhysicsBody(btCollisionObject* object)
+	{
+		btCollisionShape* tempshape = NULL;
+		btRigidBody* body = btRigidBody::upcast(object);
+		if (body != NULL) {
+			if (body && body->getMotionState())
+			{
+				tempshape = body->getCollisionShape();
+				delete body->getMotionState();
+			}
+			bool exists = false;
+			for (int i = dynamicsWorld->getNumCollisionObjects() - 1; i >= 0; i--)
+			{
+				btCollisionObject* obj = dynamicsWorld->getCollisionObjectArray()[i];
+				if (obj == object) {
+					exists = true;
+				}
+			}
+			if (exists) {
+				dynamicsWorld->removeCollisionObject(object);
+				delete object;
+			}
+
+			for (int j = 0; j < collisionShapes.size(); j++)
+			{
+				btCollisionShape* shape = collisionShapes[j];
+				if (shape == tempshape) {
+					delete shape;
+					collisionShapes[j] = 0;
+				}
+			}
+		}
+	}
+
+	btTriangleMesh* PhysicsEngine::CreatePhysicsBodyMesh(ShapeData* data)
+	{
+		//GLuint numIndices;
+		btTriangleMesh* returnValue = new btTriangleMesh();
+		for (int i = 0; i < data->numIndices; i++)
+		{
+			int index0 = data->indices[i * 3];
+			int index1 = data->indices[i * 3 + 1];
+			int index2 = data->indices[i * 3 + 2];
+
+			btVector3 vertex0(data->vertices[index0].position.x, data->vertices[index0].position.y, data->vertices[index0].position.z);
+			btVector3 vertex1(data->vertices[index1].position.x, data->vertices[index1].position.y, data->vertices[index1].position.z);
+			btVector3 vertex2(data->vertices[index2].position.x, data->vertices[index2].position.y, data->vertices[index2].position.z);
+
+			returnValue->addTriangle(vertex0, vertex1, vertex2);
+		}
+		return returnValue;
 	}
 }
