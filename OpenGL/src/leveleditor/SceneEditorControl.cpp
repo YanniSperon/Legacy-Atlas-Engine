@@ -1,7 +1,6 @@
 #include "SceneEditorControl.h"
 #include "Global.h"
 #include "System.h"
-#include "PhysicsBody.h"
 
 void LevelEditor::SceneEditorControl::Control(LevelEditor::EditorType& currentEditorType, LevelEditor::Mode& currentMode, unsigned int& selectedObject, float deltaTime)
 {
@@ -129,7 +128,7 @@ void LevelEditor::SceneEditorControl::Control(LevelEditor::EditorType& currentEd
 		}
 		if (Atlas::Global::Variables.keyIn.nPressed) {
 			Atlas::System::Log("Cube created!");
-			Atlas::Global::Variables.currentScene.objectsOnScene.push_back(new Atlas::PhysicsBody(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), Atlas::type::cubeModel, "", "", "res/images/textures/", "newcow.png", "res/shaders/", "Lighting.shader", true, true, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), Atlas::Material(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), 32.0f), 1.0f, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), 1.0f, glm::vec3(0.0f, 0.0f, 0.0f)));
+			Atlas::Global::Variables.currentScene.objectsOnScene.push_back(new Atlas::Object(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), Atlas::type::cubeModel, "", "", "res/images/textures/", "newcow.png", "res/shaders/", "Lighting.shader", true, true, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), Atlas::Material(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), 32.0f)));
 			selectedObject = Atlas::Global::Variables.currentScene.objectsOnScene.size() - 1;
 		}
 		if (Atlas::Global::Variables.keyIn.backspacePressed) {

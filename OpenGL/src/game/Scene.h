@@ -6,6 +6,7 @@
 #include "Light.h"
 #include <string>
 #include <vector>
+#include "btBulletCollisionCommon.h"
 
 namespace Atlas {
 
@@ -21,5 +22,6 @@ namespace Atlas {
 
 		void Submit(Renderer* renderer, glm::vec3 camPos, glm::mat4 viewMatrix);
 		void Save(std::string directory, std::string name);
+		void Update();
 	};
 }

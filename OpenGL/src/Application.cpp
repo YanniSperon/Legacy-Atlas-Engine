@@ -21,7 +21,6 @@ extern "C"
 #include "Camera.h"
 #include "Config.h"
 #include "Object.h"
-#include "PhysicsBody.h"
 #include "Loader.h"
 #include "Timer.h"
 #include "SimpleRenderer.h"
@@ -41,7 +40,7 @@ extern "C"
 #include "SceneEditorControl.h"
 #include "VRHandler.h"
 #include "PostProcessor.h"
-#include "btBulletDynamicsCommon.h"
+#include "PhysicsEngine.h"
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
@@ -176,60 +175,7 @@ int main(void)
 		Font arial24pt = Font("res/fonts/arial/", "arial.ttf", 24);
 		Font timesnewroman32pt = Font("res/fonts/times new roman/", "times.ttf", 32);
 
-
-
-		btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
-		btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfiguration);
-		btBroadphaseInterface* overlappingPairCache = new btDbvtBroadphase();
-		btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
-		btDiscreteDynamicsWorld* dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
-		dynamicsWorld->setGravity(btVector3(0, -9.81, 0));
-		btAlignedObjectArray<btCollisionShape*> collisionShapes;
-
-		{
-			btCollisionShape* floor = new btBoxShape(btVector3(btScalar(50.0), btScalar(50.0), btScalar(50.0)));
-			collisionShapes.push_back(floor);
-
-			btTransform floorTransformation;
-			floorTransformation.setIdentity();
-			floorTransformation.setOrigin(btVector3(0.0, -56.0, 0.0));
-
-			btScalar mass(0.0);
-			bool isDynamic = (mass != 0.0f);
-			btVector3 localInertia(0.0, 0.0, 0.0);
-			if (isDynamic) {
-				floor->calculateLocalInertia(mass, localInertia);
-			}
-
-			btDefaultMotionState* myMotionState = new btDefaultMotionState(floorTransformation);
-			btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, floor, localInertia);
-			btRigidBody* body = new btRigidBody(rbInfo);
-
-			dynamicsWorld->addRigidBody(body);
-		}
-
-		{
-			btCollisionShape* colShape = new btSphereShape(btScalar(1.0));
-			collisionShapes.push_back(colShape);
-
-			btTransform startTransform;
-			startTransform.setIdentity();
-
-			btScalar mass(1.0);
-			bool isDynamic = (mass != 0.0f);
-			btVector3 localInertia(0.0, 0.0, 0.0);
-			if (isDynamic) {
-				colShape->calculateLocalInertia(mass, localInertia);
-			}
-
-			btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
-			btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, colShape, localInertia);
-			btRigidBody* body = new btRigidBody(rbInfo);
-
-			dynamicsWorld->addRigidBody(body);
-		}
-
-
+		PhysicsEngine::Initialize();
 
 		Global::Variables.currentScene.lightsOnScene.push_back(new Light(LightIntensity(glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(1.0f, 1.0f, 1.0f)), glm::vec3(-0.1f, -0.1f, -0.1f), glm::vec3(0.1f, 0.1f, 0.1f), type::cubeInvertedLighting, "", "", "res/images/colors/", "yellow.png", "res/shaders/", "Lighting.shader", true, true, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 5.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), Material(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), 32.0f)));
 
@@ -280,6 +226,7 @@ int main(void)
 			VRHandler::Setup();
 		}
 
+		// Move cursor over so far that it has no chance of accidentally hovering over imgui elements without hitting alt
 		glfwSetCursorPos(window, 36000000.0, 0.0);
 		
 		while (!glfwWindowShouldClose(window))
@@ -291,29 +238,14 @@ int main(void)
 			nowTime = glfwGetTime();
 			deltaT = (nowTime - lastTime);
 			lastTime = nowTime;
+			float deltaTime = (float)deltaT * timeConstant;
 			///////////////////////////////////////////////////////////////////////////
 			glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 			///////////////////////////////////////////////////////////////////////////
 			InputHandler::ProcessEvents(&Global::Variables.keyIn, &Global::Variables.mouseIn);
 			///////////////////////////////////////////////////////////////////////////
-			dynamicsWorld->stepSimulation(deltaT, 10);
-			for (int j = dynamicsWorld->getNumCollisionObjects() - 1; j >= 0; j--)
-			{
-				btCollisionObject* obj = dynamicsWorld->getCollisionObjectArray()[j];
-				btRigidBody* body = btRigidBody::upcast(obj);
-				btTransform trans;
-				if (body && body->getMotionState())
-				{
-					body->getMotionState()->getWorldTransform(trans);
-				}
-				else
-				{
-					trans = obj->getWorldTransform();
-				}
-				//printf("world pos object %d = %f,%f,%f\n", j, float(trans.getOrigin().getX()), float(trans.getOrigin().getY()), float(trans.getOrigin().getZ()));
-			}
+			PhysicsEngine::Update(deltaTime);
 			///////////////////////////////////////////////////////////////////////////
-			float deltaTime = (float)deltaT * timeConstant;
 			///////////////////////////////////////////////////////////////////////////
 			if ((Global::Variables.keyIn.leftControlHeld && Global::Variables.keyIn.fHeld) || (Global::Variables.keyIn.leftControlPressed && Global::Variables.keyIn.fPressed)) {
 				glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0, 0, Global::Variables.currentWidth, Global::Variables.currentHeight, GLFW_DONT_CARE);
@@ -371,6 +303,7 @@ int main(void)
 		Global::Variables.config.WriteConfig("res/other/", "config.cfg");
 		Mesh::FlushCache();
 		Object::FlushCache();
+		PhysicsEngine::Cleanup();
 		VRHandler::Cleanup();
 		PostProcessor::Cleanup();
 	}

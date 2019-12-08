@@ -7,6 +7,9 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "stb_image/stb_image.h"
 #include "System.h"
+#include "Convert.h"
+#include "PhysicsEngine.h"
+#include "LinearMath/btQuaternion.h"
 
 namespace Atlas {
 

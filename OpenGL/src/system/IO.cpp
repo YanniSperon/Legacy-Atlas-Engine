@@ -1,7 +1,6 @@
 #include "IO.h"
 #include "Light.h"
 #include "Mesh.h"
-#include "PhysicsBody.h"
 #include "Global.h"
 #include "System.h"
 #include <iostream>
@@ -296,9 +295,9 @@ namespace Atlas {
 			if (strType == "Light") {
 				value = new Light(LightIntensity(lightAmbient, lightDiffuse, lightSpecular), glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), objectType, modelFileDirectory, modelFileName, textureFileDirectory, textureFileName, shaderFileDirectory, shaderFileName, false, hasLighting, rotation, translation, scale, Material(ambient, diffuse, specular, shininess));
 			}
-			else if (strType == "PhysicsBody") {
-				value = new PhysicsBody(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), objectType, modelFileDirectory, modelFileName, textureFileDirectory, textureFileName, shaderFileDirectory, shaderFileName, false, hasLighting, rotation, translation, scale, Material(ambient, diffuse, specular, shininess), mass, linearVelocity, angularVelocity, force, torque, momentOfInertia, gravity);
-			}
+			//else if (strType == "PhysicsBody") {
+			//	value = new PhysicsBody(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), objectType, modelFileDirectory, modelFileName, textureFileDirectory, textureFileName, shaderFileDirectory, shaderFileName, false, hasLighting, rotation, translation, scale, Material(ambient, diffuse, specular, shininess), mass, linearVelocity, angularVelocity, force, torque, momentOfInertia, gravity);
+			//}
 			else if (strType == "Object") {
 				value = new Object(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), objectType, modelFileDirectory, modelFileName, textureFileDirectory, textureFileName, shaderFileDirectory, shaderFileName, false, hasLighting, rotation, translation, scale, Material(ambient, diffuse, specular, shininess));
 			}
@@ -425,34 +424,34 @@ namespace Atlas {
 			}
 		}
 		else if (type == "PhysicsBody") {
-			PhysicsBody* physicsBody = dynamic_cast<PhysicsBody*>(obj);
-			if (physicsBody != nullptr) {
-				float mass = physicsBody->GetMass();
-				glm::vec3 g = physicsBody->GetGravitationalForce();
-				glm::vec3 linVel = physicsBody->GetLinearVelocity();
-				glm::vec3 angVel = physicsBody->GetAngularVelocity();
-				glm::vec3 f = physicsBody->GetForce();
-				glm::vec3 t = physicsBody->GetTorque();
-				float moi = physicsBody->GetMomentOfInertia();
-
-				objectFile << "mass: " << mass << "\n";
-				objectFile << "g.x: " << g.x << "\n";
-				objectFile << "g.y: " << g.y << "\n";
-				objectFile << "g.z: " << g.z << "\n";
-				objectFile << "linVel.x: " << linVel.x << "\n";
-				objectFile << "linVel.y: " << linVel.y << "\n";
-				objectFile << "linVel.z: " << linVel.z << "\n";
-				objectFile << "angVel.x: " << angVel.x << "\n";
-				objectFile << "angVel.y: " << angVel.y << "\n";
-				objectFile << "angVel.z: " << angVel.z << "\n";
-				objectFile << "f.x: " << f.x << "\n";
-				objectFile << "f.y: " << f.y << "\n";
-				objectFile << "f.z: " << f.z << "\n";
-				objectFile << "t.x: " << t.x << "\n";
-				objectFile << "t.y: " << t.y << "\n";
-				objectFile << "t.z: " << t.z << "\n";
-				objectFile << "moi: " << moi << "\n";
-			}
+			//PhysicsBody* physicsBody = dynamic_cast<PhysicsBody*>(obj);
+			//if (physicsBody != nullptr) {
+			//	float mass = physicsBody->GetMass();
+			//	glm::vec3 g = physicsBody->GetGravitationalForce();
+			//	glm::vec3 linVel = physicsBody->GetLinearVelocity();
+			//	glm::vec3 angVel = physicsBody->GetAngularVelocity();
+			//	glm::vec3 f = physicsBody->GetForce();
+			//	glm::vec3 t = physicsBody->GetTorque();
+			//	float moi = physicsBody->GetMomentOfInertia();
+			//
+			//	objectFile << "mass: " << mass << "\n";
+			//	objectFile << "g.x: " << g.x << "\n";
+			//	objectFile << "g.y: " << g.y << "\n";
+			//	objectFile << "g.z: " << g.z << "\n";
+			//	objectFile << "linVel.x: " << linVel.x << "\n";
+			//	objectFile << "linVel.y: " << linVel.y << "\n";
+			//	objectFile << "linVel.z: " << linVel.z << "\n";
+			//	objectFile << "angVel.x: " << angVel.x << "\n";
+			//	objectFile << "angVel.y: " << angVel.y << "\n";
+			//	objectFile << "angVel.z: " << angVel.z << "\n";
+			//	objectFile << "f.x: " << f.x << "\n";
+			//	objectFile << "f.y: " << f.y << "\n";
+			//	objectFile << "f.z: " << f.z << "\n";
+			//	objectFile << "t.x: " << t.x << "\n";
+			//	objectFile << "t.y: " << t.y << "\n";
+			//	objectFile << "t.z: " << t.z << "\n";
+			//	objectFile << "moi: " << moi << "\n";
+			//}
 		}
 		else if (type == "Object") {
 			Object* object = dynamic_cast<Object*>(obj);

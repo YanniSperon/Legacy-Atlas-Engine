@@ -3,6 +3,7 @@
 #include "glm/glm.hpp"
 #include "primitives/ShapeData.h"
 #include <string>
+#include "btBulletCollisionCommon.h"
 
 namespace Atlas {
 
@@ -22,6 +23,7 @@ namespace Atlas {
 		glm::vec3 minExtents;
 		glm::vec3 maxExtents;
 		type objectType;
+		btCollisionObject* physicsObject;
 	public:
 		Mesh();
 		Mesh(glm::vec3 min, glm::vec3 max, type type, std::string dir, std::string name);
@@ -50,6 +52,9 @@ namespace Atlas {
 		void ScaleVec3(glm::vec3 s);
 		void ScaleAdd3f(float x, float y, float z);
 		void ScaleAddVec3(glm::vec3 s);
+
+		void Update();
+
 		glm::vec3 GetTranslation();
 		glm::vec3 GetRotation();
 		glm::vec3 GetScale();

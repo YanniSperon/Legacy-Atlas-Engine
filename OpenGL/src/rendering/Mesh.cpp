@@ -1,23 +1,27 @@
 #include "Mesh.h"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtx/euler_angles.hpp"
+#include "glm/gtx/quaternion.hpp"
 #include "primitives/ShapeGenerator.h"
 #include "Global.h"
 #include "System.h"
+#include "Convert.h"
+#include "PhysicsEngine.h"
 #include <iostream>
 #include <unordered_map>
 #include <algorithm>
 
+
 namespace Atlas {
 
 	Mesh::Mesh()
-		: directory(""), fileName("Error"), rotation(0.0f, 0.0f, 0.0f), translation(0.0f, 0.0f, 0.0f), shape(), minExtents(0.0f, 0.0f, 0.0f), maxExtents(0.0f, 0.0f, 0.0f), scale(1.0f, 1.0f, 1.0f), objectType(type::cubeModel)
+		: directory(""), fileName("Error"), rotation(0.0f, 0.0f, 0.0f), translation(0.0f, 0.0f, 0.0f), shape(), minExtents(0.0f, 0.0f, 0.0f), maxExtents(0.0f, 0.0f, 0.0f), scale(1.0f, 1.0f, 1.0f), objectType(type::cubeModel), physicsObject(NULL)
 	{
 
 	}
 
 	Mesh::Mesh(glm::vec3 min, glm::vec3 max, type type, std::string dir, std::string name)
-		: directory(dir), fileName(name), rotation(0.0f, 0.0f, 0.0f), translation(0.0f, 0.0f, 0.0f), minExtents(min), maxExtents(max), scale(1.0f, 1.0f, 1.0f), objectType(type)
+		: directory(dir), fileName(name), rotation(0.0f, 0.0f, 0.0f), translation(0.0f, 0.0f, 0.0f), minExtents(min), maxExtents(max), scale(1.0f, 1.0f, 1.0f), objectType(type), physicsObject(NULL)
 	{
 		if (type == type::cubeModel) {
 			if (Global::Variables.meshCache.find("default::type::cube") != Global::Variables.meshCache.end()) {
@@ -104,10 +108,17 @@ namespace Atlas {
 				shape = Global::Variables.meshCache["default::type::triangle"];
 			}
 		}
+
+		btCollisionShape* physicsShape = new btBoxShape(Convert::Vector3(glm::vec3(0.5f, 0.5f, 0.5f)));
+		btTransform shapeTransformation;
+		translation = glm::vec3(5.0f, 5.0f, 5.0f);
+		shapeTransformation.setFromOpenGLMatrix(&GetModelTransformMatrix()[0][0]);
+		printf("Test: \n%f, %f, %f, %f\n%f, %f, %f, %f\n%f, %f, %f, %f\n%f, %f, %f, %f\n", GetModelTransformMatrix()[0][0], GetModelTransformMatrix()[0][1], GetModelTransformMatrix()[0][2], GetModelTransformMatrix()[0][3], GetModelTransformMatrix()[1][0], GetModelTransformMatrix()[1][1], GetModelTransformMatrix()[1][2], GetModelTransformMatrix()[1][3], GetModelTransformMatrix()[2][0], GetModelTransformMatrix()[2][1], GetModelTransformMatrix()[2][2], GetModelTransformMatrix()[2][3], GetModelTransformMatrix()[3][0], GetModelTransformMatrix()[3][1], GetModelTransformMatrix()[3][2], GetModelTransformMatrix()[3][3]);
+		physicsObject = PhysicsEngine::AddRigidBody(physicsShape, shapeTransformation, 0.0f);
 	}
 
 	Mesh::Mesh(glm::vec3 min, glm::vec3 max, type type, std::string dir, std::string name, glm::vec3 rot, glm::vec3 trans, glm::vec3 s)
-		: directory(dir), fileName(name), rotation(rot), translation(trans), minExtents(min), maxExtents(max), scale(s), objectType(type)
+		: directory(dir), fileName(name), rotation(rot), translation(trans), minExtents(min), maxExtents(max), scale(s), objectType(type), physicsObject(NULL)
 	{
 		if (type == type::cubeModel) {
 			if (Global::Variables.meshCache.find("default::type::cube") != Global::Variables.meshCache.end()) {
@@ -194,6 +205,13 @@ namespace Atlas {
 				shape = Global::Variables.meshCache["default::type::triangle"];
 			}
 		}
+
+		btCollisionShape* physicsShape = new btBoxShape(Convert::Vector3(glm::vec3(0.5f, 0.5f, 0.5f)));
+		btTransform shapeTransformation;
+		translation = glm::vec3(5.0f, 5.0f, 5.0f);
+		shapeTransformation.setFromOpenGLMatrix(&GetModelTransformMatrix()[0][0]);
+		printf("Test: \n%f, %f, %f, %f\n%f, %f, %f, %f\n%f, %f, %f, %f\n%f, %f, %f, %f\n", GetModelTransformMatrix()[0][0], GetModelTransformMatrix()[0][1], GetModelTransformMatrix()[0][2], GetModelTransformMatrix()[0][3], GetModelTransformMatrix()[1][0], GetModelTransformMatrix()[1][1], GetModelTransformMatrix()[1][2], GetModelTransformMatrix()[1][3], GetModelTransformMatrix()[2][0], GetModelTransformMatrix()[2][1], GetModelTransformMatrix()[2][2], GetModelTransformMatrix()[2][3], GetModelTransformMatrix()[3][0], GetModelTransformMatrix()[3][1], GetModelTransformMatrix()[3][2], GetModelTransformMatrix()[3][3]);
+		physicsObject = PhysicsEngine::AddRigidBody(physicsShape, shapeTransformation, 0.0f);
 	}
 
 	Mesh::~Mesh()
@@ -203,7 +221,7 @@ namespace Atlas {
 
 	glm::mat4 Mesh::GetModelTransformMatrix()
 	{
-		return (glm::translate(glm::mat4(), translation) * glm::yawPitchRoll(glm::radians(rotation.x), glm::radians(rotation.y), glm::radians(rotation.z)) * glm::scale(glm::mat4(), scale));
+		return (glm::translate(glm::mat4(), translation) * glm::yawPitchRoll(glm::radians(rotation.x), glm::radians(rotation.y), glm::radians(rotation.z))/* * glm::scale(glm::mat4(), scale)*/);
 	}
 
 	void Mesh::RotateX(float x)
@@ -347,6 +365,12 @@ namespace Atlas {
 		if (scale.z + s.z > 0) {
 			scale.z += s.z;
 		}
+	}
+
+	void Mesh::Update()
+	{
+		translation = Convert::Vector3(physicsObject->getWorldTransform().getOrigin());
+		physicsObject->getWorldTransform().getRotation().getEulerZYX(rotation.z, rotation.y, rotation.x);
 	}
 
 	glm::vec3 Mesh::GetTranslation()
