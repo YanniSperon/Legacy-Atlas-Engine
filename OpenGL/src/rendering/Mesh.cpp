@@ -20,8 +20,8 @@ namespace Atlas {
 
 	}
 
-	Mesh::Mesh(glm::vec3 min, glm::vec3 max, type type, std::string dir, std::string name, bool enablePhysics)
-		: directory(dir), fileName(name), rotation(0.0f, 0.0f, 0.0f), translation(0.0f, 0.0f, 0.0f), minExtents(min), maxExtents(max), scale(1.0f, 1.0f, 1.0f), objectType(type), physicsObject(NULL), mass(0.0f)
+	Mesh::Mesh(type type, std::string dir, std::string name, bool enablePhysics)
+		: directory(dir), fileName(name), rotation(0.0f, 0.0f, 0.0f), translation(0.0f, 0.0f, 0.0f), minExtents(-0.5f, -0.5f, -0.5f), maxExtents(0.5f, 0.5f, 0.5f), scale(1.0f, 1.0f, 1.0f), objectType(type), physicsObject(NULL), mass(0.0f)
 	{
 		if (type == type::cubeModel) {
 			if (Global::Variables.meshCache.find("default::type::cube") != Global::Variables.meshCache.end()) {
@@ -50,7 +50,7 @@ namespace Atlas {
 
 					Global::Variables.loadedMeshCache[meshName] = physicalLocation;
 
-					Global::Variables.meshCache[meshDirectory + meshName] = ShapeGenerator::loadShape(meshDirectory + meshName, minExtents, maxExtents);
+					Global::Variables.meshCache[meshDirectory + meshName] = ShapeGenerator::loadShape(meshDirectory + meshName);
 					shape = Global::Variables.meshCache[meshDirectory + meshName];
 				}
 			}
@@ -72,7 +72,7 @@ namespace Atlas {
 
 						Global::Variables.loadedMeshCache[meshName] = physicalLocation;
 
-						Global::Variables.meshCache[meshDirectory + meshName] = ShapeGenerator::loadTexturedShape(dir, name, minExtents, maxExtents);
+						Global::Variables.meshCache[meshDirectory + meshName] = ShapeGenerator::loadTexturedShape(dir, name);
 						shape = Global::Variables.meshCache[meshDirectory + meshName];
 					}
 				}
@@ -99,15 +99,9 @@ namespace Atlas {
 				shape = Global::Variables.meshCache["default::type::cubeInvertedLighting"];
 			}
 		}
-		else {
-			if (Global::Variables.meshCache.find("default::type::triangle") != Global::Variables.meshCache.end()) {
-				shape = Global::Variables.meshCache["default::type::triangle"];
-			}
-			else {
-				Global::Variables.meshCache["default::type::triangle"] = ShapeGenerator::makeTriangle(minExtents, maxExtents);
-				shape = Global::Variables.meshCache["default::type::triangle"];
-			}
-		}
+
+		minExtents = shape.min;
+		maxExtents = shape.max;
 
 		if (enablePhysics) {
 			btCollisionShape* physicsShape = new btBoxShape(Convert::Vector3(glm::vec3(0.5f, 0.5f, 0.5f)));
@@ -119,8 +113,8 @@ namespace Atlas {
 		}
 	}
 
-	Mesh::Mesh(glm::vec3 min, glm::vec3 max, type type, std::string dir, std::string name, bool enablePhysics, glm::vec3 rot, glm::vec3 trans, glm::vec3 s, float objectMass)
-		: directory(dir), fileName(name), rotation(rot), translation(trans), minExtents(min), maxExtents(max), scale(s), objectType(type), physicsObject(NULL), mass(objectMass)
+	Mesh::Mesh(type type, std::string dir, std::string name, bool enablePhysics, glm::vec3 rot, glm::vec3 trans, glm::vec3 s, float objectMass)
+		: directory(dir), fileName(name), rotation(rot), translation(trans), minExtents(-0.5f, -0.5f, -0.5f), maxExtents(0.5f, 0.5f, 0.5f), scale(s), objectType(type), physicsObject(NULL), mass(objectMass)
 	{
 		if (type == type::cubeModel) {
 			if (Global::Variables.meshCache.find("default::type::cube") != Global::Variables.meshCache.end()) {
@@ -149,7 +143,7 @@ namespace Atlas {
 
 					Global::Variables.loadedMeshCache[meshName] = physicalLocation;
 
-					Global::Variables.meshCache[meshDirectory + meshName] = ShapeGenerator::loadShape(meshDirectory + meshName, minExtents, maxExtents);
+					Global::Variables.meshCache[meshDirectory + meshName] = ShapeGenerator::loadShape(meshDirectory + meshName);
 					shape = Global::Variables.meshCache[meshDirectory + meshName];
 				}
 			}
@@ -171,7 +165,7 @@ namespace Atlas {
 
 						Global::Variables.loadedMeshCache[meshName] = physicalLocation;
 
-						Global::Variables.meshCache[meshDirectory + meshName] = ShapeGenerator::loadTexturedShape(dir, name, minExtents, maxExtents);
+						Global::Variables.meshCache[meshDirectory + meshName] = ShapeGenerator::loadTexturedShape(dir, name);
 						shape = Global::Variables.meshCache[meshDirectory + meshName];
 					}
 				}
@@ -198,16 +192,10 @@ namespace Atlas {
 				shape = Global::Variables.meshCache["default::type::cubeInvertedLighting"];
 			}
 		}
-		else {
-			if (Global::Variables.meshCache.find("default::type::triangle") != Global::Variables.meshCache.end()) {
-				shape = Global::Variables.meshCache["default::type::triangle"];
-			}
-			else {
-				Global::Variables.meshCache["default::type::triangle"] = ShapeGenerator::makeTriangle(minExtents, maxExtents);
-				shape = Global::Variables.meshCache["default::type::triangle"];
-			}
-		}
-		
+
+		minExtents = shape.min;
+		maxExtents = shape.max;
+
 		if (enablePhysics) {
 			btCollisionShape* physicsShape = new btBoxShape(Convert::Vector3(maxExtents));
 			physicsShape->setLocalScaling(Convert::Vector3(s));

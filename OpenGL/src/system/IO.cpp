@@ -293,16 +293,16 @@ namespace Atlas {
 			Object* value;
 
 			if (strType == "Light") {
-				value = new Light(LightIntensity(lightAmbient, lightDiffuse, lightSpecular), glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), objectType, modelFileDirectory, modelFileName, textureFileDirectory, textureFileName, shaderFileDirectory, shaderFileName, false, hasLighting, true, rotation, translation, scale, mass, Material(ambient, diffuse, specular, shininess));
+				value = new Light(LightIntensity(lightAmbient, lightDiffuse, lightSpecular), objectType, modelFileDirectory, modelFileName, textureFileDirectory, textureFileName, shaderFileDirectory, shaderFileName, false, hasLighting, true, rotation, translation, scale, mass, Material(ambient, diffuse, specular, shininess));
 			}
 			//else if (strType == "PhysicsBody") {
 			//	value = new PhysicsBody(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), objectType, modelFileDirectory, modelFileName, textureFileDirectory, textureFileName, shaderFileDirectory, shaderFileName, false, hasLighting, rotation, translation, scale, Material(ambient, diffuse, specular, shininess), mass, linearVelocity, angularVelocity, force, torque, momentOfInertia, gravity);
 			//}
 			else if (strType == "Object") {
-				value = new Object(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), objectType, modelFileDirectory, modelFileName, textureFileDirectory, textureFileName, shaderFileDirectory, shaderFileName, false, hasLighting, true, rotation, translation, scale, mass, Material(ambient, diffuse, specular, shininess));
+				value = new Object(objectType, modelFileDirectory, modelFileName, textureFileDirectory, textureFileName, shaderFileDirectory, shaderFileName, false, hasLighting, true, rotation, translation, scale, mass, Material(ambient, diffuse, specular, shininess));
 			}
 			else if (strType == "Invalid") {
-				value = new Object(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), objectType, modelFileDirectory, modelFileName, textureFileDirectory, textureFileName, shaderFileDirectory, shaderFileName, false, hasLighting, true, rotation, translation, scale, mass, Material(ambient, diffuse, specular, shininess));
+				value = new Object(objectType, modelFileDirectory, modelFileName, textureFileDirectory, textureFileName, shaderFileDirectory, shaderFileName, false, hasLighting, true, rotation, translation, scale, mass, Material(ambient, diffuse, specular, shininess));
 			}
 
 			meshLoaderMutex.lock();

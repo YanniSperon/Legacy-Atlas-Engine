@@ -38,8 +38,8 @@ namespace Atlas {
 
 	}
 
-	Object::Object(glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderFileName, bool glInit, bool lighting, bool hasPhysics)
-		: Mesh(minCorner, maxCorner, type, meshDir, meshName, hasPhysics), material(), glInitialized(glInit), textureDirectory(texDir), textureName(texName), hasLighting(lighting), indexBufferID(0), vertexBufferID(0), shaderDirectory(shaderDir), shaderName(shaderFileName)
+	Object::Object(type type, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderFileName, bool glInit, bool lighting, bool hasPhysics)
+		: Mesh(type, meshDir, meshName, hasPhysics), material(), glInitialized(glInit), textureDirectory(texDir), textureName(texName), hasLighting(lighting), indexBufferID(0), vertexBufferID(0), shaderDirectory(shaderDir), shaderName(shaderFileName)
 	{
 		if (Global::Variables.textureCache.find(texDir + texName) != Global::Variables.textureCache.end()) {
 			texID = Global::Variables.textureCache[texDir + texName];
@@ -87,8 +87,8 @@ namespace Atlas {
 		}
 	}
 
-	Object::Object(glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderFileName, bool glInit, bool lighting, bool hasPhysics, glm::vec3 rot, glm::vec3 trans, glm::vec3 s, float mass)
-		: Mesh(minCorner, maxCorner, type, meshDir, meshName, hasPhysics, rot, trans, s, mass), material(), glInitialized(glInit), textureDirectory(texDir), textureName(texName), shaderDirectory(shaderDir), shaderName(shaderFileName), hasLighting(lighting), indexBufferID(0), vertexBufferID(0)
+	Object::Object(type type, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderFileName, bool glInit, bool lighting, bool hasPhysics, glm::vec3 rot, glm::vec3 trans, glm::vec3 s, float mass)
+		: Mesh(type, meshDir, meshName, hasPhysics, rot, trans, s, mass), material(), glInitialized(glInit), textureDirectory(texDir), textureName(texName), shaderDirectory(shaderDir), shaderName(shaderFileName), hasLighting(lighting), indexBufferID(0), vertexBufferID(0)
 	{
 		if (Global::Variables.textureCache.find(texDir + texName) != Global::Variables.textureCache.end()) {
 			texID = Global::Variables.textureCache[texDir + texName];
@@ -136,8 +136,8 @@ namespace Atlas {
 		}
 	}
 
-	Object::Object(glm::vec3 minCorner, glm::vec3 maxCorner, type type, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderFileName, bool glInit, bool lighting, bool hasPhysics, glm::vec3 rot, glm::vec3 trans, glm::vec3 s, float mass, Material mat)
-		: Mesh(minCorner, maxCorner, type, meshDir, meshName, hasPhysics, rot, trans, s, mass), material(mat), glInitialized(glInit), textureDirectory(texDir), textureName(texName), shaderDirectory(shaderDir), shaderName(shaderFileName), hasLighting(lighting), indexBufferID(0), vertexBufferID(0)
+	Object::Object(type type, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderFileName, bool glInit, bool lighting, bool hasPhysics, glm::vec3 rot, glm::vec3 trans, glm::vec3 s, float mass, Material mat)
+		: Mesh(type, meshDir, meshName, hasPhysics, rot, trans, s, mass), material(mat), glInitialized(glInit), textureDirectory(texDir), textureName(texName), shaderDirectory(shaderDir), shaderName(shaderFileName), hasLighting(lighting), indexBufferID(0), vertexBufferID(0)
 	{
 		if (Global::Variables.textureCache.find(texDir + texName) != Global::Variables.textureCache.end()) {
 			texID = Global::Variables.textureCache[texDir + texName];

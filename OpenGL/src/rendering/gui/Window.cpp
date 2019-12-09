@@ -214,13 +214,13 @@ namespace Atlas {
 				}
 				try {
 					if (Global::Variables.meshCache.find(meshDir + meshName) == Global::Variables.meshCache.end()) {
-						Global::Variables.meshCache[meshDir + meshName] = ShapeGenerator::loadShape(physicalLocation, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+						Global::Variables.meshCache[meshDir + meshName] = ShapeGenerator::loadShape(physicalLocation);
 					}
 				}
 				catch (const std::exception & e) {
 					try {
 						if (Global::Variables.meshCache.find(meshDir + meshName) == Global::Variables.meshCache.end()) {
-							Global::Variables.meshCache[meshDir + meshName] = ShapeGenerator::loadTexturedShape(meshDir, meshName, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+							Global::Variables.meshCache[meshDir + meshName] = ShapeGenerator::loadTexturedShape(meshDir, meshName);
 						}
 					}
 					catch (const std::exception & e) {
@@ -528,9 +528,9 @@ namespace Atlas {
 		ImGui::Separator();
 		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.42f).x);
 		ImGui::Text("Physics");
-		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.15f).x);
+		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.275f).x);
 		ImGui::Checkbox("Enable Physics", &hasPhysics);
-		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.25f).x);
+		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.125f).x);
 		ImGui::InputFloat("Mass##massfloatin", &mass);
 		ImGui::Separator();
 		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.4f).x);
@@ -565,7 +565,7 @@ namespace Atlas {
 					Filepath shaderpath = System::SeperateFilepath(Global::Variables.loadedShaderCache[currentSelectedShader]);
 
 					System::Log("Spawned object with model \"" + meshpath.directory + meshpath.filename + "\" at (" + std::to_string(InputTranslation.x) + ", " + std::to_string(InputTranslation.y) + ", " + std::to_string(InputTranslation.z) + ")");
-					objectsOnScene.push_back(new Object(glm::vec3(-5.0f, -5.0f, -5.0f), glm::vec3(5.0f, 5.0f, 5.0f), type::normalModel, meshpath.directory, meshpath.filename, texpath.directory, texpath.filename, shaderpath.directory, shaderpath.filename, true, true, hasPhysics, InputRotation, InputTranslation, InputScale, mass, Material(InputAmbient, InputDiffuse, InputSpecular, ((float)InputShininess))));
+					objectsOnScene.push_back(new Object(type::normalModel, meshpath.directory, meshpath.filename, texpath.directory, texpath.filename, shaderpath.directory, shaderpath.filename, true, true, hasPhysics, InputRotation, InputTranslation, InputScale, mass, Material(InputAmbient, InputDiffuse, InputSpecular, ((float)InputShininess))));
 					selectedObject = objectsOnScene.size() - 1;
 				}
 				else {

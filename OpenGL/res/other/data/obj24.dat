@@ -1,12 +1,12 @@
 Object: 24
 type: Object
 modelType: cubeModel
-translation.x: 2.26233
+translation.x: 4.18242
 translation.y: -2.49
-translation.z: 4.0688
-rotation.x: 7.3408e-07
-rotation.y: 0.595626
-rotation.z: 3.14159
+translation.z: -4.51814
+rotation.x: -3.14159
+rotation.y: -0.954395
+rotation.z: -3.14159
 scale.x: 1
 scale.y: 1
 scale.z: 1

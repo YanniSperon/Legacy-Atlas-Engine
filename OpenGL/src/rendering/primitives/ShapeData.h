@@ -1,6 +1,7 @@
 #pragma once
 
 #include <GL/glew.h>
+#include "glm/glm.hpp"
 #include "Vertex.h"
 
 namespace Atlas {
@@ -13,6 +14,8 @@ namespace Atlas {
 		GLuint numVertices;
 		GLuint* indices;
 		GLuint numIndices;
+		glm::vec3 min;
+		glm::vec3 max;
 
 		GLsizeiptr vertexBufferSize() const {
 			return numVertices * sizeof(Vertex);

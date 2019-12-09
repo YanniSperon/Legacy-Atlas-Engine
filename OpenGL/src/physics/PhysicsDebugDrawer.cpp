@@ -7,8 +7,8 @@ void PhysicsDebugDrawer::drawLine(const btVector3 &from,const btVector3 &to, con
 {
 	glBegin(GL_LINES);
 	glColor3f(color.getX(), color.getY(), color.getZ());
-	glVertex3f(from.getX(), from.getY(), from.getZ());
-	glVertex3f(to.getX(), to.getY(), to.getZ());
+	glVertex3f(from.getX(), from.getY() - 5.0f, from.getZ());
+	glVertex3f(to.getX(), to.getY() - 5.0f, to.getZ());
 	glEnd();
 }
 
@@ -24,12 +24,12 @@ void PhysicsDebugDrawer::ToggleDebugFlag(int flag) {
 	// checks if a flag is set and enables/
 	// disables it
 	if (m_debugMode & flag) {
-		Atlas::System::Log("Disabling flag");
+		Atlas::System::Log("Disabled");
 		// flag is enabled, so disable it
 		m_debugMode = m_debugMode & (~flag);
 	}
 	else {
-		Atlas::System::Log("Enabling flag");
+		Atlas::System::Log("Enabled");
 		// flag is disabled, so enable it
 		m_debugMode |= flag;
 	}

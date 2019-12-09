@@ -27,8 +27,8 @@ namespace Atlas {
 		btCollisionObject* physicsObject;
 	public:
 		Mesh();
-		Mesh(glm::vec3 min, glm::vec3 max, type type, std::string dir, std::string name, bool enablePhysics);
-		Mesh(glm::vec3 min, glm::vec3 max, type type, std::string dir, std::string name, bool enablePhysics, glm::vec3 rot, glm::vec3 trans, glm::vec3 s, float objectMass);
+		Mesh(type type, std::string dir, std::string name, bool enablePhysics);
+		Mesh(type type, std::string dir, std::string name, bool enablePhysics, glm::vec3 rot, glm::vec3 trans, glm::vec3 s, float objectMass);
 		~Mesh();
 
 		glm::mat4 GetModelTransformMatrix();

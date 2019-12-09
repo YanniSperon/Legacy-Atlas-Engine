@@ -12,64 +12,8 @@
 
 namespace Atlas {
 
-	ShapeData ShapeGenerator::makeTriangle(glm::vec3& min, glm::vec3& max) {
-		float minX = INFINITY;
-		float minY = INFINITY;
-		float minZ = INFINITY;
-
-		float maxX = -INFINITY;
-		float maxY = -INFINITY;
-		float maxZ = -INFINITY;
-
-		ShapeData ret;
-
-		Vertex positions[] = {
-			glm::vec3(-1.0f, -1.0f, +0.0f),     // 0
-			glm::vec2(+0.0f, +0.0f),
-			glm::vec3(0.0f, 0.0f, 1.0),
-
-			glm::vec3(+1.0f, -1.0f, +0.0f),      // 1
-			glm::vec2(+0.0f, +0.0f),
-			glm::vec3(0.0f, 0.0f, 1.0),
-
-			glm::vec3(+0.0f, +1.0f, +0.0f),      // 2
-			glm::vec2(+0.0f, +0.0f),
-			glm::vec3(0.0f, 0.0f, 1.0)
-		};
-		minX = -1.0f;
-		minY = -1.0f;
-		minZ = +0.0f;
-
-		min = glm::vec3(minX, minY, minZ);
-		max = glm::vec3(maxX, maxY, maxZ);
-
-		maxX = +1.0f;
-		maxY = +1.0f;
-		maxZ = +0.0f;
-
-		ret.numVertices = NUM_ARRAY_ELEMENTS(positions);
-		ret.vertices = new Vertex[ret.numVertices];
-		memcpy(ret.vertices, positions, sizeof(positions));
-
-		GLuint indices[] = {
-			0, 1, 2
-		};
-		ret.numIndices = NUM_ARRAY_ELEMENTS(indices);
-		ret.indices = new GLuint[ret.numIndices];
-		memcpy(ret.indices, indices, sizeof(indices));
-
-		return ret;
-	}
-
-	ShapeData ShapeGenerator::makeCube(glm::vec3& min, glm::vec3& max)
+	ShapeData ShapeGenerator::makeCube(const glm::vec3& min, const glm::vec3& max)
 	{
-		float minX = INFINITY;
-		float minY = INFINITY;
-		float minZ = INFINITY;
-
-		float maxX = -INFINITY;
-		float maxY = -INFINITY;
-		float maxZ = -INFINITY;
 
 		ShapeData ret;
 
@@ -208,18 +152,14 @@ namespace Atlas {
 		ret.indices = new GLuint[ret.numIndices];
 		memcpy(ret.indices, indices, sizeof(indices));
 
+		ret.min = min;
+		ret.max = max;
+
 		return ret;
 	}
 
-	ShapeData ShapeGenerator::makeInvertedLightingCube(glm::vec3& min, glm::vec3& max)
+	ShapeData ShapeGenerator::makeInvertedLightingCube(const glm::vec3& min, const glm::vec3& max)
 	{
-		float minX = INFINITY;
-		float minY = INFINITY;
-		float minZ = INFINITY;
-
-		float maxX = -INFINITY;
-		float maxY = -INFINITY;
-		float maxZ = -INFINITY;
 
 		ShapeData ret;
 
@@ -358,18 +298,14 @@ namespace Atlas {
 		ret.indices = new GLuint[ret.numIndices];
 		memcpy(ret.indices, indices, sizeof(indices));
 
+		ret.min = min;
+		ret.max = max;
+
 		return ret;
 	}
 
-	ShapeData ShapeGenerator::makeSkybox(glm::vec3& min, glm::vec3& max)
+	ShapeData ShapeGenerator::makeSkybox(const glm::vec3& min, const glm::vec3& max)
 	{
-		float minX = INFINITY;
-		float minY = INFINITY;
-		float minZ = INFINITY;
-
-		float maxX = -INFINITY;
-		float maxY = -INFINITY;
-		float maxZ = -INFINITY;
 
 		ShapeData ret;
 
@@ -508,10 +444,13 @@ namespace Atlas {
 		ret.indices = new GLuint[ret.numIndices];
 		memcpy(ret.indices, indices, sizeof(indices));
 
+		ret.min = min;
+		ret.max = max;
+
 		return ret;
 	}
 
-	ShapeData ShapeGenerator::loadShape(std::string fileName, glm::vec3& min, glm::vec3& max)
+	ShapeData ShapeGenerator::loadShape(const std::string& fileName)
 	{
 		glm::vec3 minimums = glm::vec3(INFINITY, INFINITY, INFINITY);
 		glm::vec3 maximums = glm::vec3(-INFINITY, -INFINITY, -INFINITY);
@@ -637,13 +576,13 @@ namespace Atlas {
 		printf("Maximums: (%f, %f, %f)\n", maximums.x, maximums.y, maximums.z);
 		printf("Minimums: (%f, %f, %f)\n", minimums.x, minimums.y, minimums.z);
 
-		min = minimums;
-		max = maximums;
+		ret.min = minimums;
+		ret.max = maximums;
 
 		return ret;
 	}
 
-	ShapeData ShapeGenerator::loadTexturedShape(std::string directory, std::string name, glm::vec3& min, glm::vec3& max)
+	ShapeData ShapeGenerator::loadTexturedShape(const std::string& directory, const std::string& name)
 	{
 		glm::vec3 minimums = glm::vec3(INFINITY, INFINITY, INFINITY);
 		glm::vec3 maximums = glm::vec3(-INFINITY, -INFINITY, -INFINITY);
@@ -823,13 +762,13 @@ namespace Atlas {
 		printf("Maximums: (%f, %f, %f)\n", maximums.x, maximums.y, maximums.z);
 		printf("Minimums: (%f, %f, %f)\n", minimums.x, minimums.y, minimums.z);
 
-		max = maximums;
-		min = minimums;
+		ret.max = maximums;
+		ret.min = minimums;
 
 		return ret;
 	}
 
-	ShapeData2D ShapeGenerator::makeSquare(glm::vec2& min, glm::vec2& max, glm::vec2& minTexCoords, glm::vec2& maxTexCoords)
+	ShapeData2D ShapeGenerator::makeSquare(const glm::vec2& min, const glm::vec2& max, const glm::vec2& minTexCoords, const glm::vec2& maxTexCoords)
 	{
 		ShapeData2D ret;
 
