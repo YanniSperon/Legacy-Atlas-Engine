@@ -607,6 +607,35 @@ namespace Atlas {
 		for (unsigned int k = 0; k < indicesSize; k++) {
 			ret.indices[k] = indices.at(k);
 		}
+		
+		printf("Before\n");
+		printf("Maximums: (%f, %f, %f)\n", maximums.x, maximums.y, maximums.z);
+		printf("Minimums: (%f, %f, %f)\n", minimums.x, minimums.y, minimums.z);
+
+		if (minimums.x > -0.01f) {
+			minimums.x = -0.01f;
+		}
+		if (maximums.x < 0.01f) {
+			maximums.x = 0.01f;
+		}
+
+		if (minimums.y > -0.01f) {
+			minimums.y = -0.01f;
+		}
+		if (maximums.y < 0.01f) {
+			maximums.y = 0.01f;
+		}
+
+		if (minimums.z > -0.01f) {
+			minimums.z = -0.01f;
+		}
+		if (maximums.z < 0.01f) {
+			maximums.z = 0.01f;
+		}
+
+		printf("After\n");
+		printf("Maximums: (%f, %f, %f)\n", maximums.x, maximums.y, maximums.z);
+		printf("Minimums: (%f, %f, %f)\n", minimums.x, minimums.y, minimums.z);
 
 		min = minimums;
 		max = maximums;
@@ -764,6 +793,35 @@ namespace Atlas {
 		for (unsigned int k = 0; k < indicesSize; k++) {
 			ret.indices[k] = indices.at(k);
 		}
+
+		printf("Before\n");
+		printf("Maximums: (%f, %f, %f)\n", maximums.x, maximums.y, maximums.z);
+		printf("Minimums: (%f, %f, %f)\n", minimums.x, minimums.y, minimums.z);
+
+		if (minimums.x > -0.01f) {
+			minimums.x = -0.01f;
+		}
+		if (maximums.x < 0.01f) {
+			maximums.x = 0.01f;
+		}
+
+		if (minimums.y > -0.01f) {
+			minimums.y = -0.01f;
+		}
+		if (maximums.y < 0.01f) {
+			maximums.y = 0.01f;
+		}
+
+		if (minimums.z > -0.01f) {
+			minimums.z = -0.01f;
+		}
+		if (maximums.z < 0.01f) {
+			maximums.z = 0.01f;
+		}
+
+		printf("After\n");
+		printf("Maximums: (%f, %f, %f)\n", maximums.x, maximums.y, maximums.z);
+		printf("Minimums: (%f, %f, %f)\n", minimums.x, minimums.y, minimums.z);
 
 		max = maximums;
 		min = minimums;

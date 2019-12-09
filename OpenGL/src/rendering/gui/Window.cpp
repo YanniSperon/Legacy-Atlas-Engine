@@ -8,6 +8,7 @@
 #include "Loader.h"
 #include "ShapeGenerator.h"
 #include "PostProcessor.h"
+#include "Convert.h"
 #include <algorithm>
 
 namespace Atlas {
@@ -90,7 +91,7 @@ namespace Atlas {
 
 	void Window::DrawInfoWindow(LevelEditor::EditorType& currentEditorType, LevelEditor::Mode& currentMode)
 	{
-		ImGui::SetNextWindowPos(ImVec2((1605.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (380.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
+		ImGui::SetNextWindowPos(ImVec2((812.5f / 1920.0f) * ((float)Global::Variables.currentWidth), (20.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
 		ImGui::SetNextWindowSize(ImVec2((295.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (70.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
 		ImGui::Begin("Info", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
 		ImGui::Text("Current Editor Type: ");
@@ -148,7 +149,7 @@ namespace Atlas {
 
 	void Window::DrawFileManager(GLFWwindow* window)
 	{
-		ImGui::SetNextWindowPos(ImVec2((20.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (260.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
+		ImGui::SetNextWindowPos(ImVec2((20.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (285.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
 		ImGui::SetNextWindowSize(ImVec2((190.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (100.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
 		ImGui::Begin("File Manager", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
 		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.125f).x);
@@ -470,13 +471,15 @@ namespace Atlas {
 		static glm::vec3 InputAmbient = glm::vec3(0.5f, 0.5f, 0.5f);
 		static glm::vec3 InputDiffuse = glm::vec3(0.5f, 0.5f, 0.5f);
 		static glm::vec3 InputSpecular = glm::vec3(0.5f, 0.5f, 0.5f);
+		float mass = 1.0f;
 		static int InputShininess = 32;
 		static std::string currentSelectedMesh = "";
 		static std::string currentSelectedTexture = "";
 		static std::string currentSelectedShader = "";
+		static bool hasPhysics = true;
 
 		ImGui::SetNextWindowPos(ImVec2((1605.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (20.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
-		ImGui::SetNextWindowSize(ImVec2((295.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (340.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
+		ImGui::SetNextWindowSize(ImVec2((295.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (405.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
 		ImGui::Begin("Spawn Menu", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
 		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.1f).x);
 		if (ImGui::BeginCombo("Mesh##meshcombo", currentSelectedMesh.c_str()))
@@ -523,6 +526,13 @@ namespace Atlas {
 			ImGui::EndCombo();
 		}
 		ImGui::Separator();
+		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.42f).x);
+		ImGui::Text("Physics");
+		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.15f).x);
+		ImGui::Checkbox("Enable Physics", &hasPhysics);
+		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.25f).x);
+		ImGui::InputFloat("Mass##massfloatin", &mass);
+		ImGui::Separator();
 		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.4f).x);
 		ImGui::Text("Position");
 		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.05f).x);
@@ -555,7 +565,7 @@ namespace Atlas {
 					Filepath shaderpath = System::SeperateFilepath(Global::Variables.loadedShaderCache[currentSelectedShader]);
 
 					System::Log("Spawned object with model \"" + meshpath.directory + meshpath.filename + "\" at (" + std::to_string(InputTranslation.x) + ", " + std::to_string(InputTranslation.y) + ", " + std::to_string(InputTranslation.z) + ")");
-					objectsOnScene.push_back(new Object(glm::vec3(-5.0f, -5.0f, -5.0f), glm::vec3(5.0f, 5.0f, 5.0f), type::normalModel, meshpath.directory, meshpath.filename, texpath.directory, texpath.filename, shaderpath.directory, shaderpath.filename, true, true, true, InputRotation, InputTranslation, InputScale, 5.0f, Material(InputAmbient, InputDiffuse, InputSpecular, ((float)InputShininess))));
+					objectsOnScene.push_back(new Object(glm::vec3(-5.0f, -5.0f, -5.0f), glm::vec3(5.0f, 5.0f, 5.0f), type::normalModel, meshpath.directory, meshpath.filename, texpath.directory, texpath.filename, shaderpath.directory, shaderpath.filename, true, true, hasPhysics, InputRotation, InputTranslation, InputScale, mass, Material(InputAmbient, InputDiffuse, InputSpecular, ((float)InputShininess))));
 					selectedObject = objectsOnScene.size() - 1;
 				}
 				else {
@@ -580,8 +590,8 @@ namespace Atlas {
 		static std::string currentSelectedTexture = "";
 		static std::string currentSelectedShader = "";
 
-		ImGui::SetNextWindowPos(ImVec2((1605.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (470.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
-		ImGui::SetNextWindowSize(ImVec2((295.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (445.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
+		ImGui::SetNextWindowPos(ImVec2((1605.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (565.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
+		ImGui::SetNextWindowSize(ImVec2((295.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (350.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
 		ImGui::Begin("Object Settings", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
 		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.17f).x);
 		if (ImGui::BeginCombo("##combo", current_item)) // The second parameter is the label previewed before opening the combo.
@@ -601,7 +611,6 @@ namespace Atlas {
 		
 		ImGui::Text("");
 		ImGui::Separator();
-		ImGui::Text("");
 
 		if (current_item == "Rendering") {
 			ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.4f).x);
@@ -733,6 +742,25 @@ namespace Atlas {
 			}
 		}
 
+		ImGui::End();
+	}
+
+	void Window::DrawPhysicsManager()
+	{
+		static bool EnablePhysics = true;
+		static glm::vec3 gravity = glm::vec3(0.0f, -9.80665, 0.0f);
+		PhysicsEngine::SetPhysics(EnablePhysics);
+		ImGui::SetNextWindowPos(ImVec2((1605.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (445.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
+		ImGui::SetNextWindowSize(ImVec2((295.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (100.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
+		ImGui::Begin("Physics Manager", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.1f).x);
+		ImGui::Checkbox("Enable Physics", &EnablePhysics);
+		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.1f).x);
+		ImGui::InputFloat3("Gravity##gravityfloatin", &gravity[0]);
+		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.25f).x);
+		if (ImGui::Button("Apply##applygravitybutton", ImVec2(ImGui::GetWindowSize().x * 0.50f, 0.0f))) {
+			PhysicsEngine::SetGravity(Convert::Vector3(gravity));
+		}
 		ImGui::End();
 	}
 }

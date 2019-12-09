@@ -10,6 +10,7 @@ namespace Atlas {
 	static btSequentialImpulseConstraintSolver* solver;
 	static btDiscreteDynamicsWorld* dynamicsWorld;
 	static PhysicsDebugDrawer* debugDrawer;
+	static bool physicsEnabled;
 
 	void PhysicsEngine::Initialize()
 	{
@@ -19,107 +20,21 @@ namespace Atlas {
 		solver = new btSequentialImpulseConstraintSolver;
 		dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
 		dynamicsWorld->setGravity(btVector3(0, -9.80665, 0));
-		// add debugger
+		
 		debugDrawer = new PhysicsDebugDrawer();
-		// set the initial debug level to 0
 		debugDrawer->setDebugMode(0);
-		// add the debug drawer to the world
 		dynamicsWorld->setDebugDrawer(debugDrawer);
-		/*{
-			btCollisionShape* floor = new btBoxShape(btVector3(btScalar(50.0), btScalar(50.0), btScalar(50.0)));
-			collisionShapes.push_back(floor);
 
-			btTransform floorTransformation;
-			floorTransformation.setIdentity();
-			floorTransformation.setOrigin(btVector3(0.0, -56.0, 0.0));
-
-			btScalar mass(0.0);
-			bool isDynamic = (mass != 0.0f);
-			btVector3 localInertia(0.0, 0.0, 0.0);
-			if (isDynamic) {
-				floor->calculateLocalInertia(mass, localInertia);
-			}
-
-			btDefaultMotionState* myMotionState = new btDefaultMotionState(floorTransformation);
-			btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, floor, localInertia);
-			btRigidBody* body = new btRigidBody(rbInfo);
-
-			dynamicsWorld->addRigidBody(body);
-			Global::Variables.currentScene.preloadedObjectsOnScene.push_back(new Object(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), type::cubeModel, "", "", "res/images/textures/", "newcow.png", "res/shaders/", "Basic.shader", true, false, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f)));
-		}
-
-		{
-			btCollisionShape* colShape = new btSphereShape(btScalar(1.0));
-			collisionShapes.push_back(colShape);
-
-			btTransform startTransform;
-			startTransform.setIdentity();
-
-			btScalar mass(1.0);
-			bool isDynamic = (mass != 0.0f);
-			btVector3 localInertia(0.0, 0.0, 0.0);
-			if (isDynamic) {
-				colShape->calculateLocalInertia(mass, localInertia);
-			}
-
-			btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
-			btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, colShape, localInertia);
-			btRigidBody* body = new btRigidBody(rbInfo);
-
-			dynamicsWorld->addRigidBody(body);
-			Global::Variables.currentScene.preloadedObjectsOnScene.push_back(new Object(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), type::cubeModel, "", "", "res/images/textures/", "skybox.png", "res/shaders/", "Basic.shader", true, false, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f)));
-		}*/
+		physicsEnabled = true;
 	}
 
 	void PhysicsEngine::Update(float deltaT)
 	{
-		ToggleDebugger();
-		//dynamicsWorld->stepSimulation(deltaT, 10);
-		//for (int j = dynamicsWorld->getNumCollisionObjects() - 1; j >= 0; j--)
-		//{
-		//	btCollisionObject* obj = dynamicsWorld->getCollisionObjectArray()[j];
-		//	btRigidBody* body = btRigidBody::upcast(obj);
-		//	btTransform trans;
-		//	if (body && body->getMotionState())
-		//	{
-		//		body->getMotionState()->getWorldTransform(trans);
-		//	}
-		//	else
-		//	{
-		//		trans = obj->getWorldTransform();
-		//	}
-		//	printf("world pos object %d = %f,%f,%f\n", j, float(trans.getOrigin().getX()), float(trans.getOrigin().getY()), float(trans.getOrigin().getZ()));
-		//}
-		//////////////////////////////////////////////////////////////////////////
-		dynamicsWorld->stepSimulation(deltaT, 10);
-		//////////////////////////////////////////////////////////////////////////
-		Global::Variables.currentScene.Update();
-		//btCollisionObject* obj2 = dynamicsWorld->getCollisionObjectArray()[0];
-		//btRigidBody* body2 = btRigidBody::upcast(obj2);
-		//btTransform trans2;
-		//if (body2 && body2->getMotionState())
-		//{
-		//	body2->getMotionState()->getWorldTransform(trans2);
-		//}
-		//else
-		//{
-		//	trans2 = obj2->getWorldTransform();
-		//}
-		//Global::Variables.currentScene.preloadedObjectsOnScene.at(3)->Translate3f(float(trans2.getOrigin().getX()), float(trans2.getOrigin().getY()), float(trans2.getOrigin().getZ()));
-		////////////////////////////////////////////////////////////////////////////
-		//btCollisionObject* obj = dynamicsWorld->getCollisionObjectArray()[1];
-		//btRigidBody* body = btRigidBody::upcast(obj);
-		//btTransform trans;
-		//if (body && body->getMotionState())
-		//{
-		//	body->getMotionState()->getWorldTransform(trans);
-		//}
-		//else
-		//{
-		//	trans = obj->getWorldTransform();
-		//}
-		//Global::Variables.currentScene.preloadedObjectsOnScene.at(2)->Translate3f(float(trans.getOrigin().getX()), float(trans.getOrigin().getY()), float(trans.getOrigin().getZ()));
-		//////////////////////////////////////////////////////////////////////////
+		if (physicsEnabled) {
+			ToggleDebugger();
+			dynamicsWorld->stepSimulation(deltaT, 10);
+			Global::Variables.currentScene.Update();
+		}
 	}
 
 	btCollisionObject* PhysicsEngine::AddPhysicsBody(btCollisionShape* shape, btTransform& transformation, float mass)
@@ -232,5 +147,10 @@ namespace Atlas {
 			returnValue->addTriangle(vertex0, vertex1, vertex2);
 		}
 		return returnValue;
+	}
+
+	void PhysicsEngine::SetPhysics(bool togglePhysics)
+	{
+		physicsEnabled = togglePhysics;
 	}
 }

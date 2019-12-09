@@ -28,6 +28,7 @@ namespace Atlas {
 		static bool EnableConsole = true;
 		static bool EnableInfoPage = true;
 		static bool EnableFileManager = true;
+		static bool EnablePhysicsManager = true;
 		static bool ShouldToggleVSync = false;
 		static bool GUIEnabled = true;
 		static bool EnableObjectInfoPage = true;
@@ -48,7 +49,7 @@ namespace Atlas {
 
 		{
 			ImGui::SetNextWindowPos(ImVec2((20.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (20.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
-			ImGui::SetNextWindowSize(ImVec2((190.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (220.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
+			ImGui::SetNextWindowSize(ImVec2((190.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (245.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
 			ImGui::Begin("File", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
 			ImGui::Checkbox("Enable Debug Options##debugControl", &EnableDebug);
 			ImGui::Checkbox("Enable File Manager##filemanager", &EnableFileManager);
@@ -56,6 +57,7 @@ namespace Atlas {
 			ImGui::Checkbox("Enable Info Page##infoControl", &EnableInfoPage);
 			ImGui::Checkbox("Enable Object Settings##objectSettingsControl", &EnableObjectInfoPage);
 			ImGui::Checkbox("Enable PSFX Manager##psfxmanager", &EnablePostProcessingManager);
+			ImGui::Checkbox("Enable Physics Manager##physicstoggle", &EnablePhysicsManager);
 			ImGui::Separator();
 			ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.25f).x);
 			if (ImGui::Button("Save##saveButton", ImVec2(ImGui::GetWindowSize().x * 0.5f, 0.0f))) {
@@ -96,6 +98,10 @@ namespace Atlas {
 
 		if (EnablePostProcessingManager) {
 			Window::DrawPostProcessingManager(window);
+		}
+
+		if (EnablePhysicsManager) {
+			Window::DrawPhysicsManager();
 		}
 	}
 

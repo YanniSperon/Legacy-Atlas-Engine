@@ -1,0 +1,31 @@
+Object: 56
+type: Object
+modelType: cubeModel
+translation.x: -3.73552
+translation.y: -1.49004
+translation.z: -0.635231
+rotation.x: 2.28902
+rotation.y: 4.07398e-05
+rotation.z: 1.57068
+scale.x: 1
+scale.y: 1
+scale.z: 1
+mass: 5.000000
+ambient.r: 1
+ambient.g: 1
+ambient.b: 1
+diffuse.r: 1
+diffuse.g: 1
+diffuse.b: 1
+specular.r: 1
+specular.g: 1
+specular.b: 1
+shininess: 32
+hasLighting: true
+modelFileDir: 
+modelFileName: 
+textureDir: res/images/textures/
+textureName: newcow.png
+shaderDir: res/shaders/
+shaderName: Lighting.shader
+

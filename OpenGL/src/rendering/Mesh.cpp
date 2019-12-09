@@ -225,7 +225,14 @@ namespace Atlas {
 
 	glm::mat4 Mesh::GetModelTransformMatrix()
 	{
-		return (glm::translate(glm::mat4(), translation) * glm::yawPitchRoll(glm::radians(rotation.x), glm::radians(rotation.y), glm::radians(rotation.z)) * glm::scale(glm::mat4(), scale));
+		glm::mat4 returnMat4;
+		if (physicsObject != NULL) {
+			physicsObject->getWorldTransform().getOpenGLMatrix(&returnMat4[0][0]);
+		}
+		else {
+			returnMat4 = (glm::translate(glm::mat4(), translation) * glm::yawPitchRoll(glm::radians(rotation.x), glm::radians(rotation.y), glm::radians(rotation.z)) * glm::scale(glm::mat4(), scale));
+		}
+		return returnMat4 * glm::scale(glm::mat4(), scale);
 	}
 
 	glm::mat4 Mesh::GetModelTransRotMatrix()
