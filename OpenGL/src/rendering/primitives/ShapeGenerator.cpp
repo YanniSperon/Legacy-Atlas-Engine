@@ -513,6 +513,8 @@ namespace Atlas {
 
 	ShapeData ShapeGenerator::loadShape(std::string fileName, glm::vec3& min, glm::vec3& max)
 	{
+		glm::vec3 minimums = glm::vec3(INFINITY, INFINITY, INFINITY);
+		glm::vec3 maximums = glm::vec3(-INFINITY, -INFINITY, -INFINITY);
 		ShapeData ret;
 
 		std::vector<Vertex> positions;
@@ -545,6 +547,26 @@ namespace Atlas {
 			{
 				glm::vec3 v;
 				s >> junk >> v.x >> v.y >> v.z;
+				if (v.x > maximums.x) {
+					maximums.x = v.x;
+				}
+				else if (v.x < minimums.x) {
+					minimums.x = v.x;
+				}
+
+				if (v.y > maximums.y) {
+					maximums.y = v.y;
+				}
+				else if (v.y < minimums.y) {
+					minimums.y = v.y;
+				}
+				
+				if (v.z > maximums.z) {
+					maximums.z = v.z;
+				}
+				else if (v.z < minimums.z) {
+					minimums.z = v.z;
+				}
 				Vertex vert;
 				vert.position = v;
 				positions.push_back(vert);
@@ -586,11 +608,17 @@ namespace Atlas {
 			ret.indices[k] = indices.at(k);
 		}
 
+		min = minimums;
+		max = maximums;
+
 		return ret;
 	}
 
 	ShapeData ShapeGenerator::loadTexturedShape(std::string directory, std::string name, glm::vec3& min, glm::vec3& max)
 	{
+		glm::vec3 minimums = glm::vec3(INFINITY, INFINITY, INFINITY);
+		glm::vec3 maximums = glm::vec3(-INFINITY, -INFINITY, -INFINITY);
+
 		ShapeData ret;
 
 		std::vector<Vertex> positions;
@@ -659,6 +687,26 @@ namespace Atlas {
 			{
 				glm::vec3 v;
 				s >> junk >> v.x >> v.y >> v.z;
+				if (v.x > maximums.x) {
+					maximums.x = v.x;
+				}
+				else if (v.x < minimums.x) {
+					minimums.x = v.x;
+				}
+
+				if (v.y > maximums.y) {
+					maximums.y = v.y;
+				}
+				else if (v.y < minimums.y) {
+					minimums.y = v.y;
+				}
+
+				if (v.z > maximums.z) {
+					maximums.z = v.z;
+				}
+				else if (v.z < minimums.z) {
+					minimums.z = v.z;
+				}
 				Vertex vert;
 				vert.position = v;
 				positions.push_back(vert);
@@ -717,6 +765,9 @@ namespace Atlas {
 			ret.indices[k] = indices.at(k);
 		}
 
+		max = maximums;
+		min = minimums;
+
 		return ret;
 	}
 
@@ -753,5 +804,4 @@ namespace Atlas {
 
 		return ret;
 	}
-
 }

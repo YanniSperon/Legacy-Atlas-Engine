@@ -4,15 +4,12 @@
 
 namespace Atlas {
 
-	PhysicsEngine::PhysicsEngine()
-	{
-		Initialize();
-	}
-
-	PhysicsEngine::~PhysicsEngine()
-	{
-		Cleanup();
-	}
+	static btDefaultCollisionConfiguration* collisionConfiguration;
+	static btCollisionDispatcher* dispatcher;
+	static btBroadphaseInterface* overlappingPairCache;
+	static btSequentialImpulseConstraintSolver* solver;
+	static btDiscreteDynamicsWorld* dynamicsWorld;
+	static PhysicsDebugDrawer* debugDrawer;
 
 	void PhysicsEngine::Initialize()
 	{
@@ -128,8 +125,6 @@ namespace Atlas {
 	btCollisionObject* PhysicsEngine::AddPhysicsBody(btCollisionShape* shape, btTransform& transformation, float mass)
 	{
 		if (shape != NULL) {
-			collisionShapes.push_back(shape);
-
 			btScalar massOfObject(mass);
 			bool isDynamic = (massOfObject != 0.0f);
 			btVector3 localInertia(0.0, 0.0, 0.0);
@@ -137,9 +132,21 @@ namespace Atlas {
 				shape->calculateLocalInertia(massOfObject, localInertia);
 			}
 			printf("%f, %f, %f", transformation.getOrigin()[0], transformation.getOrigin()[1], transformation.getOrigin()[2]);
+			if (&transformation == NULL) {
+				System::Log("Null transformation");
+			}
 			btDefaultMotionState* myMotionState = new btDefaultMotionState(transformation);
+			if (myMotionState == NULL) {
+				System::Log("Null myMotionState");
+			}
 			btRigidBody::btRigidBodyConstructionInfo rbInfo(massOfObject, myMotionState, shape, localInertia);
+			if (&rbInfo == NULL) {
+				System::Log("Null rbInfo");
+			}
 			btRigidBody* body = new btRigidBody(rbInfo);
+			if (body == NULL) {
+				System::Log("Null body");
+			}
 			dynamicsWorld->addRigidBody(body);
 			return body;
 		}
@@ -171,20 +178,12 @@ namespace Atlas {
 			dynamicsWorld->removeCollisionObject(obj);
 			delete obj;
 		}
-
-		for (int j = 0; j < collisionShapes.size(); j++)
-		{
-			btCollisionShape* shape = collisionShapes[j];
-			collisionShapes[j] = 0;
-			delete shape;
-		}
 		
 		delete dynamicsWorld;
 		delete solver;
 		delete overlappingPairCache;
 		delete dispatcher;
 		delete collisionConfiguration;
-		collisionShapes.clear();
 	}
 
 	void PhysicsEngine::ToggleDebugger()
@@ -201,36 +200,19 @@ namespace Atlas {
 
 	void PhysicsEngine::RemovePhysicsBody(btCollisionObject* object)
 	{
-		btCollisionShape* tempshape = NULL;
 		btRigidBody* body = btRigidBody::upcast(object);
-		if (body != NULL) {
-			if (body && body->getMotionState())
-			{
-				tempshape = body->getCollisionShape();
-				delete body->getMotionState();
-			}
-			bool exists = false;
-			for (int i = dynamicsWorld->getNumCollisionObjects() - 1; i >= 0; i--)
-			{
-				btCollisionObject* obj = dynamicsWorld->getCollisionObjectArray()[i];
-				if (obj == object) {
-					exists = true;
-				}
-			}
-			if (exists) {
-				dynamicsWorld->removeCollisionObject(object);
-				delete object;
-			}
-
-			for (int j = 0; j < collisionShapes.size(); j++)
-			{
-				btCollisionShape* shape = collisionShapes[j];
-				if (shape == tempshape) {
-					delete shape;
-					collisionShapes[j] = 0;
-				}
-			}
+		if (body && body->getMotionState())
+		{
+			delete body->getMotionState();
+			delete body->getCollisionShape();
 		}
+		dynamicsWorld->removeCollisionObject(object);
+		delete object;
+	}
+
+	void PhysicsEngine::SetGravity(btVector3 newGravity)
+	{
+		dynamicsWorld->setGravity(newGravity);
 	}
 
 	btTriangleMesh* PhysicsEngine::CreatePhysicsBodyMesh(ShapeData* data)

@@ -47,6 +47,8 @@ namespace Atlas {
 		}
 
 		{
+			ImGui::SetNextWindowPos(ImVec2((20.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (20.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
+			ImGui::SetNextWindowSize(ImVec2((190.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (220.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
 			ImGui::Begin("File", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
 			ImGui::Checkbox("Enable Debug Options##debugControl", &EnableDebug);
 			ImGui::Checkbox("Enable File Manager##filemanager", &EnableFileManager);

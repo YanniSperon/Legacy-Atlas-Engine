@@ -64,7 +64,7 @@ int main(void)
 		return -1;
 	}
 
-	PostProcessor::PrepareForInitialization(MSAA(false, 0));
+	PostProcessor::PrepareForInitialization(MSAA(true, 16));
 
 	if (Global::Variables.fullscreen) {
 		window = glfwCreateWindow(Global::Variables.initialWidth, Global::Variables.initialHeight, "Atlas", glfwGetPrimaryMonitor(), NULL);
@@ -103,6 +103,8 @@ int main(void)
 	}
 
 	irrklang::ISoundEngine* engine = irrklang::createIrrKlangDevice();
+
+	PhysicsEngine::Initialize();
 
 	System::Log("Vendor: " + std::string((char*)glGetString(GL_VENDOR)));
 	System::Log("Model: " + std::string((char*)glGetString(GL_RENDERER)));
@@ -187,7 +189,7 @@ int main(void)
 		Global::Variables.currentScene.lightsOnScene.push_back(new Light(LightIntensity(glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(1.0f, 1.0f, 1.0f)), glm::vec3(-0.1f, -0.1f, -0.1f), glm::vec3(0.1f, 0.1f, 0.1f), type::cubeInvertedLighting, "", "", "res/images/colors/", "yellow.png", "res/shaders/", "Lighting.shader", true, true, true, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 5.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 0.0f, Material(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), 32.0f)));
 
 		Global::Variables.currentScene.preloadedObjectsOnScene.push_back(new Object(glm::vec3(-50.0f, -50.0f, -50.0f), glm::vec3(50.0f, 50.0f, 50.0f), type::skyBox, "", "", "res/images/textures/", "skybox.png", "res/shaders/", "Basic.shader", true, false, true, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 0.0f));
-		Global::Variables.currentScene.preloadedObjectsOnScene.push_back(new Object(glm::vec3(-5.0f, -5.0f, -5.0f), glm::vec3(5.0f, 5.0f, 5.0f), type::normalModel, "res/models/", "plane.obj", "res/images/colors/", "white.png", "res/shaders/", "Lighting.shader", true, true, true, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -3.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 0.0f, Material(glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(0.5f, 0.5f, 0.5f), 32.0f)));
+		Global::Variables.currentScene.preloadedObjectsOnScene.push_back(new Object(glm::vec3(-5.0f, -5.0f, -5.0f), glm::vec3(5.0f, 5.0f, 5.0f), type::normalModel, "res/models/", "plane.obj", "res/images/colors/", "white.png", "res/shaders/", "Lighting.shader", true, true, true, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -3.0f, 0.0f), glm::vec3(3.0f, 1.0f, 1.0f), 0.0f, Material(glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(0.5f, 0.5f, 0.5f), 32.0f)));
 
 		bool loadFile = true;
 		if (loadFile) {
@@ -239,7 +241,6 @@ int main(void)
 		
 		while (!glfwWindowShouldClose(window))
 		{
-			PostProcessor::PrepareForRendering();
 			///////////////////////////////////////////////////////////////////////////
 			glfwPollEvents();
 			///////////////////////////////////////////////////////////////////////////
@@ -248,16 +249,11 @@ int main(void)
 			lastTime = nowTime;
 			float deltaTime = (float)deltaT * timeConstant;
 			///////////////////////////////////////////////////////////////////////////
-			glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-			///////////////////////////////////////////////////////////////////////////
 			InputHandler::ProcessEvents(&Global::Variables.keyIn, &Global::Variables.mouseIn);
 			///////////////////////////////////////////////////////////////////////////
-			if (Global::Variables.keyIn.minusPressed) {
-				Global::Variables.currentScene.preloadedObjectsOnScene.at(1)->test();
-			}
+			PostProcessor::PrepareForRendering();
 			///////////////////////////////////////////////////////////////////////////
-			Global::Variables.physicsEngine.Update(deltaTime);
-			///////////////////////////////////////////////////////////////////////////
+			PhysicsEngine::Update(deltaTime);
 			///////////////////////////////////////////////////////////////////////////
 			if ((Global::Variables.keyIn.leftControlHeld && Global::Variables.keyIn.fHeld) || (Global::Variables.keyIn.leftControlPressed && Global::Variables.keyIn.fPressed)) {
 				glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0, 0, Global::Variables.currentWidth, Global::Variables.currentHeight, GLFW_DONT_CARE);
@@ -268,6 +264,13 @@ int main(void)
 			}
 			else if ((Global::Variables.keyIn.leftControlHeld && Global::Variables.keyIn.sHeld) || (Global::Variables.keyIn.leftControlPressed && Global::Variables.keyIn.sPressed) || (Global::Variables.keyIn.leftControlHeld && Global::Variables.keyIn.sPressed) || (Global::Variables.keyIn.leftControlPressed && Global::Variables.keyIn.sHeld)) {
 				Global::Variables.currentScene.Save("res/other/", "level.lvl");
+			}
+			///////////////////////////////////////////////////////////////////////////
+			if (Global::Variables.keyIn.fivePressed) {
+				PhysicsEngine::SetGravity(btVector3(0, -9.80665, 0));
+			}
+			if (Global::Variables.keyIn.sixPressed) {
+				PhysicsEngine::SetGravity(btVector3(0, 9.80665, 0));
 			}
 			///////////////////////////////////////////////////////////////////////////
 			if (EditorEnabled) {
@@ -281,7 +284,8 @@ int main(void)
 			Global::Variables.currentScene.Submit(&renderer, camPos, viewMatrix);
 			///////////////////////////////////////////////////////////////////////////
 			renderer.SimpleFlush(&Global::Variables.camera, Global::Variables.currentWidth, Global::Variables.currentHeight, Global::Variables.FOV, Global::Variables.currentScene.lightsOnScene.at(0));
-			Global::Variables.physicsEngine.DrawDebug();
+			///////////////////////////////////////////////////////////////////////////
+			PhysicsEngine::DrawDebug();
 			///////////////////////////////////////////////////////////////////////////
 			PostProcessor::Render(&renderer);
 			///////////////////////////////////////////////////////////////////////////
@@ -318,6 +322,7 @@ int main(void)
 		Object::FlushCache();
 		VRHandler::Cleanup();
 		PostProcessor::Cleanup();
+		PhysicsEngine::Cleanup();
 	}
 	GUI::Terminate();
 	glfwTerminate();

@@ -4,7 +4,18 @@
 
 void LevelEditor::SceneEditorControl::Control(LevelEditor::EditorType& currentEditorType, LevelEditor::Mode& currentMode, unsigned int& selectedObject, float deltaTime)
 {
-
+	if (Atlas::Global::Variables.keyIn.leftShiftHeld) {
+		Atlas::Global::Variables.movementSpeed = 2.0f * Atlas::Global::Variables.originalMovementSpeed;
+	}
+	if (Atlas::Global::Variables.keyIn.leftShiftReleased) {
+		Atlas::Global::Variables.movementSpeed = Atlas::Global::Variables.originalMovementSpeed;
+	}
+	if (Atlas::Global::Variables.keyIn.capsLockHeld) {
+		Atlas::Global::Variables.movementSpeed = 0.5f * Atlas::Global::Variables.originalMovementSpeed;
+	}
+	if (Atlas::Global::Variables.keyIn.capsLockReleased) {
+		Atlas::Global::Variables.movementSpeed = Atlas::Global::Variables.originalMovementSpeed;
+	}
 	if (Atlas::Global::Variables.keyIn.onePressed) {
 		currentEditorType = LevelEditor::EditorType::scene;
 	}
@@ -134,6 +145,7 @@ void LevelEditor::SceneEditorControl::Control(LevelEditor::EditorType& currentEd
 		if (Atlas::Global::Variables.keyIn.backspacePressed) {
 			if (Atlas::Global::Variables.currentScene.objectsOnScene.size() > 0) {
 				Atlas::System::Log("Object deleted!");
+				Atlas::Global::Variables.currentScene.objectsOnScene.at(selectedObject)->Cleanup();
 				delete Atlas::Global::Variables.currentScene.objectsOnScene.at(selectedObject);
 				Atlas::Global::Variables.currentScene.objectsOnScene.erase(Atlas::Global::Variables.currentScene.objectsOnScene.begin() + selectedObject);
 

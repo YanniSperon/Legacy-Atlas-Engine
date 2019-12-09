@@ -328,6 +328,8 @@ namespace Atlas {
 	void System::DrawConsole()
 	{
 		static char InputConsoleString[128] = "";
+		ImGui::SetNextWindowPos(ImVec2((20.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (860.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
+		ImGui::SetNextWindowSize(ImVec2((750.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (200.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
 		ImGui::Begin("Console", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
 		ImGui::BeginChild("Log");
 		for (int i = 0; i < Global::Variables.consoleLog.size(); i++) {

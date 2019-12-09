@@ -27,6 +27,7 @@ namespace Atlas {
 		double mouseY;
 
 		float movementSpeed;
+		float originalMovementSpeed;
 		bool isPaused;
 
 		bool fullscreen;
@@ -66,8 +67,6 @@ namespace Atlas {
 		std::unordered_map<std::string, std::string> loadedPostProcessingShaderCache;
 
 		Scene currentScene;
-
-		PhysicsEngine physicsEngine;
 	};
 
 }

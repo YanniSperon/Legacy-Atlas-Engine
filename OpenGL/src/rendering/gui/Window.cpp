@@ -90,6 +90,8 @@ namespace Atlas {
 
 	void Window::DrawInfoWindow(LevelEditor::EditorType& currentEditorType, LevelEditor::Mode& currentMode)
 	{
+		ImGui::SetNextWindowPos(ImVec2((1605.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (380.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
+		ImGui::SetNextWindowSize(ImVec2((295.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (70.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
 		ImGui::Begin("Info", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
 		ImGui::Text("Current Editor Type: ");
 		ImGui::SameLine();
@@ -122,6 +124,8 @@ namespace Atlas {
 	
 	void Window::DrawDebug(bool& EnableConsole, bool& Wireframe)
 	{
+		ImGui::SetNextWindowPos(ImVec2((230.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (20.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
+		ImGui::SetNextWindowSize(ImVec2((240.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (100.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
 		ImGui::Begin("Debug", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
 		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.12f).x);
 		ImGui::Text("%.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
@@ -144,6 +148,8 @@ namespace Atlas {
 
 	void Window::DrawFileManager(GLFWwindow* window)
 	{
+		ImGui::SetNextWindowPos(ImVec2((20.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (260.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
+		ImGui::SetNextWindowSize(ImVec2((190.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (100.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
 		ImGui::Begin("File Manager", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
 		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.125f).x);
 		if (ImGui::Button("Load new mesh##loadmeshbutton1", ImVec2(ImGui::GetWindowSize().x * 0.75f, 0.0f))) {
@@ -362,9 +368,11 @@ namespace Atlas {
 	void Window::DrawPostProcessingManager(GLFWwindow* window)
 	{
 		static std::string currentSelectedPSFX = "";
+		ImGui::SetNextWindowPos(ImVec2((1605.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (935.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
+		ImGui::SetNextWindowSize(ImVec2((295.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (125.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
 		ImGui::Begin("Post-Processing Manager", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
 		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.125f).x);
-		if (ImGui::Button("Load new post-processing shader##loadpsfxshader", ImVec2(ImGui::GetWindowSize().x * 0.75f, 0.0f))) {
+		if (ImGui::Button("Load new PSFX shader##loadpsfxshader", ImVec2(ImGui::GetWindowSize().x * 0.75f, 0.0f))) {
 			std::string file = System::FileOpenDialog("Select a mesh to load", "SHADER File\0*.shader\0", window);
 			std::replace(file.begin(), file.end(), '\\', '/');
 			if (file != "INVALID") {
@@ -467,6 +475,8 @@ namespace Atlas {
 		static std::string currentSelectedTexture = "";
 		static std::string currentSelectedShader = "";
 
+		ImGui::SetNextWindowPos(ImVec2((1605.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (20.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
+		ImGui::SetNextWindowSize(ImVec2((295.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (340.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
 		ImGui::Begin("Spawn Menu", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
 		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.1f).x);
 		if (ImGui::BeginCombo("Mesh##meshcombo", currentSelectedMesh.c_str()))
@@ -558,8 +568,6 @@ namespace Atlas {
 	
 	void Window::DrawObjectSettingsWindow(Object* object)
 	{
-		//ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.25f).x);
-		//if (ImGui::Button("Spawn##spawn", ImVec2(ImGui::GetWindowSize().x * 0.50f, 0.0f))) {
 		static glm::vec3 InputModificationRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 		static glm::vec3 InputModificationTranslation = glm::vec3(0.0f, 0.0f, 0.0f);
 		static glm::vec3 InputModificationScale = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -572,6 +580,8 @@ namespace Atlas {
 		static std::string currentSelectedTexture = "";
 		static std::string currentSelectedShader = "";
 
+		ImGui::SetNextWindowPos(ImVec2((1605.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (470.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
+		ImGui::SetNextWindowSize(ImVec2((295.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (445.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
 		ImGui::Begin("Object Settings", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
 		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.17f).x);
 		if (ImGui::BeginCombo("##combo", current_item)) // The second parameter is the label previewed before opening the combo.

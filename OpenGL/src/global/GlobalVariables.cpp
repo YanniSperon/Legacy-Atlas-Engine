@@ -10,6 +10,7 @@ namespace Atlas {
 		mouseX = 0.0;
 		mouseY = 0.0;
 		movementSpeed = 10.0f;
+		originalMovementSpeed = movementSpeed;
 		isPaused = false;
 
 		fullscreen = config.GetFullscreenPreference();
@@ -55,7 +56,5 @@ namespace Atlas {
 		loadedPostProcessingShaderCache = std::unordered_map<std::string, std::string>();
 
 		currentScene = Scene();
-
-		physicsEngine = PhysicsEngine();
 	}
 }
