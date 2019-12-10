@@ -40,7 +40,9 @@ extern "C"
 #include "SceneEditorControl.h"
 #include "VRHandler.h"
 #include "PostProcessor.h"
+#include "Convert.h"
 #include "PhysicsEngine.h"
+#include "Player.h"
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
@@ -147,21 +149,13 @@ int main(void)
 
 		glBlendEquation(GL_FUNC_ADD);
 		glEnable(GL_DEPTH_TEST);
-		// TEMP STUFF HERE EDIT HERE FIND ME
-		//glShadeModel(GL_SMOOTH);
-		// MAKE dynamicworld->debugDrawWorld() after the scene has rendered
-		// AT BEGINNING
-		//m_pDebugDrawer = new DebugDrawer();
-		//// set the initial debug level to 0
-		//m_pDebugDrawer->setDebugMode(0);
-		//// add the debug drawer to the world
-		//m_pWorld->setDebugDrawer(m_pDebugDrawer);
+
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_FRONT);
 		glFrontFace(GL_CW);
 
 		bool GUIEnabled = true;
-
+		bool EnableWireframe = false;
 
 		SimpleRenderer renderer;
 
@@ -186,10 +180,10 @@ int main(void)
 		Font arial24pt = Font("res/fonts/arial/", "arial.ttf", 24);
 		Font timesnewroman32pt = Font("res/fonts/times new roman/", "times.ttf", 32);
 
-		Global::Variables.currentScene.lightsOnScene.push_back(new Light(LightIntensity(glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(1.0f, 1.0f, 1.0f)), type::cubeInvertedLighting, "", "", "res/images/colors/", "yellow.png", "res/shaders/", "Lighting.shader", true, true, true, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 5.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 0.0f, Material(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), 32.0f)));
+		Global::Variables.currentScene.lightsOnScene.push_back(new Light(LightIntensity(glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(1.0f, 1.0f, 1.0f)), type::cubeInvertedLighting, "", "", "res/images/colors/", "yellowtransparent.png", "res/shaders/", "Lighting.shader", true, true, true, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 5.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 0.0f, Material(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), 512.0f)));
 
 		Global::Variables.currentScene.preloadedObjectsOnScene.push_back(new Object(type::skyBox, "", "", "res/images/textures/", "skybox.png", "res/shaders/", "Basic.shader", true, false, false, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(10.0f, 10.0f, 10.0f), 0.0f));
-		Global::Variables.currentScene.preloadedObjectsOnScene.push_back(new Object(type::normalModel, "res/models/", "plane.obj", "res/images/colors/", "white.png", "res/shaders/", "Lighting.shader", true, true, true, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -3.0f, 0.0f), glm::vec3(3.0f, 1.0f, 1.0f), 0.0f, Material(glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(0.5f, 0.5f, 0.5f), 32.0f)));
+		Global::Variables.currentScene.preloadedObjectsOnScene.push_back(new Object(type::normalModel, "res/models/", "plane.obj", "res/images/colors/", "white.png", "res/shaders/", "Lighting.shader", true, true, true, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -3.0f, 0.0f), glm::vec3(5.0f, 5.0f, 5.0f), 0.0f, Material(glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(0.5f, 0.5f, 0.5f), 32.0f)));
 
 		bool loadFile = true;
 		if (loadFile) {
@@ -206,6 +200,8 @@ int main(void)
 		//GLuint rightEyeFrameBuffer;
 		//glGenFramebuffers(1, &rightEyeFrameBuffer);
 		//glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		Global::Variables.currentScene.camerasOnScene.push_back(new Player(true, Global::Variables.originalMovementSpeed, glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), 5.0f, Global::Variables.mouseSensitivity, type::normalModel, "res/models/", "person.obj", "res/images/textures/", "person4k.png", "res/shaders/", "Lighting.shader", true, true, true, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(3.0f, 5.0f, 3.0f), glm::vec3(1.0f, 1.0f, 1.0f), 100.0f, Material()));
 
 		LevelEditor::EditorType currentEditorType(LevelEditor::scene);
 
@@ -254,6 +250,12 @@ int main(void)
 			PostProcessor::PrepareForRendering();
 			///////////////////////////////////////////////////////////////////////////
 			PhysicsEngine::Update(deltaTime);
+			if (Global::Variables.keyIn.deletePressed) {
+				Global::Variables.activeCamera = Global::Variables.currentScene.camerasOnScene.at(0);
+			}
+			if (Global::Variables.keyIn.rightControlPressed) {
+				Global::Variables.activeCamera = Global::Variables.currentScene.camerasOnScene.at(1);
+			}
 			///////////////////////////////////////////////////////////////////////////
 			if ((Global::Variables.keyIn.leftControlHeld && Global::Variables.keyIn.fHeld) || (Global::Variables.keyIn.leftControlPressed && Global::Variables.keyIn.fPressed)) {
 				glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0, 0, Global::Variables.currentWidth, Global::Variables.currentHeight, GLFW_DONT_CARE);
@@ -266,31 +268,31 @@ int main(void)
 				Global::Variables.currentScene.Save("res/other/", "level.lvl");
 			}
 			///////////////////////////////////////////////////////////////////////////
-			if (Global::Variables.keyIn.fivePressed) {
-				PhysicsEngine::SetGravity(btVector3(0, -9.80665, 0));
-			}
-			if (Global::Variables.keyIn.sixPressed) {
-				PhysicsEngine::SetGravity(btVector3(0, 9.80665, 0));
-			}
-			///////////////////////////////////////////////////////////////////////////
 			if (EditorEnabled) {
 				LevelEditor::SceneEditorControl::Control(currentEditorType, currentMode, selectedObject, deltaTime);
 			}
 			///////////////////////////////////////////////////////////////////////////
-			Global::Variables.camera.ChangeMovementSpeed(Global::Variables.movementSpeed);
-			camPos = Global::Variables.camera.GetTranslation();
-			Global::Variables.camera.BringWith(Global::Variables.currentScene.preloadedObjectsOnScene[0]);
-			glm::mat4 viewMatrix = Global::Variables.camera.GetViewTransformMatrix();
+			Global::Variables.activeCamera->ChangeMovementSpeed(Global::Variables.movementSpeed);
+			camPos = Global::Variables.activeCamera->GetTranslation();
+			Global::Variables.activeCamera->BringWith(Global::Variables.currentScene.preloadedObjectsOnScene[0]);
+			glm::mat4 viewMatrix = Global::Variables.activeCamera->GetViewTransformMatrix();
 			Global::Variables.currentScene.Submit(&renderer, camPos, viewMatrix);
 			///////////////////////////////////////////////////////////////////////////
-			renderer.SimpleFlush(&Global::Variables.camera, Global::Variables.currentWidth, Global::Variables.currentHeight, Global::Variables.FOV, Global::Variables.currentScene.lightsOnScene.at(0));
+			renderer.SimpleFlush(Global::Variables.activeCamera, Global::Variables.currentWidth, Global::Variables.currentHeight, Global::Variables.FOV, Global::Variables.currentScene.lightsOnScene.at(0));
 			///////////////////////////////////////////////////////////////////////////
-			PhysicsEngine::DrawDebug();
-			///////////////////////////////////////////////////////////////////////////
-			PostProcessor::Render(&renderer);
+			if (EnableWireframe) {
+				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+				PhysicsEngine::DrawDebug();
+				PostProcessor::Render(&renderer);
+				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			}
+			else {
+				PhysicsEngine::DrawDebug();
+				PostProcessor::Render(&renderer);
+			}
 			///////////////////////////////////////////////////////////////////////////
 			if (GUIEnabled) {
-				GUI::LoadLevelEditorGUI(window, currentEditorType, currentMode, selectedObject);
+				GUI::LoadLevelEditorGUI(window, currentEditorType, currentMode, selectedObject, EnableWireframe);
 			}
 			GUI::Draw();
 			///////////////////////////////////////////////////////////////////////////

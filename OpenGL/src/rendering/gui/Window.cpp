@@ -16,7 +16,7 @@ namespace Atlas {
 	static int AddValueFile(std::string directory, std::string file, int value) {
 		if (value == 0) {
 			if (System::DoesFileExist(directory + file)) {
-				AddValueFile(directory, file, value + 1);
+				return AddValueFile(directory, file, value + 1);
 			}
 			else {
 				return value;

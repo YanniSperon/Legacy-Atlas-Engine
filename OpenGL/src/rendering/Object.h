@@ -25,6 +25,7 @@ namespace Atlas {
 
 	class Object : public Mesh {
 	private:
+		unsigned int uid;
 		GLuint vertexBufferID;
 		GLuint indexBufferID;
 		GLuint texID;
@@ -36,6 +37,8 @@ namespace Atlas {
 		std::string textureName;
 		std::string shaderDirectory;
 		std::string shaderName;
+		std::string audioDirectory;
+		std::string audioName;
 		bool hasLighting;
 	public:
 		Object();
@@ -64,6 +67,8 @@ namespace Atlas {
 		bool GetGLInitialized();
 		bool GetHasLighting();
 		void SetHasLighting(bool newValue);
+
+		virtual void Update() override;
 
 		virtual std::string GetType() override;
 

@@ -23,7 +23,7 @@ namespace Atlas {
 		VSyncPreference = config.GetVSyncPreference();
 		mouseMode = config.GetMouseMode();
 
-		camera = Camera(true, movementSpeed, glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), mouseSensitivity);
+		activeCamera = new Camera(true, movementSpeed, glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), mouseSensitivity);
 
 		currentWidth = initialWidth;
 		currentHeight = initialHeight;
@@ -56,5 +56,6 @@ namespace Atlas {
 		loadedPostProcessingShaderCache = std::unordered_map<std::string, std::string>();
 
 		currentScene = Scene();
+		currentScene.camerasOnScene.push_back(activeCamera);
 	}
 }

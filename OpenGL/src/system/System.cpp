@@ -2,11 +2,13 @@
 #include "Global.h"
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw_gl3.h"
+#include "Convert.h"
 #include <iostream>
 #include <chrono>
 #include <Windows.h>
 #include <fstream>
 #include <algorithm>
+#include <sstream>
 
 namespace Atlas {
 
@@ -211,6 +213,7 @@ namespace Atlas {
 			}
 			else {
 				System::Err("This file already exists!");
+				return false;
 			}
 		}
 		else {
@@ -305,24 +308,44 @@ namespace Atlas {
 		}
 	}
 
-	void System::SendConsoleCommand(const std::string& command)
+	void System::SendConsoleInput(const std::string& input)
 	{
-		size_t slashPos;
-		if ((slashPos = command.find("/")) != std::string::npos) {
-			if (slashPos == 0 && command.size() > 1) {
-				if (command.find(" ") != std::string::npos) {
-					std::string firstWord = command.substr(1, command.find(" "));
-					if (firstWord != " " && firstWord != "") {
-						System::Log(firstWord);
-					}
-				}
-				else {
-					System::Log(command.substr(1));
+		std::vector<std::string> args;
+		std::string command;
+		if ((input.find("/") != std::string::npos) && (input.find("/") == 0 && input.size() > 1)) {
+			std::string StringWithoutSlash = input.substr(1);
+			std::vector<std::string> temp = Convert::SeperateByDelimiter(Convert::FormatSpaces(Convert::Trim(StringWithoutSlash)), ' ');
+			if (temp.size() > 0) {
+				command = temp.at(0);
+				for (unsigned int i = 1; i < temp.size(); i++) {
+					args.push_back(temp.at(i));
 				}
 			}
 		}
+		else {
+			System::Log(input);
+		}
+		/*
+		vector<string> internal;
+		stringstream ss(str); // Turn the string into a stream.
+		string tok;
+		
+		while(getline(ss, tok, delimiter)) {
+		  internal.push_back(tok);
+		}
+		
+		return internal;
+		*/
 
-		// ACTUALLY PARSE COMMAND HERE
+		/*
+		for (short i = 0; i<str.length(); i++){
+			if (str[i] == ' ')
+				counter++;
+			else {
+				strWords[counter] += str[i];
+			}
+		}
+		*/
 	}
 
 	void System::DrawConsole()
@@ -347,14 +370,14 @@ namespace Atlas {
 		ImGui::Text("");
 		if (ImGui::InputText("", InputConsoleString, IM_ARRAYSIZE(InputConsoleString), ImGuiInputTextFlags_EnterReturnsTrue)) {
 			if (InputConsoleString[0] != '\0') {
-				SendConsoleCommand(std::string(InputConsoleString));
+				SendConsoleInput(std::string(InputConsoleString));
 				InputConsoleString[0] = '\0';
 			}
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("Submit")) {
 			if (InputConsoleString[0] != '\0') {
-				SendConsoleCommand(std::string(InputConsoleString));
+				SendConsoleInput(std::string(InputConsoleString));
 				InputConsoleString[0] = '\0';
 			}
 		}

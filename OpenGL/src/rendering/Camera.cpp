@@ -1,4 +1,5 @@
 #include "Camera.h"
+#include "Global.h"
 #include "Config.h"
 #include "glm/gtc/matrix_transform.hpp"
 
@@ -107,14 +108,14 @@ namespace Atlas {
 		}
 	}
 
+	void Camera::Follow(Mesh* obj)
+	{
+		cameraTranslation = obj->GetTranslation();
+	}
+
 	void Camera::ChangeMovementSpeed(float newSpeed)
 	{
 		movementSpeed = newSpeed;
-	}
-
-	void Camera::BringWith(Mesh& obj)
-	{
-		obj.TranslateVec3(cameraTranslation);
 	}
 
 	void Camera::BringWith(Mesh* obj)
@@ -125,5 +126,17 @@ namespace Atlas {
 	glm::vec3 Camera::GetTranslation()
 	{
 		return cameraTranslation;
+	}
+
+	glm::vec2 Camera::GetOldMousePos()
+	{
+		return glm::vec2(oldMouseX, oldMouseY);
+	}
+
+	void Camera::SetFocus(GLFWwindow* window, Camera* cam)
+	{
+		Global::Variables.activeCamera = cam;
+		glm::vec2 temp = Global::Variables.activeCamera->GetOldMousePos();
+		glfwSetCursorPos(window, temp.x, temp.y);
 	}
 }

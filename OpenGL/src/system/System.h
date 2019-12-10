@@ -45,7 +45,7 @@ namespace Atlas {
 		static void Warn(const std::string& text);
 		static void Err(const std::string& text);
 
-		static void SendConsoleCommand(const std::string& command);
+		static void SendConsoleInput(const std::string& input);
 
 		static void DrawConsole();
 

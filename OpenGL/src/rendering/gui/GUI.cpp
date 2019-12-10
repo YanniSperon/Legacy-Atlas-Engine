@@ -16,11 +16,15 @@ namespace Atlas {
 	{
 		ImGui::CreateContext();
 
+		ImGuiIO& io = ImGui::GetIO(); (void)io;
+
+		io.IniFilename = NULL;
+
 		ImGui_ImplGlfwGL3_Init(window, true);
 		ImGui::StyleColorsDark();
 	}
 
-	void GUI::LoadLevelEditorGUI(GLFWwindow* window, LevelEditor::EditorType currentEditorType, LevelEditor::Mode currentMode, unsigned int& selectedObject)
+	void GUI::LoadLevelEditorGUI(GLFWwindow* window, LevelEditor::EditorType currentEditorType, LevelEditor::Mode currentMode, unsigned int& selectedObject, bool& EnableWireframe)
 	{
 		ImGui_ImplGlfwGL3_NewFrame();
 		static bool EnableDebug = true;
@@ -33,7 +37,6 @@ namespace Atlas {
 		static bool GUIEnabled = true;
 		static bool EnableObjectInfoPage = true;
 		static bool EnablePostProcessingManager = true;
-		static bool EnableWireframe = false;
 		if (Global::Variables.keyIn.leftAltPressed) {
 			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 			Global::Variables.enableMouseMove = false;

@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 #include "btBulletCollisionCommon.h"
+#include "Camera.h"
 
 namespace Atlas {
 
@@ -15,6 +16,7 @@ namespace Atlas {
 		std::vector<Object*> objectsOnScene;
 		std::vector<Object*> preloadedObjectsOnScene;
 		std::vector<Light*> lightsOnScene;
+		std::vector<Camera*> camerasOnScene;
 
 		Scene();
 		Scene(std::vector<Object*> preloadedObjects, std::vector<Object*> objects, std::vector<Light*> lightSources);

@@ -12,6 +12,11 @@ namespace Atlas {
 		cubeModel, normalModel, skyBox, cubeInvertedLighting
 	};
 
+	enum collidableType
+	{
+
+	};
+
 	class Mesh {
 	private:
 		std::string directory;
@@ -55,8 +60,10 @@ namespace Atlas {
 		void ScaleAdd3f(float x, float y, float z);
 		void ScaleAddVec3(glm::vec3 s);
 
-		void Update();
+		virtual void Update();
 
+		btCollisionObject* GetPhysicsObject();
+		void SetPhysicsBody();
 		glm::vec3 GetTranslation();
 		glm::vec3 GetRotation();
 		glm::vec3 GetScale();
@@ -71,7 +78,5 @@ namespace Atlas {
 
 		void Cleanup();
 		static void FlushCache();
-
-		void test();
 	};
 }

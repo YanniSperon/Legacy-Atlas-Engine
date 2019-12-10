@@ -1,11 +1,11 @@
 Object: 11
 type: Object
 modelType: cubeModel
-translation.x: 5.20096
-translation.y: -2.49
-translation.z: 3.36153
-rotation.x: 0.925387
-rotation.y: 2.98023e-08
+translation.x: 0.3459
+translation.y: -2.45
+translation.z: -2.88265
+rotation.x: -1.33628
+rotation.y: -1.49012e-07
 rotation.z: -1.5708
 scale.x: 1
 scale.y: 1

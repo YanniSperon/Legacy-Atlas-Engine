@@ -40,7 +40,7 @@ namespace Atlas {
 		bool VSyncPreference;
 		MouseMode mouseMode;
 
-		Camera camera;
+		Camera* activeCamera;
 
 		int currentWidth;
 		int currentHeight;

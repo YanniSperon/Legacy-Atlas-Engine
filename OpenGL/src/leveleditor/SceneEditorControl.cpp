@@ -1,6 +1,7 @@
 #include "SceneEditorControl.h"
 #include "Global.h"
 #include "System.h"
+#include "PhysicsEngine.h"
 
 void LevelEditor::SceneEditorControl::Control(LevelEditor::EditorType& currentEditorType, LevelEditor::Mode& currentMode, unsigned int& selectedObject, float deltaTime)
 {
@@ -88,22 +89,22 @@ void LevelEditor::SceneEditorControl::Control(LevelEditor::EditorType& currentEd
 		}
 		else if (currentMode == LevelEditor::Mode::cam) {
 			if (Atlas::Global::Variables.keyIn.wHeld) {
-				Atlas::Global::Variables.camera.MoveForward(deltaTime);
+				Atlas::Global::Variables.activeCamera->MoveForward(deltaTime);
 			}
 			if (Atlas::Global::Variables.keyIn.sHeld) {
-				Atlas::Global::Variables.camera.MoveBackward(deltaTime);
+				Atlas::Global::Variables.activeCamera->MoveBackward(deltaTime);
 			}
 			if (Atlas::Global::Variables.keyIn.aHeld) {
-				Atlas::Global::Variables.camera.StrafeLeft(deltaTime);
+				Atlas::Global::Variables.activeCamera->StrafeLeft(deltaTime);
 			}
 			if (Atlas::Global::Variables.keyIn.dHeld) {
-				Atlas::Global::Variables.camera.StrafeRight(deltaTime);
+				Atlas::Global::Variables.activeCamera->StrafeRight(deltaTime);
 			}
 			if (Atlas::Global::Variables.keyIn.spaceHeld) {
-				Atlas::Global::Variables.camera.MoveUp(deltaTime);
+				Atlas::Global::Variables.activeCamera->MoveUp(deltaTime);
 			}
 			if (Atlas::Global::Variables.keyIn.leftControlHeld) {
-				Atlas::Global::Variables.camera.MoveDown(deltaTime);
+				Atlas::Global::Variables.activeCamera->MoveDown(deltaTime);
 			}
 		}
 		else if (currentMode == LevelEditor::Mode::rotate) {
@@ -201,22 +202,22 @@ void LevelEditor::SceneEditorControl::Control(LevelEditor::EditorType& currentEd
 		}
 		else if (currentMode == LevelEditor::Mode::cam) {
 			if (Atlas::Global::Variables.keyIn.wHeld) {
-				Atlas::Global::Variables.camera.MoveForward(deltaTime);
+				Atlas::Global::Variables.activeCamera->MoveForward(deltaTime);
 			}
 			if (Atlas::Global::Variables.keyIn.sHeld) {
-				Atlas::Global::Variables.camera.MoveBackward(deltaTime);
+				Atlas::Global::Variables.activeCamera->MoveBackward(deltaTime);
 			}
 			if (Atlas::Global::Variables.keyIn.aHeld) {
-				Atlas::Global::Variables.camera.StrafeLeft(deltaTime);
+				Atlas::Global::Variables.activeCamera->StrafeLeft(deltaTime);
 			}
 			if (Atlas::Global::Variables.keyIn.dHeld) {
-				Atlas::Global::Variables.camera.StrafeRight(deltaTime);
+				Atlas::Global::Variables.activeCamera->StrafeRight(deltaTime);
 			}
 			if (Atlas::Global::Variables.keyIn.spaceHeld) {
-				Atlas::Global::Variables.camera.MoveUp(deltaTime);
+				Atlas::Global::Variables.activeCamera->MoveUp(deltaTime);
 			}
 			if (Atlas::Global::Variables.keyIn.leftControlHeld) {
-				Atlas::Global::Variables.camera.MoveDown(deltaTime);
+				Atlas::Global::Variables.activeCamera->MoveDown(deltaTime);
 			}
 		}
 		else if (currentMode == LevelEditor::Mode::rotate) {

@@ -1,6 +1,8 @@
 #include "PhysicsEngine.h"
 #include "Global.h"
 #include "System.h"
+#include "Convert.h"
+#include "Player.h"
 
 namespace Atlas {
 
@@ -62,6 +64,8 @@ namespace Atlas {
 			if (body == NULL) {
 				System::Log("Null body");
 			}
+			//body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
+			//body->setActivationState(DISABLE_DEACTIVATION);
 			dynamicsWorld->addRigidBody(body);
 			return body;
 		}
@@ -130,20 +134,17 @@ namespace Atlas {
 		dynamicsWorld->setGravity(newGravity);
 	}
 
-	btTriangleMesh* PhysicsEngine::CreatePhysicsBodyMesh(ShapeData* data)
+	btTriangleMesh* PhysicsEngine::CreatePhysicsBodyMesh(ShapeData& data)
 	{
-		//GLuint numIndices;
 		btTriangleMesh* returnValue = new btTriangleMesh();
-		for (int i = 0; i < data->numIndices; i++)
+		for (int i = 0; i < data.numIndices / 3; i++)
 		{
-			int index0 = data->indices[i * 3];
-			int index1 = data->indices[i * 3 + 1];
-			int index2 = data->indices[i * 3 + 2];
-
-			btVector3 vertex0(data->vertices[index0].position.x, data->vertices[index0].position.y, data->vertices[index0].position.z);
-			btVector3 vertex1(data->vertices[index1].position.x, data->vertices[index1].position.y, data->vertices[index1].position.z);
-			btVector3 vertex2(data->vertices[index2].position.x, data->vertices[index2].position.y, data->vertices[index2].position.z);
-
+			int index0 = data.indices[i * 3];
+			int index1 = data.indices[i * 3 + 1];
+			int index2 = data.indices[i * 3 + 2];
+			btVector3 vertex0(Convert::Vector3(data.vertices[index0].position));
+			btVector3 vertex1(Convert::Vector3(data.vertices[index1].position));
+			btVector3 vertex2(Convert::Vector3(data.vertices[index2].position));
 			returnValue->addTriangle(vertex0, vertex1, vertex2);
 		}
 		return returnValue;

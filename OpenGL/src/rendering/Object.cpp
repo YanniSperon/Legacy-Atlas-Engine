@@ -346,6 +346,11 @@ namespace Atlas {
 		hasLighting = newValue;
 	}
 
+	void Object::Update()
+	{
+		Mesh::Update();
+	}
+
 	std::string Object::GetType()
 	{
 		return "Object";

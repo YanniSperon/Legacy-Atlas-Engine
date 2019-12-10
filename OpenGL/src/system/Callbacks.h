@@ -16,15 +16,15 @@ namespace Atlas {
 				if (ypos * Global::Variables.mouseSensitivity > 89.0f) {
 					double newMouseY = 89.0f / Global::Variables.mouseSensitivity;
 					glfwSetCursorPos(window, xpos, newMouseY);
-					Global::Variables.camera.LookAt(xpos, newMouseY);
+					Global::Variables.activeCamera->LookAt(xpos, newMouseY);
 				}
 				else if (ypos * Global::Variables.mouseSensitivity < -89.0f) {
 					double newMouseY = -89.0f / Global::Variables.mouseSensitivity;
 					glfwSetCursorPos(window, xpos, newMouseY);
-					Global::Variables.camera.LookAt(xpos, newMouseY);
+					Global::Variables.activeCamera->LookAt(xpos, newMouseY);
 				}
 				else {
-					Global::Variables.camera.LookAt(xpos, ypos);
+					Global::Variables.activeCamera->LookAt(xpos, ypos);
 				}
 			}
 		}

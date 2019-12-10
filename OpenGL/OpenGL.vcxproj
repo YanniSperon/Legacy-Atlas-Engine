@@ -147,6 +147,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\game\Player.cpp" />
     <ClCompile Include="src\game\Scene.cpp" />
     <ClCompile Include="src\global\Global.cpp" />
     <ClCompile Include="src\global\GlobalVariables.cpp" />
@@ -496,6 +497,7 @@
     <None Include="src\vendor\glm\gtx\wrap.inl" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\game\Player.h" />
     <ClInclude Include="src\game\Scene.h" />
     <ClInclude Include="src\global\Global.h" />
     <ClInclude Include="src\global\GlobalVariables.h" />

@@ -1,7 +1,7 @@
 #include "SimpleRenderer.h"
 #include "glm/gtx/quaternion.hpp"
 #include "glm/gtc/matrix_transform.hpp"
-#include "Global.h"
+#include "Player.h"
 
 namespace Atlas {
 
@@ -83,6 +83,7 @@ namespace Atlas {
 				orthographicMatrix = glm::ortho(0.0f, (float)width, 0.0f, (float)height);
 			}
 		}
+
 		while (!renderQueue3D.empty()) {
 			Object* renderable = renderQueue3D.front();
 			GLuint shaderID = renderable->GetShaderID();
@@ -106,25 +107,6 @@ namespace Atlas {
 			renderable->Draw();
 			renderQueue3D.pop_front();
 		}
-
-		Object* r = light;
-		GLuint s = r->GetShaderID();
-		UseProgram(s);
-		SetUniformMat4f("P", projectionMatrix, s);
-		SetUniformMat4f("V", viewMatrix, s);
-		SetUniformMat4f("M", r->GetModelTransformMatrix(), s);
-		if (r->GetHasLighting()) {
-			SetUniformVec3("camPos", camera->GetTranslation(), s);
-			SetUniformVec3("material.ambient", r->GetMaterial().ambient, s);
-			SetUniformVec3("material.diffuse", r->GetMaterial().diffuse, s);
-			SetUniformVec3("material.specular", r->GetMaterial().specular, s);
-			SetUniform1f("material.shininess", r->GetMaterial().shininess, s);
-			SetUniformVec3("light.position", light->GetTranslation(), s);
-			SetUniformVec3("light.ambient", light->GetLightIntensity().ambient, s);
-			SetUniformVec3("light.diffuse", light->GetLightIntensity().diffuse, s);
-			SetUniformVec3("light.specular", light->GetLightIntensity().specular, s);
-		}
-		r->Draw();
 
 		while (!renderQueue2D.empty())
 		{

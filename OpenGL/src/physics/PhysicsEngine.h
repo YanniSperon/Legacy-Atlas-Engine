@@ -17,7 +17,7 @@ namespace Atlas {
 		static void ToggleDebugger();
 		static void RemovePhysicsBody(btCollisionObject* object);
 		static void SetGravity(btVector3 newGravity);
-		static btTriangleMesh* CreatePhysicsBodyMesh(ShapeData* data);
+		static btTriangleMesh* CreatePhysicsBodyMesh(ShapeData& data);
 		static void SetPhysics(bool togglePhysics);
 	};
 }

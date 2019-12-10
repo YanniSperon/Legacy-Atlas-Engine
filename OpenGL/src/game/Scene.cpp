@@ -1,6 +1,7 @@
 #include "Scene.h"
 #include "IO.h"
 #include "System.h"
+#include "Player.h"
 
 namespace Atlas {
 
@@ -47,6 +48,17 @@ namespace Atlas {
 		for (unsigned int i = 0; i < objectsOnScene.size(); i++) {
 			renderer->Submit3D(objectsOnScene[i], camPos);
 		}
+
+		for (unsigned int i = 0; i < lightsOnScene.size(); i++) {
+			renderer->Submit3D(lightsOnScene[i], camPos);
+		}
+
+		for (unsigned int i = 0; i < camerasOnScene.size(); i++) {
+			Player* player = dynamic_cast<Player*>(camerasOnScene.at(i));
+			if (player != nullptr) {
+				renderer->Submit3D(player, camPos);
+			}
+		}
 	}
 
 	void Scene::Save(std::string directory, std::string name)
@@ -63,6 +75,17 @@ namespace Atlas {
 
 		for (unsigned int i = 0; i < objectsOnScene.size(); i++) {
 			objectsOnScene.at(i)->Update();
+		}
+
+		for (unsigned int i = 0; i < lightsOnScene.size(); i++) {
+			lightsOnScene.at(i)->Update();
+		}
+
+		for (unsigned int i = 0; i < camerasOnScene.size(); i++) {
+			Player* player = dynamic_cast<Player*>(camerasOnScene.at(i));
+			if (player != nullptr) {
+				player->Update();
+			}
 		}
 	}
 }
