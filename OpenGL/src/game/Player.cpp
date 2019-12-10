@@ -3,6 +3,7 @@
 #include "PhysicsEngine.h"
 
 namespace Atlas {
+
 	Player::Player()
 		: Camera(), Object()
 	{
@@ -22,12 +23,14 @@ namespace Atlas {
 
 	void Player::Update()
 	{
+		printf("UPDATING PLAYER\n");
 		if (GetPhysicsObject() != NULL) {
 			glm::vec3 tempTrans = Convert::Vector3(GetPhysicsObject()->getWorldTransform().getOrigin());
 			TranslateVec3(tempTrans);
 			glm::vec3 tempRot = glm::vec3(0.0f, 0.0f, 0.0f);
 			GetPhysicsObject()->getWorldTransform().getRotation().getEulerZYX(tempRot.z, tempRot.y, tempRot.x);
 			RotateVec3(tempRot);
+			printf("UPDATED TO (%f, %f, %f), LOOKING AT (%f, %f, %f)\n", tempTrans.x, tempTrans.y, tempTrans.z, tempRot.x, tempRot.y, tempRot.z);
 			cameraTranslation = tempTrans;
 			cameraTranslation.y -= cameraYOffset;
 		}
@@ -40,10 +43,12 @@ namespace Atlas {
 			glm::vec3 moveAmt;
 			moveAmt.x += movementSpeed * normalizedViewDirection.x * delta;
 			moveAmt.z += movementSpeed * normalizedViewDirection.y * delta;
+			cameraTranslation += moveAmt;
+			BringWith(this);
 			//cameraTranslation.x += movementSpeed * normalizedViewDirection.x * delta;
 			//cameraTranslation.z += movementSpeed * normalizedViewDirection.y * delta;
-			TranslateAddVec3(moveAmt);
-			Follow(this);
+			//TranslateAddVec3(moveAmt);
+			//Follow(this);
 			//BringWith(this);
 			//btRigidBody* body = btRigidBody::upcast(GetPhysicsObject());
 			//body->clearForces();

@@ -1,5 +1,6 @@
 #include "Convert.h"
 #include <sstream>
+#include <algorithm>
 
 namespace Atlas {
 

@@ -177,8 +177,8 @@ int main(void)
 
 		LevelEditor::Mode currentMode(LevelEditor::cam);
 
-		Font arial24pt = Font("res/fonts/arial/", "arial.ttf", 24);
-		Font timesnewroman32pt = Font("res/fonts/times new roman/", "times.ttf", 32);
+		//Font arial24pt = Font("res/fonts/arial/", "arial.ttf", 24);
+		//Font timesnewroman32pt = Font("res/fonts/times new roman/", "times.ttf", 32);
 
 		Global::Variables.currentScene.lightsOnScene.push_back(new Light(LightIntensity(glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(1.0f, 1.0f, 1.0f)), type::cubeInvertedLighting, "", "", "res/images/colors/", "yellowtransparent.png", "res/shaders/", "Lighting.shader", true, true, true, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 5.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 0.0f, Material(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), 512.0f)));
 
