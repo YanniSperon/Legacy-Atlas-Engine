@@ -331,6 +331,16 @@ namespace Atlas {
 		return material;
 	}
 
+	GLuint Object::GetVBO()
+	{
+		return vertexBufferID;
+	}
+
+	GLuint Object::GetIBO()
+	{
+		return indexBufferID;
+	}
+
 	bool Object::GetGLInitialized()
 	{
 		return glInitialized;

@@ -11,6 +11,7 @@ namespace Atlas {
 	public:
 		static void DrawInfoWindow(LevelEditor::EditorType& currentEditorType, LevelEditor::Mode& currentMode);
 		static void DrawDebug(bool& EnableConsole, bool& EnableWireframe);
+		static void DrawFPSCounter();
 		static void DrawFileManager(GLFWwindow* window);
 		static void DrawPostProcessingManager(GLFWwindow* window);
 		static void DrawSpawnWindow(std::vector<Object*>& objectsOnScene, unsigned int& selectedObject);

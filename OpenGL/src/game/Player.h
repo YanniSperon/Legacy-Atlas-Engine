@@ -1,33 +1,52 @@
 #pragma once
-#include "Object.h"
 #include "Camera.h"
+#include "PhysicsObject.h"
 
 namespace Atlas {
-	class Player : public PhysicsObject, public Camera {
+	class Player {
 	private:
+		bool hasControls;
+		float movementSpeed;
+		glm::vec3 viewDirection;
+		glm::vec3 upDirection;
+		glm::vec3 cameraTranslation;
+		double oldMouseX;
+		double oldMouseY;
+		float mouseSensitivity;
+		//float YModelOffset;
+		Object* skybox;
+		PhysicsObject* playerModel;
 
 	public:
 		Player();
 		Player(Camera* camera);
 		~Player();
+
+		void EnableMovementControls();
+		void DisableMovementControls();
+		glm::mat4 GetViewTransformMatrix();
+		void LookAt(double xpos, double ypos);
+		void MoveForward(float delta);
+		void MoveBackward(float delta);
+		void StrafeLeft(float delta);
+		void StrafeRight(float delta);
+		void MoveUp(float delta);
+		void MoveDown(float delta);
+		void Follow(PhysicsObject* obj);
+		void FollowMesh(Mesh* obj);
+		void BringWith(PhysicsObject* obj);
+		void BringWithMesh(Mesh* obj);
+		void ChangeMovementSpeed(float newSpeed);
+
+		void SetYModelOffset(float value);
+
+		void SetSkybox(Object* newSkybox);
+		void SetPlayerModel(PhysicsObject* newModel);
+
+		Object* GetSkybox();
+		PhysicsObject* GetPlayerModel();
+		glm::vec3 GetTranslation();
+		glm::vec2 GetOldMousePos();
+		glm::vec3 GetViewDirection();
 	};
-	//class Player : public PhysicsObject, public Camera {
-	//private:
-	//	float cameraYOffset;
-	//public:
-	//	Player();
-	//	Player(bool canControl, float movementSpeed, glm::vec3 startingLookDirection, glm::vec3 startingUpDirection, float camYOffset, float mouseSensitivity, type type, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderFileName, bool glInit, bool lighting, bool hasPhysics, glm::vec3 rot, glm::vec3 trans, glm::vec3 s, float mass, Material mat);
-	//	~Player();
-	//
-	//	virtual void Update() override;
-	//
-	//	virtual void MoveForward(float delta) override;
-	//	virtual void MoveBackward(float delta) override;
-	//	virtual void StrafeLeft(float delta) override;
-	//	virtual void StrafeRight(float delta) override;
-	//	virtual void MoveUp(float delta) override;
-	//	virtual void MoveDown(float delta) override;
-	//	virtual void Follow(Mesh* obj) override;
-	//	virtual void BringWith(Mesh* obj) override;
-	//};
 }

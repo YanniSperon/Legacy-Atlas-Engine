@@ -108,6 +108,13 @@ namespace Atlas {
 		}
 	}
 
+	void GUI::LoadPhysicsSimulatorGUI()
+	{
+		ImGui_ImplGlfwGL3_NewFrame();
+		Window::DrawFPSCounter();
+		System::DrawConsole();
+	}
+
 	void GUI::Draw()
 	{
 		ImGui::Render();

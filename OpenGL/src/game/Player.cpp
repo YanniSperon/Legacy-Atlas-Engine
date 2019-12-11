@@ -1,125 +1,225 @@
 #include "Player.h"
 #include "Convert.h"
 #include "PhysicsEngine.h"
+#include "glm/gtc/matrix_transform.hpp"
 
 namespace Atlas {
 
-	//Player::Player()
-	//	: Camera(), Object()
-	//{
-	//
-	//}
-	//
-	//Player::Player(bool canControl, float movementSpeed, glm::vec3 startingLookDirection, glm::vec3 startingUpDirection, float camYOffset, float mouseSensitivity, type type, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderFileName, bool glInit, bool lighting, bool hasPhysics, glm::vec3 rot, glm::vec3 trans, glm::vec3 s, float mass, Material mat)
-	//	: Camera(canControl, movementSpeed, startingLookDirection, startingUpDirection, trans + camYOffset, mouseSensitivity), Object(type, meshDir, meshName, texDir, texName, shaderDir, shaderFileName, glInit, lighting, hasPhysics, rot, trans, s, mass, mat), cameraYOffset(cameraYOffset)
-	//{
-	//
-	//}
-	//
-	//Player::~Player()
-	//{
-	//
-	//}
-	//
-	//void Player::Update()
-	//{
-	//	printf("UPDATING PLAYER\n");
-	//	if (GetPhysicsObject() != NULL) {
-	//		glm::vec3 tempTrans = Convert::Vector3(GetPhysicsObject()->getWorldTransform().getOrigin());
-	//		TranslateVec3(tempTrans);
-	//		glm::vec3 tempRot = glm::vec3(0.0f, 0.0f, 0.0f);
-	//		GetPhysicsObject()->getWorldTransform().getRotation().getEulerZYX(tempRot.z, tempRot.y, tempRot.x);
-	//		RotateVec3(tempRot);
-	//		printf("UPDATED TO (%f, %f, %f), LOOKING AT (%f, %f, %f)\n", tempTrans.x, tempTrans.y, tempTrans.z, tempRot.x, tempRot.y, tempRot.z);
-	//		cameraTranslation = tempTrans;
-	//		cameraTranslation.y -= cameraYOffset;
-	//	}
-	//}
-	//
-	//void Player::MoveForward(float delta)
-	//{
-	//	if (hasControls) {
-	//		glm::vec2 normalizedViewDirection = glm::normalize(glm::vec2(viewDirection.x, viewDirection.z));
-	//		glm::vec3 moveAmt;
-	//		moveAmt.x += movementSpeed * normalizedViewDirection.x * delta;
-	//		moveAmt.z += movementSpeed * normalizedViewDirection.y * delta;
-	//		cameraTranslation += moveAmt;
-	//		BringWith(this);
-	//		//cameraTranslation.x += movementSpeed * normalizedViewDirection.x * delta;
-	//		//cameraTranslation.z += movementSpeed * normalizedViewDirection.y * delta;
-	//		//TranslateAddVec3(moveAmt);
-	//		//Follow(this);
-	//		//BringWith(this);
-	//		//btRigidBody* body = btRigidBody::upcast(GetPhysicsObject());
-	//		//body->clearForces();
-	//		//body->setLinearVelocity(btVector3(movementSpeed * normalizedViewDirection.x * delta, 0.0f, movementSpeed * normalizedViewDirection.y * delta));
-	//		//Follow(this);
-	//	}
-	//}
-	//
-	//void Player::MoveBackward(float delta)
-	//{
-	//	if (hasControls) {
-	//		glm::vec2 normalizedViewDirection = glm::normalize(glm::vec2(viewDirection.x, viewDirection.z));
-	//		cameraTranslation.x += -movementSpeed * normalizedViewDirection.x * delta;
-	//		cameraTranslation.z += -movementSpeed * normalizedViewDirection.y * delta;
-	//		BringWith(this);
-	//		Update();
-	//	}
-	//}
-	//
-	//void Player::StrafeLeft(float delta)
-	//{
-	//	if (hasControls) {
-	//		glm::vec3 strafeDirection = glm::cross(viewDirection, upDirection);
-	//		glm::vec2 normalizedStrafeDirection = glm::normalize(glm::vec2(strafeDirection.x, strafeDirection.z));
-	//		cameraTranslation.x += -movementSpeed * normalizedStrafeDirection.x * delta;
-	//		cameraTranslation.z += -movementSpeed * normalizedStrafeDirection.y * delta;
-	//		BringWith(this);
-	//		Update();
-	//	}
-	//}
-	//
-	//void Player::StrafeRight(float delta)
-	//{
-	//	if (hasControls) {
-	//		glm::vec3 strafeDirection = glm::cross(viewDirection, upDirection);
-	//		glm::vec2 normalizedStrafeDirection = glm::normalize(glm::vec2(strafeDirection.x, strafeDirection.z));
-	//		cameraTranslation.x += movementSpeed * normalizedStrafeDirection.x * delta;
-	//		cameraTranslation.z += movementSpeed * normalizedStrafeDirection.y * delta;
-	//		BringWith(this);
-	//		Update();
-	//	}
-	//}
-	//
-	//void Player::MoveUp(float delta)
-	//{
-	//	if (hasControls) {
-	//		cameraTranslation += movementSpeed * upDirection * delta;
-	//		BringWith(this);
-	//		Update();
-	//	}
-	//}
-	//
-	//void Player::MoveDown(float delta)
-	//{
-	//	if (hasControls) {
-	//		cameraTranslation += -movementSpeed * upDirection * delta;
-	//		BringWith(this);
-	//		Update();
-	//	}
-	//}
-	//
-	//void Player::Follow(Mesh* obj)
-	//{
-	//	cameraTranslation = obj->GetTranslation();
-	//	cameraTranslation.y += cameraYOffset;
-	//}
-	//
-	//void Player::BringWith(Mesh* obj)
-	//{
-	//	glm::vec3 temp = cameraTranslation;
-	//	temp.y -= cameraYOffset;
-	//	obj->TranslateVec3(temp);
-	//}
+	Player::Player()
+		: hasControls(false), movementSpeed(0.1f), viewDirection(0.0f, 0.0f, -1.0f), upDirection(0.0f, 1.0f, 0.0f), cameraTranslation(0.0f, 0.0f, 0.0f), oldMouseX(36000000.0), oldMouseY(0.0), mouseSensitivity(0.0f), skybox(NULL)
+	{
+
+	}
+
+	Player::Player(Camera* camera)
+		: hasControls(camera->GetHasControls()), movementSpeed(camera->GetMovementSpeed()), viewDirection(camera->GetViewDirection()), upDirection(camera->GetUpDirection()), skybox(camera->GetSkybox()), cameraTranslation(camera->GetTranslation()), oldMouseX(camera->GetOldMousePos().x), oldMouseY(camera->GetOldMousePos().y), mouseSensitivity(camera->GetMouseSensitivity())
+	{
+		playerModel = new PhysicsObject(new Object(type::cubeModel, "", "", "res/images/textures/", "newcow.png", "res/shaders/", "Lighting.shader", true, true, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 2.0f, 1.0f)), 100.0f);
+	}
+
+	Player::~Player()
+	{
+		delete playerModel;
+	}
+
+	void Player::EnableMovementControls()
+	{
+		hasControls = true;
+	}
+
+	void Player::DisableMovementControls()
+	{
+		hasControls = false;
+	}
+
+	glm::mat4 Player::GetViewTransformMatrix()
+	{
+		return glm::lookAt(cameraTranslation, cameraTranslation + viewDirection, upDirection);
+	}
+
+	void Player::LookAt(double xpos, double ypos)
+	{
+		if (hasControls) {
+			glm::vec2 mouseDelta(xpos - oldMouseX, ypos - oldMouseY);
+
+			glm::vec3 toRotateAround = glm::cross(viewDirection, upDirection);
+			glm::vec3 vd;
+			viewDirection = glm::mat3(
+				glm::rotate(glm::mat4(1.0f), -glm::radians(mouseDelta.x * mouseSensitivity), upDirection) *
+				glm::rotate(glm::mat4(1.0f), -glm::radians(mouseDelta.y * mouseSensitivity), toRotateAround)
+			) * viewDirection;
+
+			viewDirection = glm::mat3() * viewDirection;
+
+			oldMouseX = xpos;
+			oldMouseY = ypos;
+		}
+	}
+
+	void Player::MoveForward(float delta)
+	{
+		if (hasControls) {
+			glm::vec2 normalizedViewDirection = glm::normalize(glm::vec2(viewDirection.x, viewDirection.z));
+			cameraTranslation.x += movementSpeed * normalizedViewDirection.x * delta;
+			cameraTranslation.z += movementSpeed * normalizedViewDirection.y * delta;
+			if (skybox != NULL) {
+				skybox->TranslateVec3(cameraTranslation);
+			}
+			if (playerModel != NULL) {
+				BringWith(playerModel);
+			}
+		}
+	}
+
+	void Player::MoveBackward(float delta)
+	{
+		if (hasControls) {
+			glm::vec2 normalizedViewDirection = glm::normalize(glm::vec2(viewDirection.x, viewDirection.z));
+			cameraTranslation.x += -movementSpeed * normalizedViewDirection.x * delta;
+			cameraTranslation.z += -movementSpeed * normalizedViewDirection.y * delta;
+			if (skybox != NULL) {
+				skybox->TranslateVec3(cameraTranslation);
+			}
+			if (playerModel != NULL) {
+				BringWith(playerModel);
+			}
+		}
+	}
+
+	void Player::StrafeLeft(float delta)
+	{
+		if (hasControls) {
+			glm::vec3 strafeDirection = glm::cross(viewDirection, upDirection);
+			glm::vec2 normalizedStrafeDirection = glm::normalize(glm::vec2(strafeDirection.x, strafeDirection.z));
+			cameraTranslation.x += -movementSpeed * normalizedStrafeDirection.x * delta;
+			cameraTranslation.z += -movementSpeed * normalizedStrafeDirection.y * delta;
+			if (skybox != NULL) {
+				skybox->TranslateVec3(cameraTranslation);
+			}
+			if (playerModel != NULL) {
+				BringWith(playerModel);
+			}
+		}
+	}
+
+	void Player::StrafeRight(float delta)
+	{
+		if (hasControls) {
+			glm::vec3 strafeDirection = glm::cross(viewDirection, upDirection);
+			glm::vec2 normalizedStrafeDirection = glm::normalize(glm::vec2(strafeDirection.x, strafeDirection.z));
+			cameraTranslation.x += movementSpeed * normalizedStrafeDirection.x * delta;
+			cameraTranslation.z += movementSpeed * normalizedStrafeDirection.y * delta;
+			if (skybox != NULL) {
+				skybox->TranslateVec3(cameraTranslation);
+			}
+			if (playerModel != NULL) {
+				BringWith(playerModel);
+			}
+		}
+	}
+
+	void Player::MoveUp(float delta)
+	{
+		if (hasControls) {
+			cameraTranslation += movementSpeed * upDirection * delta;
+			if (skybox != NULL) {
+				skybox->TranslateVec3(cameraTranslation);
+			}
+			if (playerModel != NULL) {
+				BringWith(playerModel);
+			}
+		}
+	}
+
+	void Player::MoveDown(float delta)
+	{
+		if (hasControls) {
+			cameraTranslation += -movementSpeed * upDirection * delta;
+			if (skybox != NULL) {
+				skybox->TranslateVec3(cameraTranslation);
+			}
+			if (playerModel != NULL) {
+				BringWith(playerModel);
+			}
+		}
+	}
+
+	void Player::Follow(PhysicsObject* obj)
+	{
+		cameraTranslation = obj->GetTranslation();
+		if (skybox != NULL) {
+			skybox->TranslateVec3(cameraTranslation);
+		}
+		if (playerModel != NULL) {
+			BringWith(playerModel);
+		}
+	}
+	
+	void Player::FollowMesh(Mesh* obj)
+	{
+		cameraTranslation = obj->GetTranslation();
+		if (skybox != NULL) {
+			skybox->TranslateVec3(cameraTranslation);
+		}
+	}
+
+	void Player::ChangeMovementSpeed(float newSpeed)
+	{
+		movementSpeed = newSpeed;
+	}
+
+	void Player::BringWith(PhysicsObject* obj)
+	{
+		obj->TranslateVec3(cameraTranslation);
+		btRigidBody* body = btRigidBody::upcast(obj->GetPhysicsObject());
+		if (body != NULL) {
+			body->setLinearVelocity(btVector3(0.0, 0.0, 0.0));
+		}
+		obj->InverseUpdate();
+	}
+
+	void Player::BringWithMesh(Mesh* obj)
+	{
+		obj->TranslateVec3(cameraTranslation);
+	}
+
+	void Player::SetYModelOffset(float value)
+	{
+		//YModelOffset = value;
+	}
+
+	glm::vec3 Player::GetTranslation()
+	{
+		return cameraTranslation;
+	}
+
+	glm::vec2 Player::GetOldMousePos()
+	{
+		return glm::vec2(oldMouseX, oldMouseY);
+	}
+
+	glm::vec3 Player::GetViewDirection()
+	{
+		return viewDirection;
+	}
+
+	void Player::SetSkybox(Object* newSkybox)
+	{
+		skybox = newSkybox;
+	}
+
+	Object* Player::GetSkybox()
+	{
+		return skybox;
+	}
+
+	void Player::SetPlayerModel(PhysicsObject* newModel)
+	{
+		playerModel = newModel;
+	}
+
+	PhysicsObject* Player::GetPlayerModel()
+	{
+		return playerModel;
+	}
 }

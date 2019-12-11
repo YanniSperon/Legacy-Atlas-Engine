@@ -1,5 +1,7 @@
 #pragma once
 #include "Renderer.h"
+#include "PhysicsRenderer.h"
+#include "PhysicsScene.h"
 
 namespace Atlas {
 
@@ -22,7 +24,9 @@ namespace Atlas {
 		static void PrepareForInitialization(MSAA multisampling);
 		static void Initialize(std::string postProcessingShaderAddress);
 		static void PrepareForRendering();
+		static void PrepareForRenderingPhysicsSimulation();
 		static void Render(Renderer* renderer);
+		static void RenderPhysicsRenderer(PhysicsRenderer* renderer, PhysicsScene* scene);
 
 		static void ChangeEffect(std::string newShaderShortenedName);
 		static void Cleanup();

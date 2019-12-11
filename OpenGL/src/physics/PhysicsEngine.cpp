@@ -30,11 +30,12 @@ namespace Atlas {
 		physicsEnabled = true;
 	}
 
-	void PhysicsEngine::Update(float deltaT)
+	void PhysicsEngine::Update(double deltaT)
 	{
 		if (physicsEnabled) {
 			ToggleDebugger();
-			dynamicsWorld->stepSimulation(deltaT, 10);
+			// switch physics frame rate to 30 for better performance \/
+			dynamicsWorld->stepSimulation(deltaT, 10/*, 0.033333333333333333f*/);
 			Global::Variables.currentScene.Update();
 		}
 	}
@@ -48,21 +49,24 @@ namespace Atlas {
 			if (isDynamic) {
 				shape->calculateLocalInertia(massOfObject, localInertia);
 			}
-			printf("%f, %f, %f", transformation.getOrigin()[0], transformation.getOrigin()[1], transformation.getOrigin()[2]);
+			//printf("%f, %f, %f", transformation.getOrigin()[0], transformation.getOrigin()[1], transformation.getOrigin()[2]);
 			if (&transformation == NULL) {
-				System::Log("Null transformation");
+				System::Err("Null transformation");
 			}
 			btDefaultMotionState* myMotionState = new btDefaultMotionState(transformation);
 			if (myMotionState == NULL) {
-				System::Log("Null myMotionState");
+				System::Err("Null myMotionState");
 			}
 			btRigidBody::btRigidBodyConstructionInfo rbInfo(massOfObject, myMotionState, shape, localInertia);
 			if (&rbInfo == NULL) {
-				System::Log("Null rbInfo");
+				System::Err("Null rbInfo");
 			}
 			btRigidBody* body = new btRigidBody(rbInfo);
 			if (body == NULL) {
-				System::Log("Null body");
+				System::Err("Null body");
+			}
+			if (mass > 45.0f) {
+				body->setActivationState(DISABLE_DEACTIVATION);
 			}
 			//body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
 			//body->setActivationState(DISABLE_DEACTIVATION);
@@ -92,6 +96,7 @@ namespace Atlas {
 			btRigidBody* body = btRigidBody::upcast(obj);
 			if (body && body->getMotionState())
 			{
+				delete body->getCollisionShape();
 				delete body->getMotionState();
 			}
 			dynamicsWorld->removeCollisionObject(obj);

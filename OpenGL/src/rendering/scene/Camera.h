@@ -10,6 +10,7 @@ namespace Atlas {
 	class Camera {
 	public:
 		bool hasControls;
+		bool hasLookControls;
 		float movementSpeed;
 		glm::vec3 viewDirection;
 		glm::vec3 upDirection;
@@ -27,20 +28,28 @@ namespace Atlas {
 		void DisableMovementControls();
 		glm::mat4 GetViewTransformMatrix();
 		void LookAt(double xpos, double ypos);
-		virtual void MoveForward(float delta);
-		virtual void MoveBackward(float delta);
-		virtual void StrafeLeft(float delta);
-		virtual void StrafeRight(float delta);
-		virtual void MoveUp(float delta);
-		virtual void MoveDown(float delta);
-		virtual void Follow(Mesh* obj);
-		virtual void BringWith(Mesh* obj);
+		void MoveForward(float delta);
+		void MoveBackward(float delta);
+		void StrafeLeft(float delta);
+		void StrafeRight(float delta);
+		void MoveUp(float delta);
+		void MoveDown(float delta);
+		void Follow(Mesh* obj);
+		void BringWith(Mesh* obj);
 		void ChangeMovementSpeed(float newSpeed);
+
 		glm::vec3 GetTranslation();
 		glm::vec2 GetOldMousePos();
+		bool GetHasControls();
+		bool GetHasLookControls();
+		float GetMovementSpeed();
+		glm::vec3 GetViewDirection();
+		glm::vec3 GetUpDirection();
+		float GetMouseSensitivity();
+
 		void SetSkybox(Object* newSkybox);
 		Object* GetSkybox();
-
+		void SetHasLookControls(bool newValue);
 		static void SetFocus(Camera* cam);
 	};
 }

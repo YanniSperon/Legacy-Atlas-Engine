@@ -547,10 +547,6 @@ namespace Atlas {
 			ret.indices[k] = indices.at(k);
 		}
 		
-		printf("Before\n");
-		printf("Maximums: (%f, %f, %f)\n", maximums.x, maximums.y, maximums.z);
-		printf("Minimums: (%f, %f, %f)\n", minimums.x, minimums.y, minimums.z);
-
 		if (minimums.x > -0.01f) {
 			minimums.x = -0.01f;
 		}
@@ -571,10 +567,6 @@ namespace Atlas {
 		if (maximums.z < 0.01f) {
 			maximums.z = 0.01f;
 		}
-
-		printf("After\n");
-		printf("Maximums: (%f, %f, %f)\n", maximums.x, maximums.y, maximums.z);
-		printf("Minimums: (%f, %f, %f)\n", minimums.x, minimums.y, minimums.z);
 
 		ret.min = minimums;
 		ret.max = maximums;
@@ -733,10 +725,6 @@ namespace Atlas {
 			ret.indices[k] = indices.at(k);
 		}
 
-		printf("Before\n");
-		printf("Maximums: (%f, %f, %f)\n", maximums.x, maximums.y, maximums.z);
-		printf("Minimums: (%f, %f, %f)\n", minimums.x, minimums.y, minimums.z);
-
 		if (minimums.x > -0.01f) {
 			minimums.x = -0.01f;
 		}
@@ -757,10 +745,6 @@ namespace Atlas {
 		if (maximums.z < 0.01f) {
 			maximums.z = 0.01f;
 		}
-
-		printf("After\n");
-		printf("Maximums: (%f, %f, %f)\n", maximums.x, maximums.y, maximums.z);
-		printf("Minimums: (%f, %f, %f)\n", minimums.x, minimums.y, minimums.z);
 
 		ret.max = maximums;
 		ret.min = minimums;

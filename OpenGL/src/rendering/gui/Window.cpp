@@ -147,6 +147,16 @@ namespace Atlas {
 		ImGui::End();
 	}
 
+	void Window::DrawFPSCounter()
+	{
+		ImGui::SetNextWindowPos(ImVec2((20.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (20.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
+		ImGui::SetNextWindowSize(ImVec2((240.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (50.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
+		ImGui::Begin("Debug", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.12f).x);
+		ImGui::Text("%.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+		ImGui::End();
+	}
+
 	void Window::DrawFileManager(GLFWwindow* window)
 	{
 		ImGui::SetNextWindowPos(ImVec2((20.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (285.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));

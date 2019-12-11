@@ -3,6 +3,7 @@
 #include "PhysicsObject.h"
 #include "PhysicsLight.h"
 #include "Player.h"
+#include "PhysicsRenderer.h"
 
 namespace Atlas {
 	
@@ -18,7 +19,7 @@ namespace Atlas {
 		PhysicsScene(Scene* scene);
 		~PhysicsScene();
 
-		void Submit(Renderer* renderer, Player* camera);
+		void Submit(PhysicsRenderer* renderer, Player* camera);
 		void Update();
 	};
 }

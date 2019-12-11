@@ -10,6 +10,7 @@
 #include "PostProcessor.h"
 #include "GUI.h"
 #include "InputHandler.h"
+#include "PhysicsSimulator.h"
 #include <chrono>
 
 namespace Atlas {
@@ -47,6 +48,7 @@ namespace Atlas {
 			auto lastTime = std::chrono::high_resolution_clock::now();
 			auto currentTime = lastTime;
 			unsigned int selectedObject;
+			bool shouldLaunchSimulation = false;
 
 			if (Global::Variables.currentScene.objectsOnScene.size() > 0) {
 				selectedObject = Global::Variables.currentScene.objectsOnScene.size() - 1;
@@ -83,6 +85,9 @@ namespace Atlas {
 				else if ((Global::Variables.keyIn.leftControlHeld && Global::Variables.keyIn.sHeld) || (Global::Variables.keyIn.leftControlPressed && Global::Variables.keyIn.sPressed) || (Global::Variables.keyIn.leftControlHeld && Global::Variables.keyIn.sPressed) || (Global::Variables.keyIn.leftControlPressed && Global::Variables.keyIn.sHeld)) {
 					Global::Variables.currentScene.Save("res/other/", "level.lvl");
 				}
+				if (Global::Variables.keyIn.leftControlHeld && Global::Variables.keyIn.rightControlHeld) {
+					shouldLaunchSimulation = true;
+				}
 				///////////////////////////////////////////////////////////////////////////
 				if (EditorEnabled) {
 					LevelEditor::LevelEditorControl::Control(currentEditorType, currentMode, selectedObject, deltaTime);
@@ -98,9 +103,13 @@ namespace Atlas {
 				InputHandler::Flush(&Global::Variables.keyIn, &Global::Variables.mouseIn);
 				///////////////////////////////////////////////////////////////////////////
 				RenderingEngine::End();
+				///////////////////////////////////////////////////////////////////////////
+				if (shouldLaunchSimulation) {
+					PhysicsSimulator::LaunchSimulation(&Global::Variables.currentScene, timeConstant);
+					shouldLaunchSimulation = false;
+				}
 			}
 			RenderingEngine::Cleanup();
-			//PhysicsEngine::Cleanup();
 		}
 		Global::Variables.currentScene.Save("res/other/", "level.lvl");
 		Global::Variables.config.WriteConfig("res/other/", "config.cfg");

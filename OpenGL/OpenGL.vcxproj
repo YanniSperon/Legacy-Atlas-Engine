@@ -148,6 +148,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\AtlasEngine.cpp" />
+    <ClCompile Include="src\game\physics\PhysicsLight.cpp" />
+    <ClCompile Include="src\game\physics\PhysicsObject.cpp" />
+    <ClCompile Include="src\game\physics\PhysicsRenderer.cpp" />
     <ClCompile Include="src\game\physics\PhysicsScene.cpp" />
     <ClCompile Include="src\game\Player.cpp" />
     <ClCompile Include="src\game\Scene.cpp" />
@@ -158,6 +161,7 @@
     <ClCompile Include="src\other\Convert.cpp" />
     <ClCompile Include="src\physics\debug\PhysicsDebugDrawer.cpp" />
     <ClCompile Include="src\physics\PhysicsEngine.cpp" />
+    <ClCompile Include="src\physics\PhysicsSimulator.cpp" />
     <ClCompile Include="src\rendering\fx\PostProcessor.cpp" />
     <ClCompile Include="src\rendering\gui\GUI.cpp" />
     <ClCompile Include="src\rendering\gui\Window.cpp" />
@@ -505,6 +509,7 @@
     <ClInclude Include="src\audio\AudioEngine.h" />
     <ClInclude Include="src\game\physics\PhysicsLight.h" />
     <ClInclude Include="src\game\physics\PhysicsObject.h" />
+    <ClInclude Include="src\game\physics\PhysicsRenderer.h" />
     <ClInclude Include="src\game\physics\PhysicsScene.h" />
     <ClInclude Include="src\game\Player.h" />
     <ClInclude Include="src\game\Scene.h" />

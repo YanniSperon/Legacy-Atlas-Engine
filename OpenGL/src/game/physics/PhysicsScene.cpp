@@ -1,5 +1,6 @@
 #include "PhysicsScene.h"
 #include "Global.h"
+#include "System.h"
 
 namespace Atlas {
 
@@ -10,12 +11,26 @@ namespace Atlas {
 
 	PhysicsScene::PhysicsScene(Scene* scene)
 	{
-
+		for (unsigned int i = 0; i < scene->preloadedObjectsOnScene.size(); i++) {
+			physicsObjectsOnScene.push_back(new PhysicsObject(scene->preloadedObjectsOnScene.at(i), 0.0f));
+		}
+		for (unsigned int i = 0; i < scene->objectsOnScene.size(); i++) {
+			physicsObjectsOnScene.push_back(new PhysicsObject(scene->objectsOnScene.at(i), 1.0f));
+		}
+		for (unsigned int i = 0; i < scene->preloadedObjectsOnScene.size(); i++) {
+			physicsLightsOnScene.push_back(new PhysicsLight(scene->lightsOnScene.at(i)));
+		}
+		for (unsigned int i = 0; i < scene->camerasOnScene.size(); i++) {
+			playersOnScene.push_back(new Player(scene->camerasOnScene.at(i)));
+		}
+		if (playersOnScene.size() == 0) {
+			System::Err("Error initializing player!");
+		}
 	}
 
 	PhysicsScene::~PhysicsScene()
 	{
-		// MAKE SURE TO SWITCH OUT CAMERA BEFORE THIS GETS DESTROYED
+		// MAKE SURE TO SWITCH OUT CAMERA BEFORE THIS GETS DESTROYED BECAUSE THEN ACTIVECAMERA = NULL
 		for (unsigned int i = 0; i < physicsObjectsOnScene.size(); i++) {
 			delete physicsObjectsOnScene.at(i);
 		}
@@ -32,21 +47,21 @@ namespace Atlas {
 		playersOnScene.clear();
 	}
 
-	void PhysicsScene::Submit(Renderer* renderer, Player* camera)
+	void PhysicsScene::Submit(PhysicsRenderer* renderer, Player* camera)
 	{
 		for (unsigned int i = 0; i < physicsObjectsOnScene.size(); i++) {
-			renderer->Submit3D(physicsObjectsOnScene.at(i), camera->Camera::GetTranslation());
+			renderer->Submit3D(physicsObjectsOnScene.at(i), camera->GetTranslation());
 		}
 
 		for (unsigned int i = 0; i < physicsLightsOnScene.size(); i++) {
-			renderer->Submit3D(physicsLightsOnScene.at(i), camera->Camera::GetTranslation());
+			renderer->Submit3D(physicsLightsOnScene.at(i), camera->GetTranslation());
 		}
 
 		for (unsigned int i = 0; i < playersOnScene.size(); i++) {
-			renderer->Submit3D(playersOnScene.at(i), camera->Camera::GetTranslation());
+			renderer->Submit3D(playersOnScene.at(i)->GetPlayerModel(), camera->GetTranslation());
 		}
 
-		renderer->SubmitForceRender3D(Global::Variables.activeCamera->GetSkybox());
+		renderer->SubmitForceRender3DObject(camera->GetSkybox());
 	}
 
 	void PhysicsScene::Update()
@@ -60,7 +75,7 @@ namespace Atlas {
 		}
 
 		for (unsigned int i = 0; i < playersOnScene.size(); i++) {
-			playersOnScene.at(i)->Update();
+			playersOnScene.at(i)->GetPlayerModel()->Update();
 		}
 	}
 }

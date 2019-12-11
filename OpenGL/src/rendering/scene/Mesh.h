@@ -33,7 +33,8 @@ namespace Atlas {
 		Mesh(type type, std::string dir, std::string name, glm::vec3 rot, glm::vec3 trans, glm::vec3 s);
 		~Mesh();
 
-		glm::mat4 GetModelTransformMatrix();
+		virtual glm::mat4 GetModelTransformMatrix();
+		glm::mat4 GetModelTransRotMatrix();
 		void RotateX(float x);
 		void RotateY(float y);
 		void RotateZ(float z);
@@ -66,6 +67,7 @@ namespace Atlas {
 
 		std::string GetModelType();
 		virtual std::string GetType();
+		type GetTypeEnum();
 
 		void Cleanup();
 		static void FlushCache();

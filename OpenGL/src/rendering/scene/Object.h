@@ -49,12 +49,14 @@ namespace Atlas {
 		void Draw();
 		void Bind();
 		void Unbind();
-		unsigned int GetNumIndices();
 		void SetShader(GLuint id);
 		void SetShader(std::string dir, std::string name);
 		void SetTexture(GLuint tex);
 		void SetTexture(std::string dir, std::string name);
 		void SetMaterial(Material mat);
+		void SetHasLighting(bool newValue);
+
+		unsigned int GetNumIndices();
 		GLuint GetShaderID();
 		GLuint GetTextureID();
 		std::string GetTextureDirectory();
@@ -62,9 +64,10 @@ namespace Atlas {
 		std::string GetShaderDirectory();
 		std::string GetShaderName();
 		bool GetGLInitialized();
-		Material GetMaterial();
 		bool GetHasLighting();
-		void SetHasLighting(bool newValue);
+		Material GetMaterial();
+		GLuint GetVBO();
+		GLuint GetIBO();
 
 		virtual std::string GetType() override;
 

@@ -198,6 +198,11 @@ namespace Atlas {
 		return (glm::translate(glm::mat4(), translation) * glm::yawPitchRoll(glm::radians(rotation.x), glm::radians(rotation.y), glm::radians(rotation.z)) * glm::scale(glm::mat4(), scale));
 	}
 
+	glm::mat4 Mesh::GetModelTransRotMatrix()
+	{
+		return (glm::translate(glm::mat4(), translation) * glm::yawPitchRoll(glm::radians(rotation.x), glm::radians(rotation.y), glm::radians(rotation.z)));
+	}
+
 	
 
 	void Mesh::RotateX(float x)
@@ -397,6 +402,11 @@ namespace Atlas {
 	std::string Mesh::GetType()
 	{
 		return "Mesh";
+	}
+
+	type Mesh::GetTypeEnum()
+	{
+		return objectType;
 	}
 
 	void Mesh::FlushCache()

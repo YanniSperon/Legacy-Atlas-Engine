@@ -11,9 +11,9 @@
 
 namespace Atlas {
 
-	void Atlas::RenderingEngine::Initialize()
+	void RenderingEngine::Initialize()
 	{
-		PostProcessor::PrepareForInitialization(MSAA(true, 16));
+		PostProcessor::PrepareForInitialization(MSAA(false, 0));
 
 		System::Log("Vendor: " + std::string((char*)glGetString(GL_VENDOR)));
 		System::Log("Model: " + std::string((char*)glGetString(GL_RENDERER)));
@@ -62,7 +62,12 @@ namespace Atlas {
 		PostProcessor::PrepareForRendering();
 	}
 
-	void Atlas::RenderingEngine::Render(bool& EnableWireframe, bool& EnableGUI, LevelEditor::EditorType& currentEditorType, LevelEditor::Mode& currentMode, unsigned int& selectedObject)
+	void RenderingEngine::BeginPhysicsSimulator()
+	{
+		PostProcessor::PrepareForRenderingPhysicsSimulation();
+	}
+
+	void RenderingEngine::Render(bool& EnableWireframe, bool& EnableGUI, LevelEditor::EditorType& currentEditorType, LevelEditor::Mode& currentMode, unsigned int& selectedObject)
 	{
 		if (EnableWireframe) {
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
