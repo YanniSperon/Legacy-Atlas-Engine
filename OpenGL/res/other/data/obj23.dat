@@ -1,9 +1,9 @@
 Object: 23
 type: Object
 modelType: cubeModel
-translation.x: 0.556952
-translation.y: 2.26597
-translation.z: -9.20302
+translation.x: 0
+translation.y: 0
+translation.z: 0
 rotation.x: 0
 rotation.y: 0
 rotation.z: 0

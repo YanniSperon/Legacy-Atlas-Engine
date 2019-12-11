@@ -50,7 +50,7 @@ namespace Atlas {
 
 					Global::Variables.loadedMeshCache[meshName] = physicalLocation;
 
-					Global::Variables.meshCache[meshDirectory + meshName] = ShapeGenerator::loadShape(meshDirectory + meshName);
+					Global::Variables.meshCache[meshDirectory + meshName] = ShapeGenerator::loadTexturedShape(dir, name);
 					shape = Global::Variables.meshCache[meshDirectory + meshName];
 				}
 			}
@@ -72,7 +72,7 @@ namespace Atlas {
 
 						Global::Variables.loadedMeshCache[meshName] = physicalLocation;
 
-						Global::Variables.meshCache[meshDirectory + meshName] = ShapeGenerator::loadTexturedShape(dir, name);
+						Global::Variables.meshCache[meshDirectory + meshName] = ShapeGenerator::loadShape(meshDirectory + meshName);
 						shape = Global::Variables.meshCache[meshDirectory + meshName];
 					}
 				}
@@ -134,7 +134,7 @@ namespace Atlas {
 
 					Global::Variables.loadedMeshCache[meshName] = physicalLocation;
 
-					Global::Variables.meshCache[meshDirectory + meshName] = ShapeGenerator::loadShape(meshDirectory + meshName);
+					Global::Variables.meshCache[meshDirectory + meshName] = ShapeGenerator::loadTexturedShape(dir, name);
 					shape = Global::Variables.meshCache[meshDirectory + meshName];
 				}
 			}
@@ -156,7 +156,7 @@ namespace Atlas {
 
 						Global::Variables.loadedMeshCache[meshName] = physicalLocation;
 
-						Global::Variables.meshCache[meshDirectory + meshName] = ShapeGenerator::loadTexturedShape(dir, name);
+						Global::Variables.meshCache[meshDirectory + meshName] = ShapeGenerator::loadShape(meshDirectory + meshName);
 						shape = Global::Variables.meshCache[meshDirectory + meshName];
 					}
 				}

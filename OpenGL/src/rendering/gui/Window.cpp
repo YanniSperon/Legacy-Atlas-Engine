@@ -224,13 +224,13 @@ namespace Atlas {
 				}
 				try {
 					if (Global::Variables.meshCache.find(meshDir + meshName) == Global::Variables.meshCache.end()) {
-						Global::Variables.meshCache[meshDir + meshName] = ShapeGenerator::loadShape(physicalLocation);
+						Global::Variables.meshCache[meshDir + meshName] = ShapeGenerator::loadTexturedShape(meshDir, meshName);
 					}
 				}
 				catch (const std::exception & e) {
 					try {
 						if (Global::Variables.meshCache.find(meshDir + meshName) == Global::Variables.meshCache.end()) {
-							Global::Variables.meshCache[meshDir + meshName] = ShapeGenerator::loadTexturedShape(meshDir, meshName);
+							Global::Variables.meshCache[meshDir + meshName] = ShapeGenerator::loadShape(physicalLocation);
 						}
 					}
 					catch (const std::exception & e) {
