@@ -1,9 +1,9 @@
-#include "SceneEditorControl.h"
+#include "LevelEditorControl.h"
 #include "Global.h"
 #include "System.h"
 #include "PhysicsEngine.h"
 
-void LevelEditor::SceneEditorControl::Control(LevelEditor::EditorType& currentEditorType, LevelEditor::Mode& currentMode, unsigned int& selectedObject, float deltaTime)
+void LevelEditor::LevelEditorControl::Control(LevelEditor::EditorType& currentEditorType, LevelEditor::Mode& currentMode, unsigned int& selectedObject, float deltaTime)
 {
 	if (Atlas::Global::Variables.keyIn.leftShiftHeld) {
 		Atlas::Global::Variables.movementSpeed = 2.0f * Atlas::Global::Variables.originalMovementSpeed;
@@ -17,10 +17,10 @@ void LevelEditor::SceneEditorControl::Control(LevelEditor::EditorType& currentEd
 	if (Atlas::Global::Variables.keyIn.capsLockReleased) {
 		Atlas::Global::Variables.movementSpeed = Atlas::Global::Variables.originalMovementSpeed;
 	}
+
 	if (Atlas::Global::Variables.keyIn.onePressed) {
 		currentEditorType = LevelEditor::EditorType::scene;
 	}
-
 	if (Atlas::Global::Variables.keyIn.twoPressed) {
 		currentEditorType = LevelEditor::EditorType::light;
 	}
@@ -140,13 +140,12 @@ void LevelEditor::SceneEditorControl::Control(LevelEditor::EditorType& currentEd
 		}
 		if (Atlas::Global::Variables.keyIn.nPressed) {
 			Atlas::System::Log("Cube created!");
-			Atlas::Global::Variables.currentScene.objectsOnScene.push_back(new Atlas::Object(Atlas::type::cubeModel, "", "", "res/images/textures/", "newcow.png", "res/shaders/", "Lighting.shader", true, true, true, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 5.0f, Atlas::Material(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), 32.0f)));
+			Atlas::Global::Variables.currentScene.objectsOnScene.push_back(new Atlas::Object(Atlas::type::cubeModel, "", "", "res/images/textures/", "newcow.png", "res/shaders/", "Lighting.shader", true, true, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), Atlas::Material(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), 32.0f)));
 			selectedObject = Atlas::Global::Variables.currentScene.objectsOnScene.size() - 1;
 		}
 		if (Atlas::Global::Variables.keyIn.backspacePressed) {
 			if (Atlas::Global::Variables.currentScene.objectsOnScene.size() > 0) {
 				Atlas::System::Log("Object deleted!");
-				Atlas::Global::Variables.currentScene.objectsOnScene.at(selectedObject)->Cleanup();
 				delete Atlas::Global::Variables.currentScene.objectsOnScene.at(selectedObject);
 				Atlas::Global::Variables.currentScene.objectsOnScene.erase(Atlas::Global::Variables.currentScene.objectsOnScene.begin() + selectedObject);
 

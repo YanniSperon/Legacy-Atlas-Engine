@@ -19,10 +19,10 @@ namespace Atlas {
 		std::vector<Camera*> camerasOnScene;
 
 		Scene();
-		Scene(std::vector<Object*> preloadedObjects, std::vector<Object*> objects, std::vector<Light*> lightSources);
+		Scene(std::vector<Object*> preloadedObjects, std::vector<Object*> objects, std::vector<Light*> lightSource, std::vector<Camera*> cameras);
 		~Scene();
 
-		void Submit(Renderer* renderer, glm::vec3 camPos, glm::mat4 viewMatrix);
+		void Submit(Renderer* renderer, Camera* camera);
 		void Save(std::string directory, std::string name);
 		void Update();
 	};

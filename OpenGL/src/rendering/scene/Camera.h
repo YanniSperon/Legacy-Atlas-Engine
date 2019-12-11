@@ -3,7 +3,7 @@
 #include "GL/glew.h"
 #include "GLFW/glfw3.h"
 #include "glm/glm.hpp"
-#include "Mesh.h"
+#include "Object.h"
 
 namespace Atlas {
 
@@ -17,9 +17,10 @@ namespace Atlas {
 		double oldMouseX;
 		double oldMouseY;
 		float mouseSensitivity;
+		Object* skybox;
 	public:
 		Camera();
-		Camera(bool canControl, float movementSpeed, glm::vec3 startingLookDirection, glm::vec3 startingUpDirection, glm::vec3 startingCameraTranslation, float mouseSensitivity);
+		Camera(bool canControl, float movementSpeed, glm::vec3 startingLookDirection, glm::vec3 startingUpDirection, glm::vec3 startingCameraTranslation, float mouseSensitivity, Object* skyboxObj);
 		~Camera();
 
 		void EnableMovementControls();
@@ -37,7 +38,9 @@ namespace Atlas {
 		void ChangeMovementSpeed(float newSpeed);
 		glm::vec3 GetTranslation();
 		glm::vec2 GetOldMousePos();
+		void SetSkybox(Object* newSkybox);
+		Object* GetSkybox();
 
-		static void SetFocus(GLFWwindow* window, Camera* cam);
+		static void SetFocus(Camera* cam);
 	};
 }

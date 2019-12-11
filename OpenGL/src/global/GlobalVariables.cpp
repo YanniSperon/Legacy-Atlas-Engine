@@ -23,7 +23,7 @@ namespace Atlas {
 		VSyncPreference = config.GetVSyncPreference();
 		mouseMode = config.GetMouseMode();
 
-		activeCamera = new Camera(true, movementSpeed, glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), mouseSensitivity);
+		activeCamera = new Camera(true, movementSpeed, glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), mouseSensitivity, NULL);
 
 		currentWidth = initialWidth;
 		currentHeight = initialHeight;
@@ -57,5 +57,9 @@ namespace Atlas {
 
 		currentScene = Scene();
 		currentScene.camerasOnScene.push_back(activeCamera);
+
+		window = NULL;
+
+		currentRenderer = NULL;
 	}
 }

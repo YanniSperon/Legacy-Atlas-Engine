@@ -37,14 +37,12 @@ namespace Atlas {
 		std::string textureName;
 		std::string shaderDirectory;
 		std::string shaderName;
-		std::string audioDirectory;
-		std::string audioName;
 		bool hasLighting;
 	public:
 		Object();
-		Object(type type, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderFileName, bool glInit, bool lighting, bool hasPhysics);
-		Object(type type, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderFileName, bool glInit, bool lighting, bool hasPhysics, glm::vec3 rot, glm::vec3 trans, glm::vec3 s, float mass);
-		Object(type type, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderFileName, bool glInit, bool lighting, bool hasPhysics, glm::vec3 rot, glm::vec3 trans, glm::vec3 s, float mass, Material mat);
+		Object(type type, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderFileName, bool glInit, bool lighting);
+		Object(type type, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderFileName, bool glInit, bool lighting, glm::vec3 rot, glm::vec3 trans, glm::vec3 s);
+		Object(type type, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderFileName, bool glInit, bool lighting, glm::vec3 rot, glm::vec3 trans, glm::vec3 s, Material mat);
 		virtual ~Object();
 
 		void GLInit();
@@ -63,12 +61,10 @@ namespace Atlas {
 		std::string GetTextureName();
 		std::string GetShaderDirectory();
 		std::string GetShaderName();
-		Material GetMaterial();
 		bool GetGLInitialized();
+		Material GetMaterial();
 		bool GetHasLighting();
 		void SetHasLighting(bool newValue);
-
-		virtual void Update() override;
 
 		virtual std::string GetType() override;
 

@@ -15,13 +15,13 @@
 namespace Atlas {
 
 	Mesh::Mesh()
-		: directory(""), fileName("Error"), rotation(0.0f, 0.0f, 0.0f), translation(0.0f, 0.0f, 0.0f), shape(), minExtents(0.0f, 0.0f, 0.0f), maxExtents(0.0f, 0.0f, 0.0f), scale(1.0f, 1.0f, 1.0f), objectType(type::cubeModel), physicsObject(NULL), mass(0.0f)
+		: directory(""), fileName("Error"), rotation(0.0f, 0.0f, 0.0f), translation(0.0f, 0.0f, 0.0f), shape(), minExtents(0.0f, 0.0f, 0.0f), maxExtents(0.0f, 0.0f, 0.0f), scale(1.0f, 1.0f, 1.0f), objectType(type::cubeModel)
 	{
 
 	}
 
-	Mesh::Mesh(type type, std::string dir, std::string name, bool enablePhysics)
-		: directory(dir), fileName(name), rotation(0.0f, 0.0f, 0.0f), translation(0.0f, 0.0f, 0.0f), minExtents(-0.5f, -0.5f, -0.5f), maxExtents(0.5f, 0.5f, 0.5f), scale(1.0f, 1.0f, 1.0f), objectType(type), physicsObject(NULL), mass(0.0f)
+	Mesh::Mesh(type type, std::string dir, std::string name)
+		: directory(dir), fileName(name), rotation(0.0f, 0.0f, 0.0f), translation(0.0f, 0.0f, 0.0f), minExtents(-0.5f, -0.5f, -0.5f), maxExtents(0.5f, 0.5f, 0.5f), scale(1.0f, 1.0f, 1.0f), objectType(type)
 	{
 		if (type == type::cubeModel) {
 			if (Global::Variables.meshCache.find("default::type::cube") != Global::Variables.meshCache.end()) {
@@ -102,24 +102,10 @@ namespace Atlas {
 
 		minExtents = shape.min;
 		maxExtents = shape.max;
-
-		if (enablePhysics) {
-			//btConvexHullShape* physicsShape = new btConvexHullShape();
-			//printf("Generating physics shape\n");
-			//for (int i = 0; i < shape.numVertices; i++) {
-			//	printf("Adding point at index: %i\n", i);
-			//	physicsShape->addPoint(Convert::Vector3(shape.vertices[i].position));
-			//}
-			btCollisionShape* physicsShape = new btBoxShape(Convert::Vector3(glm::vec3(0.5f, 0.5f, 0.5f)));
-			btTransform shapeTransformation;
-			shapeTransformation.setFromOpenGLMatrix(&GetModelTransRotMatrix()[0][0]);
-			//printf("\nTest: \n%f, %f, %f, %f\n%f, %f, %f, %f\n%f, %f, %f, %f\n%f, %f, %f, %f\n", GetModelTransformMatrix()[0][0], GetModelTransformMatrix()[0][1], GetModelTransformMatrix()[0][2], GetModelTransformMatrix()[0][3], GetModelTransformMatrix()[1][0], GetModelTransformMatrix()[1][1], GetModelTransformMatrix()[1][2], GetModelTransformMatrix()[1][3], GetModelTransformMatrix()[2][0], GetModelTransformMatrix()[2][1], GetModelTransformMatrix()[2][2], GetModelTransformMatrix()[2][3], GetModelTransformMatrix()[3][0], GetModelTransformMatrix()[3][1], GetModelTransformMatrix()[3][2], GetModelTransformMatrix()[3][3]);
-			physicsObject = PhysicsEngine::AddPhysicsBody(physicsShape, shapeTransformation, 0.0f);
-		}
 	}
 
-	Mesh::Mesh(type type, std::string dir, std::string name, bool enablePhysics, glm::vec3 rot, glm::vec3 trans, glm::vec3 s, float objectMass)
-		: directory(dir), fileName(name), rotation(rot), translation(trans), minExtents(-0.5f, -0.5f, -0.5f), maxExtents(0.5f, 0.5f, 0.5f), scale(s), objectType(type), physicsObject(NULL), mass(objectMass)
+	Mesh::Mesh(type type, std::string dir, std::string name, glm::vec3 rot, glm::vec3 trans, glm::vec3 s)
+		: directory(dir), fileName(name), rotation(rot), translation(trans), minExtents(-0.5f, -0.5f, -0.5f), maxExtents(0.5f, 0.5f, 0.5f), scale(s), objectType(type)
 	{
 		if (type == type::cubeModel) {
 			if (Global::Variables.meshCache.find("default::type::cube") != Global::Variables.meshCache.end()) {
@@ -200,21 +186,6 @@ namespace Atlas {
 
 		minExtents = shape.min;
 		maxExtents = shape.max;
-
-		if (enablePhysics) {
-			//btConvexHullShape* physicsShape = new btConvexHullShape();
-			//printf("Generating physics shape\n");
-			//for (int i = 0; i < shape.numVertices; i++) {
-			//	printf("Adding point at index: %i\n", i);
-			//	physicsShape->addPoint(Convert::Vector3(shape.vertices[i].position));
-			//}
-			btCollisionShape* physicsShape = new btBoxShape(Convert::Vector3((maxExtents - minExtents)/2.0f));
-			physicsShape->setLocalScaling(Convert::Vector3(s));
-			btTransform shapeTransformation;
-			shapeTransformation.setFromOpenGLMatrix(&GetModelTransRotMatrix()[0][0]);
-			//printf("\nTest: \n%f, %f, %f, %f\n%f, %f, %f, %f\n%f, %f, %f, %f\n%f, %f, %f, %f\n", GetModelTransformMatrix()[0][0], GetModelTransformMatrix()[0][1], GetModelTransformMatrix()[0][2], GetModelTransformMatrix()[0][3], GetModelTransformMatrix()[1][0], GetModelTransformMatrix()[1][1], GetModelTransformMatrix()[1][2], GetModelTransformMatrix()[1][3], GetModelTransformMatrix()[2][0], GetModelTransformMatrix()[2][1], GetModelTransformMatrix()[2][2], GetModelTransformMatrix()[2][3], GetModelTransformMatrix()[3][0], GetModelTransformMatrix()[3][1], GetModelTransformMatrix()[3][2], GetModelTransformMatrix()[3][3]);
-			physicsObject = PhysicsEngine::AddPhysicsBody(physicsShape, shapeTransformation, mass);
-		}
 	}
 
 	Mesh::~Mesh()
@@ -224,52 +195,24 @@ namespace Atlas {
 
 	glm::mat4 Mesh::GetModelTransformMatrix()
 	{
-		glm::mat4 returnMat4;
-		if (physicsObject != NULL) {
-			physicsObject->getWorldTransform().getOpenGLMatrix(&returnMat4[0][0]);
-		}
-		else {
-			returnMat4 = (glm::translate(glm::mat4(), translation) * glm::yawPitchRoll(glm::radians(rotation.x), glm::radians(rotation.y), glm::radians(rotation.z)) * glm::scale(glm::mat4(), scale));
-		}
-		return returnMat4 * glm::scale(glm::mat4(), scale);
+		return (glm::translate(glm::mat4(), translation) * glm::yawPitchRoll(glm::radians(rotation.x), glm::radians(rotation.y), glm::radians(rotation.z)) * glm::scale(glm::mat4(), scale));
 	}
 
-	glm::mat4 Mesh::GetModelTransRotMatrix()
-	{
-		return (glm::translate(glm::mat4(), translation) * glm::yawPitchRoll(glm::radians(rotation.x), glm::radians(rotation.y), glm::radians(rotation.z)));
-	}
+	
 
 	void Mesh::RotateX(float x)
 	{
 		rotation.x = x;
-		if (physicsObject != NULL) {
-			btTransform transform;
-			transform.setIdentity();
-			transform.setFromOpenGLMatrix(&GetModelTransRotMatrix()[0][0]);
-			physicsObject->setWorldTransform(transform);
-		}
 	}
 
 	void Mesh::RotateY(float y)
 	{
 		rotation.y = y;
-		if (physicsObject != NULL) {
-			btTransform transform;
-			transform.setIdentity();
-			transform.setFromOpenGLMatrix(&GetModelTransRotMatrix()[0][0]);
-			physicsObject->setWorldTransform(transform);
-		}
 	}
 
 	void Mesh::RotateZ(float z)
 	{
 		rotation.z = z;
-		if (physicsObject != NULL) {
-			btTransform transform;
-			transform.setIdentity();
-			transform.setFromOpenGLMatrix(&GetModelTransRotMatrix()[0][0]);
-			physicsObject->setWorldTransform(transform);
-		}
 	}
 
 	void Mesh::Rotate3f(float x, float y, float z)
@@ -277,22 +220,10 @@ namespace Atlas {
 		rotation.x = x;
 		rotation.y = y;
 		rotation.z = z;
-		if (physicsObject != NULL) {
-			btTransform transform;
-			transform.setIdentity();
-			transform.setFromOpenGLMatrix(&GetModelTransRotMatrix()[0][0]);
-			physicsObject->setWorldTransform(transform);
-		}
 	}
 
 	void Mesh::RotateVec3(glm::vec3 rot) {
 		rotation = rot;
-		if (physicsObject != NULL) {
-			btTransform transform;
-			transform.setIdentity();
-			transform.setFromOpenGLMatrix(&GetModelTransRotMatrix()[0][0]);
-			physicsObject->setWorldTransform(transform);
-		}
 	}
 
 	void Mesh::RotateAdd3f(float x, float y, float z)
@@ -300,56 +231,26 @@ namespace Atlas {
 		rotation.x += x;
 		rotation.y += y;
 		rotation.z += z;
-		if (physicsObject != NULL) {
-			btTransform transform;
-			transform.setIdentity();
-			transform.setFromOpenGLMatrix(&GetModelTransRotMatrix()[0][0]);
-			physicsObject->setWorldTransform(transform);
-		}
 	}
 
 	void Mesh::RotateAddVec3(glm::vec3 rot)
 	{
 		rotation += rot;
-		if (physicsObject != NULL) {
-			btTransform transform;
-			transform.setIdentity();
-			transform.setFromOpenGLMatrix(&GetModelTransRotMatrix()[0][0]);
-			physicsObject->setWorldTransform(transform);
-		}
 	}
 
 	void Mesh::TranslateX(float x)
 	{
 		translation.x = x;
-		if (physicsObject != NULL) {
-			btTransform transform;
-			transform.setIdentity();
-			transform.setFromOpenGLMatrix(&GetModelTransRotMatrix()[0][0]);
-			physicsObject->setWorldTransform(transform);
-		}
 	}
 
 	void Mesh::TranslateY(float y)
 	{
 		translation.y = y;
-		if (physicsObject != NULL) {
-			btTransform transform;
-			transform.setIdentity();
-			transform.setFromOpenGLMatrix(&GetModelTransRotMatrix()[0][0]);
-			physicsObject->setWorldTransform(transform);
-		}
 	}
 
 	void Mesh::TranslateZ(float z)
 	{
 		translation.z = z;
-		if (physicsObject != NULL) {
-			btTransform transform;
-			transform.setIdentity();
-			transform.setFromOpenGLMatrix(&GetModelTransRotMatrix()[0][0]);
-			physicsObject->setWorldTransform(transform);
-		}
 	}
 
 	void Mesh::Translate3f(float x, float y, float z)
@@ -357,22 +258,10 @@ namespace Atlas {
 		translation.x = x;
 		translation.y = y;
 		translation.z = z;
-		if (physicsObject != NULL) {
-			btTransform transform;
-			transform.setIdentity();
-			transform.setFromOpenGLMatrix(&GetModelTransRotMatrix()[0][0]);
-			physicsObject->setWorldTransform(transform);
-		}
 	}
 
 	void Mesh::TranslateVec3(glm::vec3 trans) {
 		translation = trans;
-		if (physicsObject != NULL) {
-			btTransform transform;
-			transform.setIdentity();
-			transform.setFromOpenGLMatrix(&GetModelTransRotMatrix()[0][0]);
-			physicsObject->setWorldTransform(transform);
-		}
 	}
 
 	void Mesh::TranslateAdd3f(float x, float y, float z)
@@ -380,50 +269,26 @@ namespace Atlas {
 		translation.x += x;
 		translation.y += y;
 		translation.z += z;
-		if (physicsObject != NULL) {
-			btTransform transform;
-			transform.setIdentity();
-			transform.setFromOpenGLMatrix(&GetModelTransRotMatrix()[0][0]);
-			physicsObject->setWorldTransform(transform);
-		}
 	}
 
 	void Mesh::TranslateAddVec3(glm::vec3 trans)
 	{
 		translation += trans;
-		if (physicsObject != NULL) {
-			btTransform transform;
-			transform.setIdentity();
-			transform.setFromOpenGLMatrix(&GetModelTransRotMatrix()[0][0]);
-			physicsObject->setWorldTransform(transform);
-		}
 	}
 
 	void Mesh::ScaleX(float x)
 	{
 		scale.x = x;
-		if (physicsObject != NULL) {
-			physicsObject->getCollisionShape()->setLocalScaling(Convert::Vector3(scale));
-			PhysicsEngine::Recalculate(physicsObject);
-		}
 	}
 
 	void Mesh::ScaleY(float y)
 	{
 		scale.y = y;
-		if (physicsObject != NULL) {
-			physicsObject->getCollisionShape()->setLocalScaling(Convert::Vector3(scale));
-			PhysicsEngine::Recalculate(physicsObject);
-		}
 	}
 
 	void Mesh::ScaleZ(float z)
 	{
 		scale.z = z;
-		if (physicsObject != NULL) {
-			physicsObject->getCollisionShape()->setLocalScaling(Convert::Vector3(scale));
-			PhysicsEngine::Recalculate(physicsObject);
-		}
 	}
 
 	void Mesh::Scale3f(float x, float y, float z)
@@ -436,10 +301,6 @@ namespace Atlas {
 		}
 		if (scale.z > 0) {
 			scale.z = z;
-		}
-		if (physicsObject != NULL) {
-			physicsObject->getCollisionShape()->setLocalScaling(Convert::Vector3(scale));
-			PhysicsEngine::Recalculate(physicsObject);
 		}
 	}
 
@@ -454,10 +315,6 @@ namespace Atlas {
 		if (s.z > 0) {
 			scale.z = s.z;
 		}
-		if (physicsObject != NULL) {
-			physicsObject->getCollisionShape()->setLocalScaling(Convert::Vector3(scale));
-			PhysicsEngine::Recalculate(physicsObject);
-		}
 	}
 
 	void Mesh::ScaleAdd3f(float x, float y, float z)
@@ -470,10 +327,6 @@ namespace Atlas {
 		}
 		if (scale.z + z > 0) {
 			scale.z += z;
-		}
-		if (physicsObject != NULL) {
-			physicsObject->getCollisionShape()->setLocalScaling(Convert::Vector3(scale));
-			PhysicsEngine::Recalculate(physicsObject);
 		}
 	}
 
@@ -488,31 +341,6 @@ namespace Atlas {
 		if (scale.z + s.z > 0) {
 			scale.z += s.z;
 		}
-		if (physicsObject != NULL) {
-			physicsObject->getCollisionShape()->setLocalScaling(Convert::Vector3(scale));
-			PhysicsEngine::Recalculate(physicsObject);
-		}
-	}
-
-	void Mesh::Update()
-	{
-		if (physicsObject != NULL) {
-			translation = Convert::Vector3(physicsObject->getWorldTransform().getOrigin());
-			physicsObject->getWorldTransform().getRotation().getEulerZYX(rotation.z, rotation.y, rotation.x);
-		}
-	}
-
-	btCollisionObject* Mesh::GetPhysicsObject()
-	{
-		return physicsObject;
-	}
-
-	void Mesh::SetPhysicsBody()
-	{
-		btCollisionShape* physicsShape = new btBvhTriangleMeshShape(PhysicsEngine::CreatePhysicsBodyMesh(shape), true);
-		btTransform shapeTransformation;
-		shapeTransformation.setFromOpenGLMatrix(&GetModelTransRotMatrix()[0][0]);
-		physicsObject = PhysicsEngine::AddPhysicsBody(physicsShape, shapeTransformation, 0.0f);
 	}
 
 	glm::vec3 Mesh::GetTranslation()
@@ -550,11 +378,6 @@ namespace Atlas {
 		shape = newShape;
 	}
 
-	float Mesh::GetMass()
-	{
-		return mass;
-	}
-
 	std::string Mesh::GetModelType()
 	{
 		if (objectType == type::cubeModel) {
@@ -574,13 +397,6 @@ namespace Atlas {
 	std::string Mesh::GetType()
 	{
 		return "Mesh";
-	}
-
-	void Mesh::Cleanup()
-	{
-		if (physicsObject != NULL) {
-			PhysicsEngine::RemovePhysicsBody(physicsObject);
-		}
 	}
 
 	void Mesh::FlushCache()

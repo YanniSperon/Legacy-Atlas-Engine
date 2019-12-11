@@ -120,3 +120,32 @@ namespace Atlas {
 		static void Cleanup();
 	};
 }
+
+//NON-WORKING CODE FROM MAIN:
+
+// INIT
+//if (Global::Variables.hasVR) {
+//	VRHandler::Setup();
+//}
+
+// IN RUN LOOP
+//if (hasVR) {
+//	vr::TrackedDevicePose_t trackedDevicePose;
+//	vr_pointer->GetDeviceToAbsoluteTrackingPose(
+//		vr::TrackingUniverseStanding, 0, &trackedDevicePose, 1);
+//	vr::VRCompositor()->WaitGetPoses(&trackedDevicePose, vr::k_unMaxTrackedDeviceCount, NULL, 0);
+//
+//	glBlitNamedFramebuffer(0, leftEyeFrameBuffer, 0, 0, currentWidth, currentHeight, 0, 0, currentWidth, currentHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+//	const vr::Texture_t tex = { reinterpret_cast<void*>(intptr_t(leftEyeFrameBuffer)), vr::TextureType_OpenGL, vr::ColorSpace_Gamma };
+//	vr::EVRCompositorError value = vr::VRCompositor()->Submit(vr::Eye_Left, &tex);
+//	if (value != vr::VRCompositorError_None)
+//	{
+//		printf("VRCompositorError: %i \n", value);
+//		//vr::VRCompositorError_DoNotHaveFocus;
+//		//vr::VRCompositorError
+//	}
+//}
+//VRHandler::Submit();
+
+// CLEANUP
+//VRHandler::Cleanup();

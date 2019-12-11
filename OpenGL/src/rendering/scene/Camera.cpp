@@ -4,22 +4,22 @@
 #include "glm/gtc/matrix_transform.hpp"
 
 namespace Atlas {
+
 	Camera::Camera()
-		: hasControls(false), movementSpeed(0.1f), viewDirection(0.0f, 0.0f, -1.0f), upDirection(0.0f, 1.0f, 0.0f), cameraTranslation(0.0f, 0.0f, 0.0f), oldMouseX(36000000.0), oldMouseY(0.0), mouseSensitivity(0.0f)
+		: hasControls(false), movementSpeed(0.1f), viewDirection(0.0f, 0.0f, -1.0f), upDirection(0.0f, 1.0f, 0.0f), cameraTranslation(0.0f, 0.0f, 0.0f), oldMouseX(36000000.0), oldMouseY(0.0), mouseSensitivity(0.0f), skybox(NULL)
 	{
 
 	}
 
-	Camera::Camera(bool canControl, float movementSpeed, glm::vec3 startingLookDirection, glm::vec3 startingUpDirection, glm::vec3 startingCameraTranslation, float mouseSensitivity)
-		: hasControls(canControl), movementSpeed(movementSpeed), viewDirection(startingLookDirection), upDirection(startingUpDirection),
-		cameraTranslation(startingCameraTranslation), oldMouseX(36000000.0), oldMouseY(0.0), mouseSensitivity(mouseSensitivity)
+	Camera::Camera(bool canControl, float movementSpeed, glm::vec3 startingLookDirection, glm::vec3 startingUpDirection, glm::vec3 startingCameraTranslation, float mouseSensitivity, Object* skyboxObj)
+		: hasControls(canControl), movementSpeed(movementSpeed), viewDirection(startingLookDirection), upDirection(startingUpDirection), skybox(skyboxObj), cameraTranslation(startingCameraTranslation), oldMouseX(36000000.0), oldMouseY(0.0), mouseSensitivity(mouseSensitivity)
 	{
 
 	}
 
 	Camera::~Camera()
 	{
-
+		delete skybox;
 	}
 
 	void Camera::EnableMovementControls()
@@ -62,6 +62,9 @@ namespace Atlas {
 			glm::vec2 normalizedViewDirection = glm::normalize(glm::vec2(viewDirection.x, viewDirection.z));
 			cameraTranslation.x += movementSpeed * normalizedViewDirection.x * delta;
 			cameraTranslation.z += movementSpeed * normalizedViewDirection.y * delta;
+			if (skybox != NULL) {
+				skybox->TranslateVec3(cameraTranslation);
+			}
 		}
 	}
 
@@ -71,6 +74,9 @@ namespace Atlas {
 			glm::vec2 normalizedViewDirection = glm::normalize(glm::vec2(viewDirection.x, viewDirection.z));
 			cameraTranslation.x += -movementSpeed * normalizedViewDirection.x * delta;
 			cameraTranslation.z += -movementSpeed * normalizedViewDirection.y * delta;
+			if (skybox != NULL) {
+				skybox->TranslateVec3(cameraTranslation);
+			}
 		}
 	}
 
@@ -81,6 +87,9 @@ namespace Atlas {
 			glm::vec2 normalizedStrafeDirection = glm::normalize(glm::vec2(strafeDirection.x, strafeDirection.z));
 			cameraTranslation.x += -movementSpeed * normalizedStrafeDirection.x * delta;
 			cameraTranslation.z += -movementSpeed * normalizedStrafeDirection.y * delta;
+			if (skybox != NULL) {
+				skybox->TranslateVec3(cameraTranslation);
+			}
 		}
 	}
 
@@ -91,6 +100,9 @@ namespace Atlas {
 			glm::vec2 normalizedStrafeDirection = glm::normalize(glm::vec2(strafeDirection.x, strafeDirection.z));
 			cameraTranslation.x += movementSpeed * normalizedStrafeDirection.x * delta;
 			cameraTranslation.z += movementSpeed * normalizedStrafeDirection.y * delta;
+			if (skybox != NULL) {
+				skybox->TranslateVec3(cameraTranslation);
+			}
 		}
 	}
 
@@ -98,6 +110,9 @@ namespace Atlas {
 	{
 		if (hasControls) {
 			cameraTranslation += movementSpeed * upDirection * delta;
+			if (skybox != NULL) {
+				skybox->TranslateVec3(cameraTranslation);
+			}
 		}
 	}
 
@@ -105,12 +120,18 @@ namespace Atlas {
 	{
 		if (hasControls) {
 			cameraTranslation += -movementSpeed * upDirection * delta;
+			if (skybox != NULL) {
+				skybox->TranslateVec3(cameraTranslation);
+			}
 		}
 	}
 
 	void Camera::Follow(Mesh* obj)
 	{
 		cameraTranslation = obj->GetTranslation();
+		if (skybox != NULL) {
+			skybox->TranslateVec3(cameraTranslation);
+		}
 	}
 
 	void Camera::ChangeMovementSpeed(float newSpeed)
@@ -133,10 +154,22 @@ namespace Atlas {
 		return glm::vec2(oldMouseX, oldMouseY);
 	}
 
-	void Camera::SetFocus(GLFWwindow* window, Camera* cam)
+	void Camera::SetSkybox(Object* newSkybox)
 	{
+		skybox = newSkybox;
+	}
+
+	Object* Camera::GetSkybox()
+	{
+		return skybox;
+	}
+
+	void Camera::SetFocus(Camera* cam)
+	{
+		cam->SetSkybox(Global::Variables.activeCamera->GetSkybox());
+		Global::Variables.activeCamera->SetSkybox(NULL);
 		Global::Variables.activeCamera = cam;
 		glm::vec2 temp = Global::Variables.activeCamera->GetOldMousePos();
-		glfwSetCursorPos(window, temp.x, temp.y);
+		glfwSetCursorPos(Global::Variables.window, temp.x, temp.y);
 	}
 }

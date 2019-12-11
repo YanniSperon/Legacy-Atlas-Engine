@@ -3,6 +3,7 @@
 #include "GL/glew.h"
 #include "GLFW/glfw3.h"
 #include "Global.h"
+#include "System.h"
 
 namespace Atlas {
 
@@ -40,7 +41,7 @@ namespace Atlas {
 
 		static void errorCallback(int error, const char* description)
 		{
-			std::cerr << "Error " << error << " : " << description << std::endl;
+			System::Err("Error " + std::to_string(error) + ": " + std::string(description));
 		}
 
 		static void APIENTRY openglCallbackFunction(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam) {

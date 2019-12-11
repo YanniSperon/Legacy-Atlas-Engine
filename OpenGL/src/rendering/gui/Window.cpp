@@ -471,12 +471,12 @@ namespace Atlas {
 		static glm::vec3 InputAmbient = glm::vec3(0.5f, 0.5f, 0.5f);
 		static glm::vec3 InputDiffuse = glm::vec3(0.5f, 0.5f, 0.5f);
 		static glm::vec3 InputSpecular = glm::vec3(0.5f, 0.5f, 0.5f);
-		float mass = 1.0f;
+		//float mass = 1.0f;
 		static int InputShininess = 32;
 		static std::string currentSelectedMesh = "";
 		static std::string currentSelectedTexture = "";
 		static std::string currentSelectedShader = "";
-		static bool hasPhysics = true;
+		//static bool hasPhysics = true;
 
 		ImGui::SetNextWindowPos(ImVec2((1605.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (20.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
 		ImGui::SetNextWindowSize(ImVec2((295.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (405.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
@@ -526,13 +526,13 @@ namespace Atlas {
 			ImGui::EndCombo();
 		}
 		ImGui::Separator();
-		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.42f).x);
-		ImGui::Text("Physics");
-		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.275f).x);
-		ImGui::Checkbox("Enable Physics", &hasPhysics);
-		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.125f).x);
-		ImGui::InputFloat("Mass##massfloatin", &mass);
-		ImGui::Separator();
+		//ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.42f).x);
+		//ImGui::Text("Physics");
+		//ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.275f).x);
+		//ImGui::Checkbox("Enable Physics", &hasPhysics);
+		//ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.125f).x);
+		//ImGui::InputFloat("Mass##massfloatin", &mass);
+		//ImGui::Separator();
 		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.4f).x);
 		ImGui::Text("Position");
 		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.05f).x);
@@ -565,7 +565,7 @@ namespace Atlas {
 					Filepath shaderpath = System::SeperateFilepath(Global::Variables.loadedShaderCache[currentSelectedShader]);
 
 					System::Log("Spawned object with model \"" + meshpath.directory + meshpath.filename + "\" at (" + std::to_string(InputTranslation.x) + ", " + std::to_string(InputTranslation.y) + ", " + std::to_string(InputTranslation.z) + ")");
-					objectsOnScene.push_back(new Object(type::normalModel, meshpath.directory, meshpath.filename, texpath.directory, texpath.filename, shaderpath.directory, shaderpath.filename, true, true, hasPhysics, InputRotation, InputTranslation, InputScale, mass, Material(InputAmbient, InputDiffuse, InputSpecular, ((float)InputShininess))));
+					objectsOnScene.push_back(new Object(type::normalModel, meshpath.directory, meshpath.filename, texpath.directory, texpath.filename, shaderpath.directory, shaderpath.filename, true, true, InputRotation, InputTranslation, InputScale, Material(InputAmbient, InputDiffuse, InputSpecular, ((float)InputShininess))));
 					selectedObject = objectsOnScene.size() - 1;
 				}
 				else {

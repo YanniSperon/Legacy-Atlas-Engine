@@ -91,7 +91,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>src\vendor\bullet;src\rendering\fx;src\rendering\vr;src\rendering\gui\primitives;src\game;src\global;src\system;src\input;src\rendering\gui;src\leveleditor;src\other;src\rendering\primitives;src\physics;src\rendering;src;src\vendor;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\OPENVR\include;$(SolutionDir)Dependencies\IRRKLANG\include;$(SolutionDir)Dependencies\FREETYPE\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src/physics/debug;src/rendering/scene;src/audio;src/game/physics;src\vendor\bullet;src\rendering\fx;src\rendering\vr;src\rendering\gui\primitives;src\game;src\global;src\system;src\input;src\rendering\gui;src\leveleditor;src\other;src\rendering\primitives;src\physics;src\rendering;src;src\vendor;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\OPENVR\include;$(SolutionDir)Dependencies\IRRKLANG\include;$(SolutionDir)Dependencies\FREETYPE\include;</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -104,7 +104,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>src\vendor\bullet;src\rendering\fx;src\rendering\vr;src\rendering\gui\primitives;src\game;src\global;src\system;src\input;src\rendering\gui;src\leveleditor;src\other;src\rendering\primitives;src\physics;src\rendering;src;src\vendor;$(SolutionDir)Dependencies\GLFW x64\include;$(SolutionDir)Dependencies\GLEW x64\include;$(SolutionDir)Dependencies\OPENVR\include;$(SolutionDir)Dependencies\IRRKLANG x64\include;$(SolutionDir)Dependencies\FREETYPE x64\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src/physics/debug;src/rendering/scene;src/audio;src/game/physics;src\vendor\bullet;src\rendering\fx;src\rendering\vr;src\rendering\gui\primitives;src\game;src\global;src\system;src\input;src\rendering\gui;src\leveleditor;src\other;src\rendering\primitives;src\physics;src\rendering;src;src\vendor;$(SolutionDir)Dependencies\GLFW x64\include;$(SolutionDir)Dependencies\GLEW x64\include;$(SolutionDir)Dependencies\OPENVR\include;$(SolutionDir)Dependencies\IRRKLANG x64\include;$(SolutionDir)Dependencies\FREETYPE x64\include;</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -119,7 +119,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>src\vendor\bullet;src\rendering\fx;src\rendering\vr;src\rendering\gui\primitives;src\game;src\global;src\system;src\input;src\rendering\gui;src\leveleditor;src\other;src\rendering\primitives;src\physics;src\rendering;src;src\vendor;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\OPENVR\include;$(SolutionDir)Dependencies\IRRKLANG\include;$(SolutionDir)Dependencies\FREETYPE\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src/physics/debug;src/rendering/scene;src/audio;src/game/physics;src\vendor\bullet;src\rendering\fx;src\rendering\vr;src\rendering\gui\primitives;src\game;src\global;src\system;src\input;src\rendering\gui;src\leveleditor;src\other;src\rendering\primitives;src\physics;src\rendering;src;src\vendor;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\OPENVR\include;$(SolutionDir)Dependencies\IRRKLANG\include;$(SolutionDir)Dependencies\FREETYPE\include;</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -136,7 +136,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>src\vendor\bullet;src\rendering\fx;src\rendering\vr;src\rendering\gui\primitives;src\game;src\global;src\system;src\input;src\rendering\gui;src\leveleditor;src\other;src\rendering\primitives;src\physics;src\rendering;src;src\vendor;$(SolutionDir)Dependencies\GLFW x64\include;$(SolutionDir)Dependencies\GLEW x64\include;$(SolutionDir)Dependencies\OPENVR\include;$(SolutionDir)Dependencies\IRRKLANG x64\include;$(SolutionDir)Dependencies\FREETYPE x64\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src/physics/debug;src/rendering/scene;src/audio;src/game/physics;src\vendor\bullet;src\rendering\fx;src\rendering\vr;src\rendering\gui\primitives;src\game;src\global;src\system;src\input;src\rendering\gui;src\leveleditor;src\other;src\rendering\primitives;src\physics;src\rendering;src;src\vendor;$(SolutionDir)Dependencies\GLFW x64\include;$(SolutionDir)Dependencies\GLEW x64\include;$(SolutionDir)Dependencies\OPENVR\include;$(SolutionDir)Dependencies\IRRKLANG x64\include;$(SolutionDir)Dependencies\FREETYPE x64\include;</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -147,19 +147,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\AtlasEngine.cpp" />
+    <ClCompile Include="src\game\physics\PhysicsScene.cpp" />
     <ClCompile Include="src\game\Player.cpp" />
     <ClCompile Include="src\game\Scene.cpp" />
     <ClCompile Include="src\global\Global.cpp" />
     <ClCompile Include="src\global\GlobalVariables.cpp" />
     <ClCompile Include="src\input\InputHandler.cpp" />
-    <ClCompile Include="src\leveleditor\SceneEditorControl.cpp" />
+    <ClCompile Include="src\leveleditor\LevelEditorControl.cpp" />
     <ClCompile Include="src\other\Convert.cpp" />
-    <ClCompile Include="src\physics\PhysicsDebugDrawer.cpp" />
+    <ClCompile Include="src\physics\debug\PhysicsDebugDrawer.cpp" />
     <ClCompile Include="src\physics\PhysicsEngine.cpp" />
     <ClCompile Include="src\rendering\fx\PostProcessor.cpp" />
     <ClCompile Include="src\rendering\gui\GUI.cpp" />
     <ClCompile Include="src\rendering\gui\Window.cpp" />
+    <ClCompile Include="src\rendering\RenderingEngine.cpp" />
     <ClCompile Include="src\rendering\vr\VRHandler.cpp" />
+    <ClCompile Include="src\rendering\WindowManager.cpp" />
     <ClCompile Include="src\system\System.cpp" />
     <ClCompile Include="src\other\Search.cpp" />
     <ClCompile Include="src\rendering\gui\primitives\Font.cpp" />
@@ -167,17 +171,17 @@
     <ClCompile Include="src\rendering\gui\primitives\Object2D.cpp" />
     <ClCompile Include="src\rendering\gui\primitives\Sentence.cpp" />
     <ClCompile Include="src\system\IO.cpp" />
-    <ClCompile Include="src\rendering\Light.cpp" />
-    <ClCompile Include="src\rendering\Loader.cpp" />
-    <ClCompile Include="src\rendering\Object.cpp" />
+    <ClCompile Include="src\rendering\scene\Light.cpp" />
+    <ClCompile Include="src\rendering\scene\Loader.cpp" />
+    <ClCompile Include="src\rendering\scene\Object.cpp" />
     <ClCompile Include="src\system\Config.cpp" />
-    <ClCompile Include="src\rendering\Camera.cpp" />
-    <ClCompile Include="src\rendering\Mesh.cpp" />
+    <ClCompile Include="src\rendering\scene\Camera.cpp" />
+    <ClCompile Include="src\rendering\scene\Mesh.cpp" />
     <ClCompile Include="src\rendering\primitives\ShapeGenerator.cpp" />
     <ClCompile Include="src\Application.cpp" />
-    <ClCompile Include="src\rendering\Shader.cpp" />
+    <ClCompile Include="src\rendering\scene\Shader.cpp" />
     <ClCompile Include="src\other\Timer.cpp" />
-    <ClCompile Include="src\rendering\SimpleRenderer.cpp" />
+    <ClCompile Include="src\rendering\scene\SimpleRenderer.cpp" />
     <ClCompile Include="src\vendor\bullet\Bullet3Collision\BroadPhaseCollision\b3DynamicBvh.cpp" />
     <ClCompile Include="src\vendor\bullet\Bullet3Collision\BroadPhaseCollision\b3DynamicBvhBroadphase.cpp" />
     <ClCompile Include="src\vendor\bullet\Bullet3Collision\BroadPhaseCollision\b3OverlappingPairCache.cpp" />
@@ -497,21 +501,29 @@
     <None Include="src\vendor\glm\gtx\wrap.inl" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\AtlasEngine.h" />
+    <ClInclude Include="src\audio\AudioEngine.h" />
+    <ClInclude Include="src\game\physics\PhysicsLight.h" />
+    <ClInclude Include="src\game\physics\PhysicsObject.h" />
+    <ClInclude Include="src\game\physics\PhysicsScene.h" />
     <ClInclude Include="src\game\Player.h" />
     <ClInclude Include="src\game\Scene.h" />
     <ClInclude Include="src\global\Global.h" />
     <ClInclude Include="src\global\GlobalVariables.h" />
     <ClInclude Include="src\input\Input.h" />
     <ClInclude Include="src\input\InputHandler.h" />
-    <ClInclude Include="src\leveleditor\SceneEditorControl.h" />
+    <ClInclude Include="src\leveleditor\LevelEditorControl.h" />
     <ClInclude Include="src\other\Convert.h" />
-    <ClInclude Include="src\physics\PhysicsDebugDrawer.h" />
+    <ClInclude Include="src\physics\debug\PhysicsDebugDrawer.h" />
     <ClInclude Include="src\physics\PhysicsEngine.h" />
+    <ClInclude Include="src\physics\PhysicsSimulator.h" />
     <ClInclude Include="src\rendering\fx\PostProcessor.h" />
     <ClInclude Include="src\rendering\gui\GUI.h" />
     <ClInclude Include="src\rendering\gui\Window.h" />
+    <ClInclude Include="src\rendering\RenderingEngine.h" />
     <ClInclude Include="src\rendering\vr\Target.h" />
     <ClInclude Include="src\rendering\vr\VRHandler.h" />
+    <ClInclude Include="src\rendering\WindowManager.h" />
     <ClInclude Include="src\system\Callbacks.h" />
     <ClInclude Include="src\system\System.h" />
     <ClInclude Include="src\other\Search.h" />
@@ -521,18 +533,18 @@
     <ClInclude Include="src\rendering\gui\primitives\Sentence.h" />
     <ClInclude Include="src\leveleditor\LevelEditor.h" />
     <ClInclude Include="src\system\IO.h" />
-    <ClInclude Include="src\rendering\Light.h" />
-    <ClInclude Include="src\rendering\Loader.h" />
-    <ClInclude Include="src\rendering\Object.h" />
+    <ClInclude Include="src\rendering\scene\Light.h" />
+    <ClInclude Include="src\rendering\scene\Loader.h" />
+    <ClInclude Include="src\rendering\scene\Object.h" />
     <ClInclude Include="src\system\Config.h" />
-    <ClInclude Include="src\rendering\Camera.h" />
-    <ClInclude Include="src\rendering\Mesh.h" />
+    <ClInclude Include="src\rendering\scene\Camera.h" />
+    <ClInclude Include="src\rendering\scene\Mesh.h" />
     <ClInclude Include="src\rendering\primitives\ShapeGenerator.h" />
     <ClInclude Include="src\rendering\primitives\ShapeData.h" />
     <ClInclude Include="src\rendering\primitives\Vertex.h" />
-    <ClInclude Include="src\rendering\Renderer.h" />
-    <ClInclude Include="src\rendering\Shader.h" />
-    <ClInclude Include="src\rendering\SimpleRenderer.h" />
+    <ClInclude Include="src\rendering\scene\Renderer.h" />
+    <ClInclude Include="src\rendering\scene\Shader.h" />
+    <ClInclude Include="src\rendering\scene\SimpleRenderer.h" />
     <ClInclude Include="src\other\Timer.h" />
     <ClInclude Include="src\vendor\bullet\btBulletCollisionCommon.h" />
     <ClInclude Include="src\vendor\bullet\btBulletDynamicsCommon.h" />

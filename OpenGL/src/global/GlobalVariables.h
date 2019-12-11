@@ -6,10 +6,11 @@
 #include "Shader.h"
 #include "Scene.h"
 #include "Object2D.h"
+#include "PhysicsEngine.h"
+#include "SimpleRenderer.h"
 #include <chrono>
 #include <unordered_map>
 #include <vector>
-#include "PhysicsEngine.h"
 
 namespace Atlas {
 
@@ -67,6 +68,10 @@ namespace Atlas {
 		std::unordered_map<std::string, std::string> loadedPostProcessingShaderCache;
 
 		Scene currentScene;
+
+		GLFWwindow* window;
+
+		SimpleRenderer* currentRenderer;
 	};
 
 }
