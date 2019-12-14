@@ -1,65 +1,53 @@
-Total Size: 63
+Total Size: 51
 
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj0.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj1.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj2.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj3.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj4.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj5.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj6.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj7.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj8.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj9.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj10.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj11.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj12.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj13.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj14.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj15.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj16.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj17.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj18.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj19.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj20.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj21.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj22.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj23.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj24.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj25.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj26.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj27.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj28.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj29.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj30.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj31.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj32.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj33.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj34.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj35.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj36.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj37.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj38.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj39.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj40.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj41.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj42.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj43.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj44.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj45.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj46.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj47.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj48.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj49.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj50.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj51.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj52.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj53.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj54.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj55.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj56.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj57.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj58.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj59.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj60.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj61.dat
-Obj: G:/Programming/Visual Studio Programs/Level Editor/OpenGL/res/other/data/obj62.dat
+Obj: C:/Dev/Visual Studio/C++ Projects/Level Editor Final/OpenGL/res/other/data/obj0.dat
+Obj: C:/Dev/Visual Studio/C++ Projects/Level Editor Final/OpenGL/res/other/data/obj1.dat
+Obj: C:/Dev/Visual Studio/C++ Projects/Level Editor Final/OpenGL/res/other/data/obj2.dat
+Obj: C:/Dev/Visual Studio/C++ Projects/Level Editor Final/OpenGL/res/other/data/obj3.dat
+Obj: C:/Dev/Visual Studio/C++ Projects/Level Editor Final/OpenGL/res/other/data/obj4.dat
+Obj: C:/Dev/Visual Studio/C++ Projects/Level Editor Final/OpenGL/res/other/data/obj5.dat
+Obj: C:/Dev/Visual Studio/C++ Projects/Level Editor Final/OpenGL/res/other/data/obj6.dat
+Obj: C:/Dev/Visual Studio/C++ Projects/Level Editor Final/OpenGL/res/other/data/obj7.dat
+Obj: C:/Dev/Visual Studio/C++ Projects/Level Editor Final/OpenGL/res/other/data/obj8.dat
+Obj: C:/Dev/Visual Studio/C++ Projects/Level Editor Final/OpenGL/res/other/data/obj9.dat
+Obj: C:/Dev/Visual Studio/C++ Projects/Level Editor Final/OpenGL/res/other/data/obj10.dat
+Obj: C:/Dev/Visual Studio/C++ Projects/Level Editor Final/OpenGL/res/other/data/obj11.dat
+Obj: C:/Dev/Visual Studio/C++ Projects/Level Editor Final/OpenGL/res/other/data/obj12.dat
+Obj: C:/Dev/Visual Studio/C++ Projects/Level Editor Final/OpenGL/res/other/data/obj13.dat
+Obj: C:/Dev/Visual Studio/C++ Projects/Level Editor Final/OpenGL/res/other/data/obj14.dat
+Obj: C:/Dev/Visual Studio/C++ Projects/Level Editor Final/OpenGL/res/other/data/obj15.dat
+Obj: C:/Dev/Visual Studio/C++ Projects/Level Editor Final/OpenGL/res/other/data/obj16.dat
+Obj: C:/Dev/Visual Studio/C++ Projects/Level Editor Final/OpenGL/res/other/data/obj17.dat
+Obj: C:/Dev/Visual Studio/C++ Projects/Level Editor Final/OpenGL/res/other/data/obj18.dat
+Obj: C:/Dev/Visual Studio/C++ Projects/Level Editor Final/OpenGL/res/other/data/obj19.dat
+Obj: C:/Dev/Visual Studio/C++ Projects/Level Editor Final/OpenGL/res/other/data/obj20.dat
+Obj: C:/Dev/Visual Studio/C++ Projects/Level Editor Final/OpenGL/res/other/data/obj21.dat
+Obj: C:/Dev/Visual Studio/C++ Projects/Level Editor Final/OpenGL/res/other/data/obj22.dat
+Obj: C:/Dev/Visual Studio/C++ Projects/Level Editor Final/OpenGL/res/other/data/obj23.dat
+Obj: C:/Dev/Visual Studio/C++ Projects/Level Editor Final/OpenGL/res/other/data/obj24.dat
+Obj: C:/Dev/Visual Studio/C++ Projects/Level Editor Final/OpenGL/res/other/data/obj25.dat
+Obj: C:/Dev/Visual Studio/C++ Projects/Level Editor Final/OpenGL/res/other/data/obj26.dat
+Obj: C:/Dev/Visual Studio/C++ Projects/Level Editor Final/OpenGL/res/other/data/obj27.dat
+Obj: C:/Dev/Visual Studio/C++ Projects/Level Editor Final/OpenGL/res/other/data/obj28.dat
+Obj: C:/Dev/Visual Studio/C++ Projects/Level Editor Final/OpenGL/res/other/data/obj29.dat
+Obj: C:/Dev/Visual Studio/C++ Projects/Level Editor Final/OpenGL/res/other/data/obj30.dat
+Obj: C:/Dev/Visual Studio/C++ Projects/Level Editor Final/OpenGL/res/other/data/obj31.dat
+Obj: C:/Dev/Visual Studio/C++ Projects/Level Editor Final/OpenGL/res/other/data/obj32.dat
+Obj: C:/Dev/Visual Studio/C++ Projects/Level Editor Final/OpenGL/res/other/data/obj33.dat
+Obj: C:/Dev/Visual Studio/C++ Projects/Level Editor Final/OpenGL/res/other/data/obj34.dat
+Obj: C:/Dev/Visual Studio/C++ Projects/Level Editor Final/OpenGL/res/other/data/obj35.dat
+Obj: C:/Dev/Visual Studio/C++ Projects/Level Editor Final/OpenGL/res/other/data/obj36.dat
+Obj: C:/Dev/Visual Studio/C++ Projects/Level Editor Final/OpenGL/res/other/data/obj37.dat
+Obj: C:/Dev/Visual Studio/C++ Projects/Level Editor Final/OpenGL/res/other/data/obj38.dat
+Obj: C:/Dev/Visual Studio/C++ Projects/Level Editor Final/OpenGL/res/other/data/obj39.dat
+Obj: C:/Dev/Visual Studio/C++ Projects/Level Editor Final/OpenGL/res/other/data/obj40.dat
+Obj: C:/Dev/Visual Studio/C++ Projects/Level Editor Final/OpenGL/res/other/data/obj41.dat
+Obj: C:/Dev/Visual Studio/C++ Projects/Level Editor Final/OpenGL/res/other/data/obj42.dat
+Obj: C:/Dev/Visual Studio/C++ Projects/Level Editor Final/OpenGL/res/other/data/obj43.dat
+Obj: C:/Dev/Visual Studio/C++ Projects/Level Editor Final/OpenGL/res/other/data/obj44.dat
+Obj: C:/Dev/Visual Studio/C++ Projects/Level Editor Final/OpenGL/res/other/data/obj45.dat
+Obj: C:/Dev/Visual Studio/C++ Projects/Level Editor Final/OpenGL/res/other/data/obj46.dat
+Obj: C:/Dev/Visual Studio/C++ Projects/Level Editor Final/OpenGL/res/other/data/obj47.dat
+Obj: C:/Dev/Visual Studio/C++ Projects/Level Editor Final/OpenGL/res/other/data/obj48.dat
+Obj: C:/Dev/Visual Studio/C++ Projects/Level Editor Final/OpenGL/res/other/data/obj49.dat
+Obj: C:/Dev/Visual Studio/C++ Projects/Level Editor Final/OpenGL/res/other/data/obj50.dat

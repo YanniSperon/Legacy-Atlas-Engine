@@ -600,8 +600,8 @@ namespace Atlas {
 		static std::string currentSelectedTexture = "";
 		static std::string currentSelectedShader = "";
 
-		ImGui::SetNextWindowPos(ImVec2((1605.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (565.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
-		ImGui::SetNextWindowSize(ImVec2((295.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (350.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
+		ImGui::SetNextWindowPos(ImVec2((1605.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (445.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
+		ImGui::SetNextWindowSize(ImVec2((295.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (470.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
 		ImGui::Begin("Object Settings", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
 		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.17f).x);
 		if (ImGui::BeginCombo("##combo", current_item)) // The second parameter is the label previewed before opening the combo.
@@ -763,7 +763,7 @@ namespace Atlas {
 		ImGui::SetNextWindowPos(ImVec2((1605.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (445.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
 		ImGui::SetNextWindowSize(ImVec2((295.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (100.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
 		ImGui::Begin("Physics Manager", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
-		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.1f).x);
+		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.3f).x);
 		ImGui::Checkbox("Enable Physics", &EnablePhysics);
 		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.1f).x);
 		ImGui::InputFloat3("Gravity##gravityfloatin", &gravity[0]);

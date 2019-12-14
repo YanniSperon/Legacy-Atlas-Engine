@@ -103,9 +103,9 @@ namespace Atlas {
 			Window::DrawPostProcessingManager(window);
 		}
 
-		if (EnablePhysicsManager) {
-			Window::DrawPhysicsManager();
-		}
+		//if (EnablePhysicsManager) {
+		//	Window::DrawPhysicsManager();
+		//}
 	}
 
 	void GUI::LoadPhysicsSimulatorGUI()
