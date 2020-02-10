@@ -16,7 +16,7 @@
 namespace Atlas {
 	bool AtlasEngine::Start()
 	{
-		System::SetWorkingDirectory();
+		Atlas::System::SetWorkingDirectory();
 
 		if (!WindowManager::Initialize()) {
 			return false;

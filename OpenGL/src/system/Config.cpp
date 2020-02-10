@@ -87,6 +87,10 @@ namespace Atlas {
 				std::string value = line.substr(10);
 				mouseMode = MouseMode(std::stoi(value));
 			}
+			else if (line.find("installVCRedist=") != std::string::npos) {
+				std::string value = line.substr(16);
+				shouldInstallVCRedist = std::stoi(value);
+			}
 		}
 	}
 
@@ -121,7 +125,7 @@ namespace Atlas {
 		outfile << "FOV=" << std::to_string(FOV) << "f\n";
 		outfile << "\n";
 		outfile << "#set the mouse mode (raw = 0, default = 1) RAW NOT SUPPORTED BY EVERY SYSTEM\n";
-		outfile << "mouseMode=" << std::to_string(mouseMode);
+		outfile << "mouseMode=" << std::to_string(mouseMode) << "\n";
 		outfile.close();
 	}
 
