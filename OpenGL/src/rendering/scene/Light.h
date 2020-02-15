@@ -23,8 +23,8 @@ namespace Atlas {
 		LightIntensity intensity;
 	public:
 		Light();
-		Light(LightIntensity lightIntensity, type type, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderName, bool glInit, bool hasLighting, glm::vec3 rot, glm::vec3 trans, glm::vec3 s);
-		Light(LightIntensity lightIntensity, type type, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderName, bool glInit, bool hasLighting, glm::vec3 rot, glm::vec3 trans, glm::vec3 s, Material mat);
+		Light(LightIntensity lightIntensity, type type, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderName, bool glInit, bool hasLighting, unsigned long long int uid, glm::vec3 rot, glm::vec3 trans, glm::vec3 s);
+		Light(LightIntensity lightIntensity, type type, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderName, bool glInit, bool hasLighting, unsigned long long int uid, glm::vec3 rot, glm::vec3 trans, glm::vec3 s, Material mat);
 
 		void SetLightIntensity(LightIntensity newValue);
 		LightIntensity GetLightIntensity();

@@ -3,6 +3,8 @@
 #include "btBulletDynamicsCommon.h"
 #include "BulletCollision/CollisionShapes/btTriangleMesh.h"
 #include "PhysicsDebugDrawer.h"
+#include "PhysicsObject.h"
+#include "PhysicsScene.h"
 #include "ShapeData.h"
 
 namespace Atlas {
@@ -10,7 +12,8 @@ namespace Atlas {
 	public:
 		static void Initialize();
 		static void Update(double deltaT);
-		static btCollisionObject* AddPhysicsBody(btCollisionShape* shape, btTransform& transformation, float mass);
+		static void SetPhysicsScene(PhysicsScene* scene);
+		static btCollisionObject* AddPhysicsBody(btCollisionShape* shape, btTransform& transformation, float mass, PhysicsObject* pObj);
 		static void Recalculate(btCollisionObject* object);
 		static void DrawDebug();
 		static void Cleanup();

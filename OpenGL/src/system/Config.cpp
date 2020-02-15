@@ -87,10 +87,6 @@ namespace Atlas {
 				std::string value = line.substr(10);
 				mouseMode = MouseMode(std::stoi(value));
 			}
-			else if (line.find("installVCRedist=") != std::string::npos) {
-				std::string value = line.substr(16);
-				shouldInstallVCRedist = std::stoi(value);
-			}
 		}
 	}
 

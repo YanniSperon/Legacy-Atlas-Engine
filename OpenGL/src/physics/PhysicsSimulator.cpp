@@ -8,6 +8,7 @@
 #include "System.h"
 #include "PostProcessor.h"
 #include "GUI.h"
+#include "Timer.h"
 
 namespace Atlas {
 	
@@ -19,6 +20,7 @@ namespace Atlas {
 		bool shouldExit = false;
 		PhysicsRenderer renderer = PhysicsRenderer();
 		PhysicsScene physicsScene = PhysicsScene(sceneToSimulate);
+		PhysicsEngine::SetPhysicsScene(&physicsScene);
 		bool shouldReenableMovementControls = false;
 		if (originalCamera->GetHasLookControls()) {
 			shouldReenableMovementControls = true;
@@ -26,6 +28,7 @@ namespace Atlas {
 		}
 		auto lastTime = std::chrono::high_resolution_clock::now();
 		auto currentTime = lastTime;
+		Timer shootTimer(0.1f);
 		while (!shouldExit && !glfwWindowShouldClose(Global::Variables.window)) {
 			///////////////////////////////////////////////////////////////////////////
 			glfwPollEvents();
@@ -59,8 +62,19 @@ namespace Atlas {
 				physicsScene.playersOnScene.at(0)->MoveDown(deltaTime);
 			}
 			if (Global::Variables.mouseIn.leftClicked) {
-				physicsScene.physicsObjectsOnScene.push_back(new PhysicsObject(new Object(type::cubeModel, "", "", "res/images/textures/", "newcow.png", "res/shaders/", "Lighting.shader", true, true, glm::vec3(0.0f, 0.0f, 0.0f), physicsScene.playersOnScene.at(0)->GetTranslation(), glm::vec3(1.0f, 1.0f, 1.0f)), 50.0f));
+				physicsScene.physicsObjectsOnScene.push_back(new PhysicsObject(new Object(type::cubeModel, "", "", "res/images/textures/", "newcow.png", "res/shaders/", "Lighting.shader", true, true, System::GenerateUniqueID(), glm::vec3(0.0f, 0.0f, 0.0f), physicsScene.playersOnScene.at(0)->GetTranslation(), glm::vec3(0.25f, 0.25f, 0.5f)), 50.0f));
 				physicsScene.physicsObjectsOnScene.at(physicsScene.physicsObjectsOnScene.size() - 1)->Launch(physicsScene.playersOnScene.at(0)->GetViewDirection());
+				shootTimer.Reset(0.1f);
+				shootTimer.Start();
+			}
+			if (Global::Variables.mouseIn.leftHeld) {
+				shootTimer.ElapseTime(deltaTime);
+				if (shootTimer.HasFinished()) {
+					physicsScene.physicsObjectsOnScene.push_back(new PhysicsObject(new Object(type::cubeModel, "", "", "res/images/textures/", "newcow.png", "res/shaders/", "Lighting.shader", true, true, System::GenerateUniqueID(), glm::vec3(0.0f, 0.0f, 0.0f), physicsScene.playersOnScene.at(0)->GetTranslation(), glm::vec3(0.25f, 0.25f, 0.5f)), 50.0f));
+					physicsScene.physicsObjectsOnScene.at(physicsScene.physicsObjectsOnScene.size() - 1)->Launch(physicsScene.playersOnScene.at(0)->GetViewDirection());
+					shootTimer.Reset(0.1f);
+					shootTimer.Start();
+				}
 			}
 			physicsScene.playersOnScene.at(0)->BringWith(physicsScene.playersOnScene.at(0)->GetPlayerModel());
 			PhysicsEngine::Update(deltaTime);

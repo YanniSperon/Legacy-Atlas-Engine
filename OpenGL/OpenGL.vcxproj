@@ -149,6 +149,7 @@
   <ItemGroup>
     <ClCompile Include="src\AtlasEngine.cpp" />
     <ClCompile Include="src\game\physics\PhysicsLight.cpp" />
+    <ClCompile Include="src\game\physics\PhysicsLinker.cpp" />
     <ClCompile Include="src\game\physics\PhysicsObject.cpp" />
     <ClCompile Include="src\game\physics\PhysicsRenderer.cpp" />
     <ClCompile Include="src\game\physics\PhysicsScene.cpp" />
@@ -508,6 +509,7 @@
     <ClInclude Include="src\AtlasEngine.h" />
     <ClInclude Include="src\audio\AudioEngine.h" />
     <ClInclude Include="src\game\physics\PhysicsLight.h" />
+    <ClInclude Include="src\game\physics\PhysicsLinker.h" />
     <ClInclude Include="src\game\physics\PhysicsObject.h" />
     <ClInclude Include="src\game\physics\PhysicsRenderer.h" />
     <ClInclude Include="src\game\physics\PhysicsScene.h" />

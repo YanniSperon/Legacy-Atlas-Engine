@@ -11,8 +11,8 @@
 namespace Atlas {
 
 	PhysicsObject::PhysicsObject()
+		: uid(0), vertexBufferID(0), indexBufferID(0), texID(0), shaderID(0), numIndices(0), material(), glInitialized(false), textureDirectory(""), textureName(""), shaderDirectory(""), shaderName(""), hasLighting(false), physicsObject(NULL)
 	{
-
 	}
 
 	PhysicsObject::PhysicsObject(Object* obj, float mass)
@@ -70,12 +70,13 @@ namespace Atlas {
 		texID = obj->GetTextureID();
 		shaderID = obj->GetShaderID();
 		numIndices = obj->GetNumIndices();
+		uid = obj->GetUID();
 		
 		btCollisionShape* physicsShape = new btBoxShape(Convert::Vector3(GetShape().max));
 		physicsShape->setLocalScaling(Convert::Vector3(obj->GetScale()));
 		btTransform shapeTransformation;
 		shapeTransformation.setFromOpenGLMatrix(&GetModelTransRotMatrix()[0][0]);
-		physicsObject = PhysicsEngine::AddPhysicsBody(physicsShape, shapeTransformation, mass);
+		physicsObject = PhysicsEngine::AddPhysicsBody(physicsShape, shapeTransformation, mass, this);
 
 		if (obj->GetGLInitialized()) {
 			GLInit();
@@ -155,6 +156,11 @@ namespace Atlas {
 		return physicsObject;
 	}
 
+	unsigned long long int PhysicsObject::GetUID()
+	{
+		return uid;
+	}
+
 	void PhysicsObject::SetHasLighting(bool newValue)
 	{
 		hasLighting = newValue;
@@ -189,6 +195,14 @@ namespace Atlas {
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	}
+
+	void PhysicsObject::PrepareForDeletion()
+	{
+		BulletPhysicsObject* userPtr = (BulletPhysicsObject*)physicsObject->getUserPointer();
+		delete userPtr;
+		physicsObject->setUserPointer(NULL);
+		PhysicsEngine::RemovePhysicsBody(physicsObject);
 	}
 
 	void PhysicsObject::GLInit()

@@ -38,7 +38,7 @@ namespace Atlas {
 
 	}
 
-	Object::Object(type type, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderFileName, bool glInit, bool lighting)
+	Object::Object(type type, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderFileName, bool glInit, bool lighting, unsigned long long int uid)
 		: Mesh(type, meshDir, meshName), material(), glInitialized(glInit), textureDirectory(texDir), textureName(texName), hasLighting(lighting), indexBufferID(0), vertexBufferID(0), shaderDirectory(shaderDir), shaderName(shaderFileName)
 	{
 		if (Global::Variables.textureCache.find(texDir + texName) != Global::Variables.textureCache.end()) {
@@ -87,7 +87,7 @@ namespace Atlas {
 		}
 	}
 
-	Object::Object(type type, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderFileName, bool glInit, bool lighting, glm::vec3 rot, glm::vec3 trans, glm::vec3 s)
+	Object::Object(type type, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderFileName, bool glInit, bool lighting, unsigned long long int uid, glm::vec3 rot, glm::vec3 trans, glm::vec3 s)
 		: Mesh(type, meshDir, meshName, rot, trans, s), material(), glInitialized(glInit), textureDirectory(texDir), textureName(texName), shaderDirectory(shaderDir), shaderName(shaderFileName), hasLighting(lighting), indexBufferID(0), vertexBufferID(0)
 	{
 		if (Global::Variables.textureCache.find(texDir + texName) != Global::Variables.textureCache.end()) {
@@ -136,7 +136,7 @@ namespace Atlas {
 		}
 	}
 
-	Object::Object(type type, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderFileName, bool glInit, bool lighting, glm::vec3 rot, glm::vec3 trans, glm::vec3 s, Material mat)
+	Object::Object(type type, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderFileName, bool glInit, bool lighting, unsigned long long int uid, glm::vec3 rot, glm::vec3 trans, glm::vec3 s, Material mat)
 		: Mesh(type, meshDir, meshName, rot, trans, s), material(mat), glInitialized(glInit), textureDirectory(texDir), textureName(texName), shaderDirectory(shaderDir), shaderName(shaderFileName), hasLighting(lighting), indexBufferID(0), vertexBufferID(0)
 	{
 		if (Global::Variables.textureCache.find(texDir + texName) != Global::Variables.textureCache.end()) {
@@ -339,6 +339,11 @@ namespace Atlas {
 	GLuint Object::GetIBO()
 	{
 		return indexBufferID;
+	}
+
+	unsigned long long int Object::GetUID()
+	{
+		return uid;
 	}
 
 	bool Object::GetGLInitialized()

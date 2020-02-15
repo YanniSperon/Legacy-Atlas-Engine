@@ -25,7 +25,7 @@ namespace Atlas {
 
 	class Object : public Mesh {
 	private:
-		unsigned int uid;
+		unsigned long long int uid;
 		GLuint vertexBufferID;
 		GLuint indexBufferID;
 		GLuint texID;
@@ -40,9 +40,9 @@ namespace Atlas {
 		bool hasLighting;
 	public:
 		Object();
-		Object(type type, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderFileName, bool glInit, bool lighting);
-		Object(type type, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderFileName, bool glInit, bool lighting, glm::vec3 rot, glm::vec3 trans, glm::vec3 s);
-		Object(type type, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderFileName, bool glInit, bool lighting, glm::vec3 rot, glm::vec3 trans, glm::vec3 s, Material mat);
+		Object(type type, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderFileName, bool glInit, bool lighting, unsigned long long int uid);
+		Object(type type, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderFileName, bool glInit, bool lighting, unsigned long long int uid, glm::vec3 rot, glm::vec3 trans, glm::vec3 s);
+		Object(type type, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderFileName, bool glInit, bool lighting, unsigned long long int uid, glm::vec3 rot, glm::vec3 trans, glm::vec3 s, Material mat);
 		virtual ~Object();
 
 		void GLInit();
@@ -68,6 +68,8 @@ namespace Atlas {
 		Material GetMaterial();
 		GLuint GetVBO();
 		GLuint GetIBO();
+
+		unsigned long long int GetUID();
 
 		virtual std::string GetType() override;
 

@@ -13,6 +13,7 @@
 namespace Atlas {
 
 	static std::string workingDir;
+	static unsigned long long int lastID = 1000000000;
 
 	std::vector<std::string> System::GetFilesInDirectory(const std::string& directory)
 	{
@@ -456,4 +457,29 @@ namespace Atlas {
 		}
 		return Filepath(dir, name);
 	}
+
+	unsigned long long int System::GenerateUniqueID()
+	{
+		lastID++;
+		return lastID;
+	}
+
+	unsigned long long int System::UpdateLastUID(unsigned long long int uid)
+	{
+		if (uid > lastID) {
+			lastID = uid;
+		}
+		return uid;
+	}
+
+	void System::ResetUIDGenerator()
+	{
+		lastID = 1000000000;
+	}
+
+	//std::size_t System::GenerateUniqueID()
+	//{
+	//	lastID++;
+	//	return std::hash<unsigned long long int>{}(lastID);
+	//}
 }

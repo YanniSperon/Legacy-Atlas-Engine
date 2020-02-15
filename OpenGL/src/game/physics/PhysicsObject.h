@@ -4,10 +4,43 @@
 #include "btBulletDynamicsCommon.h"
 
 namespace Atlas {
+
+	struct Collision {
+		const btCollisionObject* obj1;
+		const btCollisionObject* obj2;
+
+		Collision() {
+			obj1 = NULL;
+			obj2 = NULL;
+		}
+
+		Collision(const btCollisionObject* object1, const btCollisionObject* object2)
+			: obj1(object1), obj2(object2)
+		{
+			
+		}
+	};
+
+	struct BulletPhysicsObject {
+		unsigned long long int uid;
+		Collision collisionData;
+		bool shouldCollideWithPlayer;
+		void* physicsObject;
+
+		BulletPhysicsObject(void* parentPhysicsObject, unsigned long long int objectUID, bool shouldCollideWithPlayerBody)
+			: uid(objectUID), collisionData(), physicsObject(parentPhysicsObject), shouldCollideWithPlayer(shouldCollideWithPlayerBody)
+		{
+
+		}
+
+		~BulletPhysicsObject() {
+
+		}
+	};
 	
 	class PhysicsObject : public Mesh {
 	private:
-		unsigned int uid;
+		unsigned long long int uid;
 		GLuint vertexBufferID;
 		GLuint indexBufferID;
 		GLuint texID;
@@ -36,6 +69,7 @@ namespace Atlas {
 		GLuint GetTextureID();
 		GLuint GetVBO();
 		btCollisionObject* GetPhysicsObject();
+		unsigned long long int GetUID();
 
 		void SetHasLighting(bool newValue);
 
@@ -44,6 +78,8 @@ namespace Atlas {
 		void Draw();
 		void Bind();
 		void Unbind();
+
+		void PrepareForDeletion();
 
 		void GLInit();
 	};
