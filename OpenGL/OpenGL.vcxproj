@@ -29,26 +29,26 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -160,7 +160,6 @@
     <ClCompile Include="src\input\InputHandler.cpp" />
     <ClCompile Include="src\leveleditor\LevelEditorControl.cpp" />
     <ClCompile Include="src\other\Convert.cpp" />
-    <ClCompile Include="src\physics\debug\PhysicsDebugDrawer.cpp" />
     <ClCompile Include="src\physics\PhysicsEngine.cpp" />
     <ClCompile Include="src\physics\PhysicsSimulator.cpp" />
     <ClCompile Include="src\rendering\fx\PostProcessor.cpp" />
@@ -521,7 +520,6 @@
     <ClInclude Include="src\input\InputHandler.h" />
     <ClInclude Include="src\leveleditor\LevelEditorControl.h" />
     <ClInclude Include="src\other\Convert.h" />
-    <ClInclude Include="src\physics\debug\PhysicsDebugDrawer.h" />
     <ClInclude Include="src\physics\PhysicsEngine.h" />
     <ClInclude Include="src\physics\PhysicsSimulator.h" />
     <ClInclude Include="src\rendering\fx\PostProcessor.h" />

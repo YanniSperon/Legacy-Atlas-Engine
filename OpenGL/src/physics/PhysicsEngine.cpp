@@ -13,7 +13,7 @@ namespace Atlas {
 	static btBroadphaseInterface* overlappingPairCache;
 	static btSequentialImpulseConstraintSolver* solver;
 	static btDiscreteDynamicsWorld* dynamicsWorld;
-	static PhysicsDebugDrawer* debugDrawer;
+	//static PhysicsDebugDrawer* debugDrawer;
 	static bool physicsEnabled;
 
 	static PhysicsScene* physicsScene;
@@ -62,9 +62,9 @@ namespace Atlas {
 		dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
 		dynamicsWorld->setGravity(btVector3(0, -9.80665, 0));
 		
-		debugDrawer = new PhysicsDebugDrawer();
-		debugDrawer->setDebugMode(0);
-		dynamicsWorld->setDebugDrawer(debugDrawer);
+		//debugDrawer = new PhysicsDebugDrawer();
+		//debugDrawer->setDebugMode(0);
+		//dynamicsWorld->setDebugDrawer(debugDrawer);
 
 		physicsEnabled = true;
 	}
@@ -167,14 +167,14 @@ namespace Atlas {
 
 	void PhysicsEngine::ToggleDebugger()
 	{
-		if (Global::Variables.keyIn.ninePressed) {
-			System::Log("Toggling debug wireframe");
-			debugDrawer->ToggleDebugFlag(btIDebugDraw::DBG_DrawWireframe);
-		}
-		if (Global::Variables.keyIn.zeroPressed) {
-			System::Log("Toggling debug AABB");
-			debugDrawer->ToggleDebugFlag(btIDebugDraw::DBG_DrawAabb);
-		}
+		//if (Global::Variables.keyIn.ninePressed) {
+		//	System::Log("Toggling debug wireframe");
+		//	debugDrawer->ToggleDebugFlag(btIDebugDraw::DBG_DrawWireframe);
+		//}
+		//if (Global::Variables.keyIn.zeroPressed) {
+		//	System::Log("Toggling debug AABB");
+		//	debugDrawer->ToggleDebugFlag(btIDebugDraw::DBG_DrawAabb);
+		//}
 	}
 
 	void PhysicsEngine::RemovePhysicsBody(btCollisionObject* object)

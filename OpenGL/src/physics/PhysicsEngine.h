@@ -2,7 +2,6 @@
 
 #include "btBulletDynamicsCommon.h"
 #include "BulletCollision/CollisionShapes/btTriangleMesh.h"
-#include "PhysicsDebugDrawer.h"
 #include "PhysicsObject.h"
 #include "PhysicsScene.h"
 #include "ShapeData.h"
