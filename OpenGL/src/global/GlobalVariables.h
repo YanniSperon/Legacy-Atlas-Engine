@@ -11,6 +11,7 @@
 #include <chrono>
 #include <unordered_map>
 #include <vector>
+#include <functional>
 
 namespace Atlas {
 
@@ -19,6 +20,7 @@ namespace Atlas {
 		GlobalVariables();
 		
 		std::vector<std::string> consoleLog;
+		std::unordered_map<std::string, std::function<void(std::vector<std::string>&)>> commandMap;
 
 		std::chrono::steady_clock::time_point systemStartTime;
 

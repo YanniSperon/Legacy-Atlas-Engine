@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <functional>
+
 #include "GL/glew.h"
 #include "GLFW/glfw3.h"
 #define GLFW_EXPOSE_NATIVE_WIN32
@@ -23,6 +25,7 @@ namespace Atlas {
 
 		}
 	};
+
 	class System {
 	public:
 		static std::vector<std::string> GetFilesInDirectory(const std::string& directory);
@@ -41,11 +44,17 @@ namespace Atlas {
 		static bool HasValidFileAttributes(const std::string& filePath);
 		static bool CopyFileAtlas(const std::string& originalFilePathAndName, const std::string& finalFilePath);
 
+
 		static void Log(const std::string& text);
 		static void Warn(const std::string& text);
 		static void Err(const std::string& text);
 
+		static void DispatchCommand(std::string& command, std::vector<std::string>& args);
+		static void RegisterCommand(std::string& command, std::function<void(std::vector<std::string>&)> func);
+
 		static void SendConsoleInput(const std::string& input);
+		static void SetConsoleLogFile(const std::string& logFile);
+
 
 		static void DrawConsole();
 

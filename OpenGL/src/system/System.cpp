@@ -3,9 +3,11 @@
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw_gl3.h"
 #include "Convert.h"
+
+#include <Windows.h>
+
 #include <iostream>
 #include <chrono>
-#include <Windows.h>
 #include <fstream>
 #include <algorithm>
 #include <sstream>
@@ -13,7 +15,8 @@
 namespace Atlas {
 
 	static std::string workingDir;
-	static unsigned long long int lastID = 1000000000;
+	static unsigned long long int lastID = 0;
+	static std::ofstream consoleLogFile;
 
 	std::vector<std::string> System::GetFilesInDirectory(const std::string& directory)
 	{
@@ -163,9 +166,7 @@ namespace Atlas {
 	std::string System::ConvertFilePathToLocal(const std::string& absoluteFilePath)
 	{
 		std::string correctFilePath = absoluteFilePath;
-		if (correctFilePath.find("\\") != std::string::npos) {
-			std::replace(correctFilePath.begin(), correctFilePath.end(), '\\', '/');
-		}
+		std::replace(correctFilePath.begin(), correctFilePath.end(), '\\', '/');
 		if (IsFilePathInWorkingDirectory(correctFilePath)) {
 			return correctFilePath.substr(GetWorkingDirectory().size());
 		}
@@ -223,8 +224,7 @@ namespace Atlas {
 		}
 	}
 
-	void System::Log(const std::string& text)
-	{
+	std::string GetTimestamp() {
 		auto currentTime = std::chrono::high_resolution_clock::now();
 		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(currentTime - Global::Variables.systemStartTime);
 		auto hours = std::chrono::duration_cast<std::chrono::hours>(duration);
@@ -232,88 +232,103 @@ namespace Atlas {
 		auto seconds = std::chrono::duration_cast<std::chrono::seconds>(duration - hours - minutes);
 		auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(duration - hours - minutes - seconds);
 		auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(duration - hours - minutes - seconds - milliseconds);
+		
+		return std::to_string(hours.count()) + ":" + std::to_string(minutes.count()) + ":" + std::to_string(seconds.count()) + "." + std::to_string(milliseconds.count()) + std::to_string(microseconds.count());
+	}
 
-		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
-		std::string outString = "";
-		if (text.find("\n") != std::string::npos) {
-			outString = std::to_string(hours.count()) + ":" + std::to_string(minutes.count()) + ":" + std::to_string(seconds.count()) + "." + std::to_string(milliseconds.count()) + std::to_string(microseconds.count()) + " -- LOG:  " + text;
-		}
-		else {
-			outString = std::to_string(hours.count()) + ":" + std::to_string(minutes.count()) + ":" + std::to_string(seconds.count()) + "." + std::to_string(milliseconds.count()) + std::to_string(microseconds.count()) + " -- LOG:  " + text + "\n";
-		}
-		printf("%s", outString.c_str());
+	void UpdateConsoleLog(std::string& with) {
 		if (Global::Variables.consoleLog.size() > 50) {
 			Global::Variables.consoleLog.erase(Global::Variables.consoleLog.begin());
-			Global::Variables.consoleLog.push_back(outString);
+			Global::Variables.consoleLog.push_back(with);
 		}
 		else {
-			Global::Variables.consoleLog.push_back(outString);
+			Global::Variables.consoleLog.push_back(with);
 		}
+	}
+
+	void System::Log(const std::string& text)
+	{
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+		std::string outString = "";
+		std::string timeStamp = GetTimestamp();
+
+		outString = timeStamp + " -- LOG:  " + text;
+		if (text.find("\n") == std::string::npos) {
+			outString += "\n";
+		}
+
+		printf("%s", outString.c_str());
+		if (consoleLogFile.is_open()) {
+			consoleLogFile << outString;
+			consoleLogFile.flush();
+		}
+		UpdateConsoleLog(outString);
 	}
 
 	void System::Warn(const std::string& text)
 	{
-		auto currentTime = std::chrono::high_resolution_clock::now();
-		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(currentTime - Global::Variables.systemStartTime);
-		auto hours = std::chrono::duration_cast<std::chrono::hours>(duration);
-		auto minutes = std::chrono::duration_cast<std::chrono::minutes>(duration - hours);
-		auto seconds = std::chrono::duration_cast<std::chrono::seconds>(duration - hours - minutes);
-		auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(duration - hours - minutes - seconds);
-		auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(duration - hours - minutes - seconds - milliseconds);
-
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 14);
 		std::string outString = "";
-		if (text.find("\n") != std::string::npos) {
-			outString = std::to_string(hours.count()) + ":" + std::to_string(minutes.count()) + ":" + std::to_string(seconds.count()) + "." + std::to_string(milliseconds.count()) + std::to_string(microseconds.count()) + " -- WARN: " + text;
+		std::string timeStamp = GetTimestamp();
+
+		outString = timeStamp + " -- WRN:  " + text;
+		if (text.find("\n") == std::string::npos) {
+			outString += "\n";
 		}
-		else {
-			outString = std::to_string(hours.count()) + ":" + std::to_string(minutes.count()) + ":" + std::to_string(seconds.count()) + "." + std::to_string(milliseconds.count()) + std::to_string(microseconds.count()) + " -- WARN: " + text + "\n";
-		}
+
 		printf("%s", outString.c_str());
+		if (consoleLogFile.is_open()) {
+			consoleLogFile << outString;
+			consoleLogFile.flush();
+		}
+		UpdateConsoleLog(outString);
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
-		if (Global::Variables.consoleLog.size() > 50) {
-			Global::Variables.consoleLog.erase(Global::Variables.consoleLog.begin());
-			Global::Variables.consoleLog.push_back(outString);
-		}
-		else {
-			Global::Variables.consoleLog.push_back(outString);
-		}
 	}
 
 	void System::Err(const std::string& text)
 	{
-		auto currentTime = std::chrono::high_resolution_clock::now();
-		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(currentTime - Global::Variables.systemStartTime);
-		auto hours = std::chrono::duration_cast<std::chrono::hours>(duration);
-		auto minutes = std::chrono::duration_cast<std::chrono::minutes>(duration - hours);
-		auto seconds = std::chrono::duration_cast<std::chrono::seconds>(duration - hours - minutes);
-		auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(duration - hours - minutes - seconds);
-		auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(duration - hours - minutes - seconds - milliseconds);
-
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 12);
 		std::string outString = "";
-		if (text.find("\n") != std::string::npos) {
-			outString = std::to_string(hours.count()) + ":" + std::to_string(minutes.count()) + ":" + std::to_string(seconds.count()) + "." + std::to_string(milliseconds.count()) + std::to_string(microseconds.count()) + " -- ERR:  " + text;
+		std::string timeStamp = GetTimestamp();
+
+		outString = timeStamp + " -- ERR:  " + text;
+		if (text.find("\n") == std::string::npos) {
+			outString += "\n";
 		}
-		else {
-			outString = std::to_string(hours.count()) + ":" + std::to_string(minutes.count()) + ":" + std::to_string(seconds.count()) + "." + std::to_string(milliseconds.count()) + std::to_string(microseconds.count()) + " -- ERR:  " + text + "\n";
-		}
+
 		printf("%s", outString.c_str());
+		if (consoleLogFile.is_open()) {
+			consoleLogFile << outString;
+			consoleLogFile.flush();
+		}
+		UpdateConsoleLog(outString);
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
-		if (Global::Variables.consoleLog.size() > 50) {
-			Global::Variables.consoleLog.erase(Global::Variables.consoleLog.begin());
-			Global::Variables.consoleLog.push_back(outString);
+	}
+
+	void System::DispatchCommand(std::string& command, std::vector<std::string>& args)
+	{
+		auto it = Global::Variables.commandMap.find(command);
+		if (it != Global::Variables.commandMap.end()) {
+			it->second(args);
 		}
 		else {
-			Global::Variables.consoleLog.push_back(outString);
+			System::Err("Command \"" + command + "\" not found");
 		}
+	}
+
+	void System::RegisterCommand(std::string& command, std::function<void(std::vector<std::string>&)> func)
+	{
+		Global::Variables.commandMap[command] = func;
 	}
 
 	void System::SendConsoleInput(const std::string& input)
 	{
 		std::vector<std::string> args;
 		std::string command;
-		if ((input.find("/") != std::string::npos) && (input.find("/") == 0 && input.size() > 1)) {
+		if (input.empty()) {
+			return;
+		}
+		if (input[0] == '/') {
 			std::string StringWithoutSlash = input.substr(1);
 			std::vector<std::string> temp = Convert::SeperateByDelimiter(Convert::FormatSpaces(Convert::Trim(StringWithoutSlash)), ' ');
 			if (temp.size() > 0) {
@@ -322,31 +337,25 @@ namespace Atlas {
 					args.push_back(temp.at(i));
 				}
 			}
+			System::DispatchCommand(command, args);
 		}
 		else {
 			System::Log(input);
 		}
-		/*
-		vector<string> internal;
-		stringstream ss(str); // Turn the string into a stream.
-		string tok;
-		
-		while(getline(ss, tok, delimiter)) {
-		  internal.push_back(tok);
-		}
-		
-		return internal;
-		*/
+	}
 
-		/*
-		for (short i = 0; i<str.length(); i++){
-			if (str[i] == ' ')
-				counter++;
-			else {
-				strWords[counter] += str[i];
-			}
+	void System::SetConsoleLogFile(const std::string& logFile)
+	{
+		if (logFile.empty()) {
+			return;
 		}
-		*/
+		std::string logFilePath = ConvertFilePathToAbsolute(logFile);
+		System::Log("Setting console log file to: \"" + logFile + "\" which is \"" + logFilePath + "\"");
+		if (consoleLogFile.is_open()) {
+			consoleLogFile.close();
+		}
+
+		consoleLogFile = std::ofstream(logFilePath);
 	}
 
 	void System::DrawConsole()
@@ -358,7 +367,7 @@ namespace Atlas {
 		ImGui::BeginChild("Log");
 		for (int i = 0; i < Global::Variables.consoleLog.size(); i++) {
 			std::string temp = Global::Variables.consoleLog[i];
-			if (temp.find("WARN") != std::string::npos) {
+			if (temp.find("WRN") != std::string::npos) {
 				ImGui::TextColored(ImVec4(1, 1, 0, 1), "%s", temp.c_str());
 			}
 			else if (temp.find("ERR") != std::string::npos) {
@@ -437,7 +446,7 @@ namespace Atlas {
 			case FNERR_BUFFERTOOSMALL: std::cout << "FNERR_BUFFERTOOSMALL\n";  break;
 			case FNERR_INVALIDFILENAME: std::cout << "FNERR_INVALIDFILENAME\n"; break;
 			case FNERR_SUBCLASSFAILURE: std::cout << "FNERR_SUBCLASSFAILURE\n"; break;
-			default: std::cout << "You cancelled.\n";
+			default: std::cout << "You canceled.\n";
 			}
 		}
 		return "INVALID";
@@ -468,13 +477,17 @@ namespace Atlas {
 	{
 		if (uid > lastID) {
 			lastID = uid;
+			return uid;
 		}
-		return uid;
+		else {
+			lastID++;
+			return lastID;
+		}
 	}
 
 	void System::ResetUIDGenerator()
 	{
-		lastID = 1000000000;
+		lastID = 0;
 	}
 
 	//std::size_t System::GenerateUniqueID()

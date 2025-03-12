@@ -24,6 +24,7 @@ namespace Atlas {
 		shaderName = obj->GetShaderName();
 		hasLighting = obj->GetHasLighting();
 		material = obj->GetMaterial();
+
 		//if (Global::Variables.textureCache.find(obj->GetTextureDirectory() + obj->GetTextureName()) != Global::Variables.textureCache.end()) {
 		//	texID = Global::Variables.textureCache[obj->GetTextureDirectory() + obj->GetTextureName()];
 		//}
@@ -233,5 +234,44 @@ namespace Atlas {
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 		glFinish();
+	}
+
+	std::string to_string(void* userPointer) {
+		if (userPointer) {
+			BulletPhysicsObject* userPtr = static_cast<BulletPhysicsObject*>(userPointer);
+			if (userPtr) {
+				return std::string("BulletPhysicsObject: {") + "\"UID\": \"" + std::to_string(userPtr->uid) + "\"}";
+			}
+			else {
+				return "invalid cast";
+			}
+		}
+		else {
+			return "nullptr";
+		}
+	}
+
+	std::string to_string(btCollisionObject* obj) {
+		if (obj) {
+			return std::string("btCollisionObject: {") + "\"User Object:\": \"" + to_string(obj->getUserPointer()) + "\"}";
+		}
+		else {
+			return "nullptr";
+		}
+	}
+
+	std::string PhysicsObject::ToString() {
+		if (physicsObject) {
+			if (physicsObject->getUserPointer()) {
+				return std::string("PhysicsObject: {") + "\"UID\": \"" + std::to_string(uid) + "\" " + "\"CollisionUID\": \"" + std::to_string(static_cast<BulletPhysicsObject*>(physicsObject->getUserPointer())->uid) + "\" " + Mesh::ToString() + "}";
+			}
+		}
+
+		return std::string("PhysicsObject: {") + "\"UID\": \"" + std::to_string(uid) + "\" " + "\"CollisionUID\": \"nullptr\" " + Mesh::ToString() + "}";
+
+	}
+
+	std::string PhysicsObject::ToStringVerbose() {
+		return std::string("PhysicsObject: {") + "\"UID\": \"" + std::to_string(uid) + "\" " + "\"BTCollisionObject\": \"" + to_string(physicsObject) + "\" " + Mesh::ToString() + "}";
 	}
 }

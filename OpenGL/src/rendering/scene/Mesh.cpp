@@ -20,10 +20,10 @@ namespace Atlas {
 
 	}
 
-	Mesh::Mesh(type type, std::string dir, std::string name)
-		: directory(dir), fileName(name), rotation(0.0f, 0.0f, 0.0f), translation(0.0f, 0.0f, 0.0f), minExtents(-0.5f, -0.5f, -0.5f), maxExtents(0.5f, 0.5f, 0.5f), scale(1.0f, 1.0f, 1.0f), objectType(type)
+	Mesh::Mesh(type t, std::string dir, std::string name)
+		: directory(dir), fileName(name), rotation(0.0f, 0.0f, 0.0f), translation(0.0f, 0.0f, 0.0f), minExtents(-0.5f, -0.5f, -0.5f), maxExtents(0.5f, 0.5f, 0.5f), scale(1.0f, 1.0f, 1.0f), objectType(t)
 	{
-		if (type == type::cubeModel) {
+		if (t == type::cubeModel) {
 			if (Global::Variables.meshCache.find("default::type::cube") != Global::Variables.meshCache.end()) {
 				shape = Global::Variables.meshCache["default::type::cube"];
 			}
@@ -32,7 +32,7 @@ namespace Atlas {
 				shape = Global::Variables.meshCache["default::type::cube"];
 			}
 		}
-		else if (type == type::normalModel) {
+		else if (t == type::normalModel) {
 			try {
 				if (Global::Variables.meshCache.find(dir + fileName) != Global::Variables.meshCache.end()) {
 					shape = Global::Variables.meshCache[dir + fileName];
@@ -81,7 +81,7 @@ namespace Atlas {
 				}
 			}
 		}
-		else if (type == type::skyBox) {
+		else if (t == type::skyBox) {
 			if (Global::Variables.meshCache.find("default::type::skyBox") != Global::Variables.meshCache.end()) {
 				shape = Global::Variables.meshCache["default::type::skyBox"];
 			}
@@ -90,7 +90,7 @@ namespace Atlas {
 				shape = Global::Variables.meshCache["default::type::skyBox"];
 			}
 		}
-		else if (type == type::cubeInvertedLighting) {
+		else if (t == type::cubeInvertedLighting) {
 			if (Global::Variables.meshCache.find("default::type::cubeInvertedLighting") != Global::Variables.meshCache.end()) {
 				shape = Global::Variables.meshCache["default::type::cubeInvertedLighting"];
 			}
@@ -104,10 +104,10 @@ namespace Atlas {
 		maxExtents = shape.max;
 	}
 
-	Mesh::Mesh(type type, std::string dir, std::string name, glm::vec3 rot, glm::vec3 trans, glm::vec3 s)
-		: directory(dir), fileName(name), rotation(rot), translation(trans), minExtents(-0.5f, -0.5f, -0.5f), maxExtents(0.5f, 0.5f, 0.5f), scale(s), objectType(type)
+	Mesh::Mesh(type t, std::string dir, std::string name, glm::vec3 rot, glm::vec3 trans, glm::vec3 s)
+		: directory(dir), fileName(name), rotation(rot), translation(trans), minExtents(-0.5f, -0.5f, -0.5f), maxExtents(0.5f, 0.5f, 0.5f), scale(s), objectType(t)
 	{
-		if (type == type::cubeModel) {
+		if (t == type::cubeModel) {
 			if (Global::Variables.meshCache.find("default::type::cube") != Global::Variables.meshCache.end()) {
 				shape = Global::Variables.meshCache["default::type::cube"];
 			}
@@ -116,7 +116,7 @@ namespace Atlas {
 				shape = Global::Variables.meshCache["default::type::cube"];
 			}
 		}
-		else if (type == type::normalModel) {
+		else if (t == type::normalModel) {
 			try {
 				if (Global::Variables.meshCache.find(dir + fileName) != Global::Variables.meshCache.end()) {
 					shape = Global::Variables.meshCache[dir + fileName];
@@ -165,7 +165,7 @@ namespace Atlas {
 				}
 			}
 		}
-		else if (type == type::skyBox) {
+		else if (t == type::skyBox) {
 			if (Global::Variables.meshCache.find("default::type::skyBox") != Global::Variables.meshCache.end()) {
 				shape = Global::Variables.meshCache["default::type::skyBox"];
 			}
@@ -174,7 +174,7 @@ namespace Atlas {
 				shape = Global::Variables.meshCache["default::type::skyBox"];
 			}
 		}
-		else if (type == type::cubeInvertedLighting) {
+		else if (t == type::cubeInvertedLighting) {
 			if (Global::Variables.meshCache.find("default::type::cubeInvertedLighting") != Global::Variables.meshCache.end()) {
 				shape = Global::Variables.meshCache["default::type::cubeInvertedLighting"];
 			}
@@ -415,5 +415,34 @@ namespace Atlas {
 			it.second.cleanUp();
 		}
 		Global::Variables.meshCache.erase(Global::Variables.meshCache.begin(), Global::Variables.meshCache.end());
+	}
+
+	std::string to_string(glm::vec3& t) {
+		return std::string("glm::vec3: {") + "\"x\": \"" + std::to_string(t.x) + "\" " + "\"y\": \"" + std::to_string(t.y) + "\" " + "\"z\": \"" + std::to_string(t.z) + "\"}";
+	}
+
+	std::string Mesh::ToString() {
+		return std::string("Mesh: {") + "\"Directory\": \"" + directory + "\" " + "\"File Name\": \"" + fileName + "\" " + "\"Type\": \"" + to_string(objectType) + "\"}";
+	}
+
+	std::string Mesh::ToStringVerbose() {
+		return std::string("Mesh: {") + "\"Directory\": \"" + directory + "\" " + "\"File Name\": \"" + fileName + "\" " + "\"Type\": \"" + to_string(objectType) + "\" " + "\"Rotation\": \"" + to_string(rotation) + "\" " + "\"Translation\": \"" + to_string(translation) + "\" " + "\"Min Extents\": \"" + to_string(minExtents) + "\" " + "\"Max extents\": \"" + to_string(maxExtents) + "\"}";
+	}
+
+	std::string to_string(type t)
+	{
+		switch (t)
+		{
+		case type::cubeModel:
+			return "cubeModel";
+		case type::normalModel:
+			return "normalModel";
+		case type::skyBox:
+			return "skyBox";
+		case type::cubeInvertedLighting:
+			return "cubeInvertedLighting";
+		default:
+			return "Unknown";
+		}
 	}
 }

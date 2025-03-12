@@ -36,6 +36,7 @@ namespace Atlas {
 		enableKeyboard = true;
 
 		consoleLog = std::vector<std::string>();
+		commandMap = std::unordered_map<std::string, std::function<void(std::vector<std::string>&)>>();
 
 		for (int i = 0; i < 10; i++) {
 			consoleLog.push_back("");

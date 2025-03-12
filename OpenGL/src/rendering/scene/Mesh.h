@@ -11,6 +11,8 @@ namespace Atlas {
 		cubeModel, normalModel, skyBox, cubeInvertedLighting
 	};
 
+	std::string to_string(type t);
+
 	enum collidableType
 	{
 
@@ -71,5 +73,8 @@ namespace Atlas {
 
 		void Cleanup();
 		static void FlushCache();
+
+		virtual std::string ToString();
+		virtual std::string ToStringVerbose();
 	};
 }

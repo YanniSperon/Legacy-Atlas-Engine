@@ -17,6 +17,7 @@ namespace Atlas {
 	bool AtlasEngine::Start()
 	{
 		Atlas::System::SetWorkingDirectory();
+		Atlas::System::SetConsoleLogFile("out/log.txt");
 
 		if (!WindowManager::Initialize()) {
 			return false;

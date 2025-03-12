@@ -21,13 +21,15 @@ namespace Atlas {
 		}
 	};
 
+	class PhysicsObject;
+
 	struct BulletPhysicsObject {
 		unsigned long long int uid;
 		Collision collisionData;
 		bool shouldCollideWithPlayer;
-		void* physicsObject;
+		PhysicsObject* physicsObject;
 
-		BulletPhysicsObject(void* parentPhysicsObject, unsigned long long int objectUID, bool shouldCollideWithPlayerBody)
+		BulletPhysicsObject(PhysicsObject* parentPhysicsObject, unsigned long long int objectUID, bool shouldCollideWithPlayerBody)
 			: uid(objectUID), collisionData(), physicsObject(parentPhysicsObject), shouldCollideWithPlayer(shouldCollideWithPlayerBody)
 		{
 
@@ -82,5 +84,8 @@ namespace Atlas {
 		void PrepareForDeletion();
 
 		void GLInit();
+
+		virtual std::string ToString() override;
+		virtual std::string ToStringVerbose() override;
 	};
 }

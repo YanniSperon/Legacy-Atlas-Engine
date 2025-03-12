@@ -74,5 +74,7 @@ namespace Atlas {
 		virtual std::string GetType() override;
 
 		static void FlushCache();
+
+		virtual std::string ToString() override;
 	};
 }

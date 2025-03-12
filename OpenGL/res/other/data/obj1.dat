@@ -27,5 +27,5 @@ textureDir: res/images/textures/
 textureName: newcow.png
 shaderDir: res/shaders/
 shaderName: Lighting.shader
-uid: 14829735431805717965
+uid: 14829
 

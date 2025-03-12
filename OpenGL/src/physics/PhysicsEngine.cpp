@@ -23,32 +23,35 @@ namespace Atlas {
 	bool BulletCollisionCallbackFunc(btManifoldPoint& cp, const btCollisionObjectWrapper* obj1, int id1, int index1, const btCollisionObjectWrapper* obj2, int id2, int index2) {
 		const btCollisionObject* obj1Object = obj1->getCollisionObject();
 		const btCollisionObject* obj2Object = obj1->getCollisionObject();
-		if (obj1Object == NULL || obj1Object == nullptr) {
-			System::Err("This is our problem1");
+		BulletPhysicsObject* userPtr1 = static_cast<BulletPhysicsObject*>(obj1Object->getUserPointer());
+		BulletPhysicsObject* userPtr2 = static_cast<BulletPhysicsObject*>(obj2Object->getUserPointer());
+
+		if (!userPtr1 || !userPtr2) {
+			return true;
 		}
-		if (obj2Object == NULL || obj2Object == nullptr) {
-			System::Err("This is our problem2");
-		}
-		BulletPhysicsObject* userPtr1 = (BulletPhysicsObject*)obj1Object->getUserPointer();
-		BulletPhysicsObject* userPtr2 = (BulletPhysicsObject*)obj2Object->getUserPointer();
-		if (userPtr1 == NULL || userPtr1 == nullptr) {
-			System::Err("This is our problem ptr1");
-		}
-		if (userPtr2 == NULL || userPtr2 == nullptr) {
-			System::Err("This is our problem ptr2");
-		}
+
 		userPtr1->collisionData.obj1 = obj1Object;
 		userPtr2->collisionData.obj2 = obj2Object;
-		System::Log("First object collided: " + std::to_string(userPtr1->uid) + ".");
-		System::Log("Second object collided: " + std::to_string(userPtr2->uid) + ".");
-		PhysicsObject* physObj1 = (PhysicsObject*)userPtr1->physicsObject;
-		PhysicsObject* physObj2 = (PhysicsObject*)userPtr2->physicsObject;
-		physObj1->PrepareForDeletion();
-		physObj2->PrepareForDeletion();
-		PhysicsLinker::DeleteObjectFromScene(physicsScene, physObj1);
-		PhysicsLinker::DeleteObjectFromScene(physicsScene, physObj2);
-		delete physObj1;
-		delete physObj2;
+		PhysicsObject* physObj1 = userPtr1->physicsObject;
+		PhysicsObject* physObj2 = userPtr2->physicsObject;
+		if (physObj1) {
+			System::Warn("obj1: " + physObj1->ToString());
+		}
+		else {
+			System::Err("obj1: nullptr");
+		}
+		if (physObj2) {
+			System::Warn("obj2: " + physObj2->ToString());
+		}
+		else {
+			System::Err("obj2: nullptr");
+		}
+		//physObj1->PrepareForDeletion();
+		//physObj2->PrepareForDeletion();
+		//PhysicsLinker::DeleteObjectFromScene(physicsScene, physObj1);
+		//PhysicsLinker::DeleteObjectFromScene(physicsScene, physObj2);
+		//delete physObj1;
+		//delete physObj2;
 		return false;
 	}
 
@@ -123,7 +126,7 @@ namespace Atlas {
 			//body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
 			//body->setActivationState(DISABLE_DEACTIVATION);
 			//void* parentPhysicsObject, unsigned long long int objectUID, bool shouldCollideWithPlayerBody
-			body->setUserPointer((void*)(new BulletPhysicsObject(pObj, pObj->GetUID(), shouldCollideWithPlayerBody)));
+			body->setUserPointer(static_cast<void*>(new BulletPhysicsObject(pObj, pObj->GetUID(), shouldCollideWithPlayerBody)));
 			dynamicsWorld->addRigidBody(body);
 			return body;
 		}

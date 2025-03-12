@@ -11,10 +11,14 @@ namespace Atlas {
 
 	PhysicsScene::PhysicsScene(Scene* scene)
 	{
+		System::Log("Preloaded Objects:");
 		for (unsigned int i = 0; i < scene->preloadedObjectsOnScene.size(); i++) {
+			System::Log("    " + scene->preloadedObjectsOnScene.at(i)->ToString());
 			physicsObjectsOnScene.push_back(new PhysicsObject(scene->preloadedObjectsOnScene.at(i), 0.0f));
 		}
+		System::Log("Objects:");
 		for (unsigned int i = 0; i < scene->objectsOnScene.size(); i++) {
+			System::Log("    " + scene->objectsOnScene.at(i)->ToString());
 			physicsObjectsOnScene.push_back(new PhysicsObject(scene->objectsOnScene.at(i), 1.0f));
 		}
 		for (unsigned int i = 0; i < scene->preloadedObjectsOnScene.size(); i++) {
