@@ -1,4 +1,4 @@
-Object: 2
+Object: 0
 type: Object
 modelType: cubeModel
 translation.x: 0
@@ -27,5 +27,5 @@ textureDir: res/images/textures/
 textureName: newcow.png
 shaderDir: res/shaders/
 shaderName: Lighting.shader
-uid: 1
+uid: 4
 

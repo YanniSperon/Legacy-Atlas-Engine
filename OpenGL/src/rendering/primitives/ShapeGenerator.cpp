@@ -306,115 +306,93 @@ namespace Atlas {
 
 	ShapeData ShapeGenerator::makeSkybox(const glm::vec3& min, const glm::vec3& max)
 	{
-
 		ShapeData ret;
 
+		glm::vec3 v[] = {
+			glm::vec3(-1.0f, -1.0f, +1.0f),
+			glm::vec3(-1.0f, +1.0f, +1.0f),
+			glm::vec3(-1.0f, -1.0f, -1.0f),
+			glm::vec3(-1.0f, +1.0f, -1.0f),
+			glm::vec3(+1.0f, -1.0f, +1.0f),
+			glm::vec3(+1.0f, +1.0f, +1.0f),
+			glm::vec3(+1.0f, -1.0f, -1.0f),
+			glm::vec3(+1.0f, +1.0f, -1.0f)
+		};
+
+		glm::vec2 t[] = {
+			glm::vec2(0.25f, 0.25),
+			glm::vec2(0.50f, 0.00),
+			glm::vec2(0.25f, 0.00),
+			glm::vec2(0.25f, 0.50),
+			glm::vec2(0.50f, 0.25),
+			glm::vec2(0.25f, 0.75),
+			glm::vec2(0.50f, 0.50),
+			glm::vec2(0.25f, 1.00),
+			glm::vec2(0.50f, 0.75),
+			glm::vec2(0.00f, 0.75),
+			glm::vec2(0.00f, 0.50),
+			glm::vec2(0.75f, 0.50),
+			glm::vec2(0.50f, 1.00),
+			glm::vec2(0.75f, 0.75)
+		};
+
+		glm::vec3 n[] = {
+			glm::vec3(+1.0f, -0.0f, -0.0f),
+			glm::vec3(-0.0f, -0.0f, +1.0f),
+			glm::vec3(-1.0f, -0.0f, -0.0f),
+			glm::vec3(-0.0f, -0.0f, -1.0f),
+			glm::vec3(-0.0f, +1.0f, -0.0f),
+			glm::vec3(-0.0f, -1.0f, -0.0f)
+		};
+
 		Vertex positions[] = {
-			glm::vec3(min.x, min.y, min.z), // 0
-			glm::vec2(+0.0f, +0.0f),        // texCoord
-			glm::vec3(0.0f, 0.0f, 1.0f),   // normal
+			v[2], t[0], n[0], 
+			v[1], t[1],  n[0], 
+			v[0], t[2],  n[0],
 
-			glm::vec3(max.x, min.y, min.z), // 1
-			glm::vec2(+1.0f, +0.0f),        // texCoord
-			glm::vec3(0.0f, 0.0f, 1.0f),   // normal
+			v[6], t[3], n[1], 
+			v[3], t[4],  n[1], 
+			v[2], t[0],  n[1],
 
-			glm::vec3(max.x, max.y, min.z), // 2
-			glm::vec2(+1.0f, +1.0f),        // texCoord
-			glm::vec3(0.0f, 0.0f, 1.0f),   // normal
+			v[4], t[5], n[2], 
+			v[7], t[6],  n[2], 
+			v[6], t[3],  n[2],
 
-			glm::vec3(min.x, max.y, min.z), // 3
-			glm::vec2(+0.0f, +1.0f),        // texCoord
-			glm::vec3(0.0f, 0.0f, 1.0f),   // normal
+			v[0], t[7], n[3], 
+			v[5], t[8],  n[3], 
+			v[4], t[5],  n[3],
 
+			v[0], t[9], n[4], 
+			v[6], t[3],  n[4], 
+			v[2], t[10], n[4],
 
+			v[5], t[8], n[5], 
+			v[3], t[11], n[5], 
+			v[7], t[6],  n[5],
 
-			glm::vec3(max.x, min.y, min.z), // 4
-			glm::vec2(+0.0f, +0.0f),        // texCoord
-			glm::vec3(-1.0f, 0.0f, 0.0f),    // normal
+			v[2], t[0], n[0], 
+			v[3], t[4],  n[0], 
+			v[1], t[1],  n[0],
 
-			glm::vec3(max.x, min.y, max.z), // 5
-			glm::vec2(+1.0f, +0.0f),        // texCoord
-			glm::vec3(-1.0f, 0.0f, 0.0f),    // normal
+			v[6], t[3], n[1], 
+			v[7], t[6],  n[1], 
+			v[3], t[4],  n[1],
 
-			glm::vec3(max.x, max.y, max.z), // 6
-			glm::vec2(+1.0f, +1.0f),        // texCoord
-			glm::vec3(-1.0f, 0.0f, 0.0f),    // normal
+			v[4], t[5], n[2], 
+			v[5], t[8],  n[2], 
+			v[7], t[6],  n[2],
 
-			glm::vec3(max.x, max.y, min.z), // 7
-			glm::vec2(+0.0f, +1.0f),        // texCoord
-			glm::vec3(-1.0f, 0.0f, 0.0f),    // normal
+			v[0], t[7], n[3], 
+			v[1], t[12], n[3], 
+			v[5], t[8],  n[3],
 
+			v[0], t[9], n[4], 
+			v[4], t[5],  n[4], 
+			v[6], t[3],  n[4],
 
-
-			glm::vec3(min.x, max.y, min.z), // 8
-			glm::vec2(+0.0f, +0.0f),        // texCoord
-			glm::vec3(0.0f, -1.0f, 0.0f),    // normal
-
-			glm::vec3(max.x, max.y, min.z), // 9
-			glm::vec2(+1.0f, +0.0f),        // texCoord
-			glm::vec3(0.0f, -1.0f, 0.0f),    // normal
-
-			glm::vec3(max.x, max.y, max.z), // 10
-			glm::vec2(+1.0f, +1.0f),        // texCoord
-			glm::vec3(0.0f, -1.0f, 0.0f),    // normal
-
-			glm::vec3(min.x, max.y, max.z), // 11
-			glm::vec2(+0.0f, +1.0f),        // texCoord
-			glm::vec3(0.0f, -1.0f, 0.0f),    // normal
-
-
-
-			glm::vec3(max.x, min.y, max.z), // 12
-			glm::vec2(+0.0f, +0.0f),        // texCoord
-			glm::vec3(0.0f, 0.0f, -1.0f),    // normal
-
-			glm::vec3(min.x, min.y, max.z), // 13
-			glm::vec2(+1.0f, +0.0f),        // texCoord
-			glm::vec3(0.0f, 0.0f, -1.0f),    // normal
-
-			glm::vec3(min.x, max.y, max.z), // 14
-			glm::vec2(+1.0f, +1.0f),        // texCoord
-			glm::vec3(0.0f, 0.0f, -1.0f),    // normal
-
-			glm::vec3(max.x, max.y, max.z), // 15
-			glm::vec2(+0.0f, +1.0f),        // texCoord
-			glm::vec3(0.0f, 0.0f, -1.0f),    // normal
-
-
-
-			glm::vec3(min.x, min.y, max.z), // 16
-			glm::vec2(+0.0f, +0.0f),        // texCoord
-			glm::vec3(1.0f, 0.0f, 0.0f),   // normal
-
-			glm::vec3(min.x, min.y, min.z), // 17
-			glm::vec2(+1.0f, +0.0f),        // texCoord
-			glm::vec3(1.0f, 0.0f, 0.0f),   // normal
-
-			glm::vec3(min.x, max.y, min.z), // 18
-			glm::vec2(+1.0f, +1.0f),        // texCoord
-			glm::vec3(1.0f, 0.0f, 0.0f),   // normal
-
-			glm::vec3(min.x, max.y, max.z), // 19
-			glm::vec2(+0.0f, +1.0f),        // texCoord
-			glm::vec3(1.0f, 0.0f, 0.0f),   // normal
-
-
-
-			glm::vec3(min.x, min.y, max.z), // 20
-			glm::vec2(+0.0f, +0.0f),        // texCoord
-			glm::vec3(0.0f, 1.0f, 0.0f),   // normal
-
-			glm::vec3(max.x, min.y, max.z), // 21
-			glm::vec2(+1.0f, +0.0f),        // texCoord
-			glm::vec3(0.0f, 1.0f, 0.0f),   // normal
-
-			glm::vec3(max.x, min.y, min.z), // 22
-			glm::vec2(+1.0f, +1.0f),        // texCoord
-			glm::vec3(0.0f, 1.0f, 0.0f),   // normal
-
-			glm::vec3(min.x, min.y, min.z), // 23
-			glm::vec2(+0.0f, +1.0f),        // texCoord
-			glm::vec3(0.0f, 1.0f, 0.0f)    // normal
+			v[5], t[8], n[5], 
+			v[1], t[13], n[5], 
+			v[3], t[11], n[5]
 		};
 
 		ret.numVertices = NUM_ARRAY_ELEMENTS(positions);
@@ -422,23 +400,23 @@ namespace Atlas {
 		memcpy(ret.vertices, positions, sizeof(positions));
 
 		GLuint indices[] = {
-			0, 1, 2, // Front face
-			0, 2, 3,
+			0, 1, 2,
+			3, 4, 5,
 
-			4, 5, 6, // Right face
-			4, 6, 7,
+			6, 7, 8,
+			9, 10, 11,
 
-			8, 9, 10, // Top face
-			8, 10, 11,
+			12, 13, 14,
+			15, 16, 17,
 
-			12, 13, 14, // Back face
-			12, 14, 15,
+			18, 19, 20,
+			21, 22, 23,
 
-			16, 17, 18, // Left face
-			16, 18, 19,
+			24, 25, 26,
+			27, 28, 29,
 
-			22, 23, 20, // Bottom face
-			22, 20, 21
+			30, 31, 32,
+			33, 34, 35
 		};
 		ret.numIndices = NUM_ARRAY_ELEMENTS(indices);
 		ret.indices = new GLuint[ret.numIndices];

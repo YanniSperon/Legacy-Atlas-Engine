@@ -29,6 +29,7 @@ namespace Atlas {
 		glm::vec3 minExtents;
 		glm::vec3 maxExtents;
 		type objectType;
+
 	public:
 		Mesh();
 		Mesh(type type, std::string dir, std::string name);
