@@ -2,6 +2,7 @@
 #include <sstream>
 #include <algorithm>
 
+#include <random>
 namespace Atlas {
 
 	glm::vec3 Convert::Vector3(const btVector3& vec)

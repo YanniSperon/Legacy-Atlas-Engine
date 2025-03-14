@@ -62,11 +62,6 @@ namespace Atlas {
 
 		static Filepath SeperateFilepath(const std::string& filePath);
 
-		static unsigned long long int GenerateUniqueID();
-
-		static unsigned long long int UpdateLastUID(unsigned long long int uid);
-
-		static void ResetUIDGenerator();
-		//static std::size_t GenerateUniqueID();
+		static UUID GenerateUniqueID();
 	};
 };
