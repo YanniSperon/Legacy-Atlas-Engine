@@ -32,8 +32,8 @@ namespace Atlas {
 
 	public:
 		Mesh();
-		Mesh(type type, std::string dir, std::string name);
-		Mesh(type type, std::string dir, std::string name, glm::vec3 rot, glm::vec3 trans, glm::vec3 s);
+		Mesh(type t, std::string dir, std::string name);
+		Mesh(type t, std::string dir, std::string name, glm::vec3 rot, glm::vec3 trans, glm::vec3 s);
 		~Mesh();
 
 		virtual glm::mat4 GetModelTransformMatrix();

@@ -10,6 +10,7 @@ namespace Atlas {
 	}
 
 	PhysicsScene::PhysicsScene(Scene* scene)
+		: sceneSettings(scene->sceneSettings)
 	{
 		System::Log("Preloaded Objects:");
 		for (unsigned int i = 0; i < scene->preloadedObjectsOnScene.size(); i++) {

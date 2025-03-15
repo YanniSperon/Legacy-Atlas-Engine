@@ -61,7 +61,5 @@ namespace Atlas {
 		static std::string FileOpenDialog(const std::string& label, LPCSTR filter, GLFWwindow* window);
 
 		static Filepath SeperateFilepath(const std::string& filePath);
-
-		static UUID GenerateUniqueID();
 	};
 };

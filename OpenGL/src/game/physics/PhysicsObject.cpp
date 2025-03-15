@@ -11,12 +11,12 @@
 namespace Atlas {
 
 	PhysicsObject::PhysicsObject()
-		: uid(0), vertexBufferID(0), indexBufferID(0), texID(0), shaderID(0), numIndices(0), material(), glInitialized(false), textureDirectory(""), textureName(""), shaderDirectory(""), shaderName(""), hasLighting(false), physicsObject(NULL)
+		: uid(), vertexBufferID(0), indexBufferID(0), texID(0), shaderID(0), numIndices(0), material(), glInitialized(false), textureDirectory(""), textureName(""), shaderDirectory(""), shaderName(""), hasLighting(false), physicsObject(NULL)
 	{
 	}
 
 	PhysicsObject::PhysicsObject(Object* obj, float mass)
-		: Mesh(obj->GetTypeEnum(), obj->GetModelFileDirectory(), obj->GetModelFileName(), obj->GetRotation(), obj->GetTranslation(), obj->GetScale()), glInitialized(false)
+		: Mesh(obj->GetTypeEnum(), obj->GetModelFileDirectory(), obj->GetModelFileName(), obj->GetRotation(), obj->GetTranslation(), obj->GetScale()), glInitialized(false), uid()
 	{
 		textureDirectory = obj->GetTextureDirectory();
 		textureName = obj->GetTextureName();
@@ -71,7 +71,6 @@ namespace Atlas {
 		texID = obj->GetTextureID();
 		shaderID = obj->GetShaderID();
 		numIndices = obj->GetNumIndices();
-		uid = obj->GetUID();
 		
 		btCollisionShape* physicsShape = new btBoxShape(Convert::Vector3(GetShape().max));
 		physicsShape->setLocalScaling(Convert::Vector3(obj->GetScale()));
@@ -157,7 +156,7 @@ namespace Atlas {
 		return physicsObject;
 	}
 
-	unsigned long long int PhysicsObject::GetUID()
+	const UUID& PhysicsObject::GetUID() const
 	{
 		return uid;
 	}

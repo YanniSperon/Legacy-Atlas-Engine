@@ -3,7 +3,7 @@
 #include "System.h"
 #include "PhysicsEngine.h"
 
-void LevelEditor::LevelEditorControl::Control(LevelEditor::EditorType& currentEditorType, LevelEditor::Mode& currentMode, unsigned int& selectedObject, float deltaTime)
+void LevelEditor::LevelEditorControl::Control(LevelEditor::EditorType& currentEditorType, LevelEditor::Mode& currentMode, Atlas::Object** selectedObject, float deltaTime)
 {
 	if (Atlas::Global::Variables.keyIn.leftShiftHeld) {
 		Atlas::Global::Variables.movementSpeed = 2.0f * Atlas::Global::Variables.originalMovementSpeed;
@@ -49,42 +49,42 @@ void LevelEditor::LevelEditorControl::Control(LevelEditor::EditorType& currentEd
 	if (currentEditorType == LevelEditor::EditorType::scene) {
 		if (currentMode == LevelEditor::Mode::scale) {
 			if (Atlas::Global::Variables.keyIn.wHeld) {
-				Atlas::Global::Variables.currentScene.objectsOnScene[selectedObject]->ScaleAdd3f(0.0f, 0.0f, -Atlas::Global::Variables.movementSpeed * deltaTime);
+				(*selectedObject)->ScaleAdd3f(0.0f, 0.0f, -Atlas::Global::Variables.movementSpeed * deltaTime);
 			}
 			if (Atlas::Global::Variables.keyIn.sHeld) {
-				Atlas::Global::Variables.currentScene.objectsOnScene[selectedObject]->ScaleAdd3f(0.0f, 0.0f, Atlas::Global::Variables.movementSpeed * deltaTime);
+				(*selectedObject)->ScaleAdd3f(0.0f, 0.0f, Atlas::Global::Variables.movementSpeed * deltaTime);
 			}
 			if (Atlas::Global::Variables.keyIn.aHeld) {
-				Atlas::Global::Variables.currentScene.objectsOnScene[selectedObject]->ScaleAdd3f(-Atlas::Global::Variables.movementSpeed * deltaTime, 0.0f, 0.0f);
+				(*selectedObject)->ScaleAdd3f(-Atlas::Global::Variables.movementSpeed * deltaTime, 0.0f, 0.0f);
 			}
 			if (Atlas::Global::Variables.keyIn.dHeld) {
-				Atlas::Global::Variables.currentScene.objectsOnScene[selectedObject]->ScaleAdd3f(Atlas::Global::Variables.movementSpeed * deltaTime, 0.0f, 0.0f);
+				(*selectedObject)->ScaleAdd3f(Atlas::Global::Variables.movementSpeed * deltaTime, 0.0f, 0.0f);
 			}
 			if (Atlas::Global::Variables.keyIn.spaceHeld) {
-				Atlas::Global::Variables.currentScene.objectsOnScene[selectedObject]->ScaleAdd3f(0.0f, Atlas::Global::Variables.movementSpeed * deltaTime, 0.0f);
+				(*selectedObject)->ScaleAdd3f(0.0f, Atlas::Global::Variables.movementSpeed * deltaTime, 0.0f);
 			}
 			if (Atlas::Global::Variables.keyIn.leftControlHeld) {
-				Atlas::Global::Variables.currentScene.objectsOnScene[selectedObject]->ScaleAdd3f(0.0f, -Atlas::Global::Variables.movementSpeed * deltaTime, 0.0f);
+				(*selectedObject)->ScaleAdd3f(0.0f, -Atlas::Global::Variables.movementSpeed * deltaTime, 0.0f);
 			}
 		}
 		else if (currentMode == LevelEditor::Mode::translate) {
 			if (Atlas::Global::Variables.keyIn.wHeld) {
-				Atlas::Global::Variables.currentScene.objectsOnScene[selectedObject]->TranslateAdd3f(0.0f, 0.0f, -Atlas::Global::Variables.movementSpeed * deltaTime);
+				(*selectedObject)->TranslateAdd3f(0.0f, 0.0f, -Atlas::Global::Variables.movementSpeed * deltaTime);
 			}
 			if (Atlas::Global::Variables.keyIn.sHeld) {
-				Atlas::Global::Variables.currentScene.objectsOnScene[selectedObject]->TranslateAdd3f(0.0f, 0.0f, Atlas::Global::Variables.movementSpeed * deltaTime);
+				(*selectedObject)->TranslateAdd3f(0.0f, 0.0f, Atlas::Global::Variables.movementSpeed * deltaTime);
 			}
 			if (Atlas::Global::Variables.keyIn.aHeld) {
-				Atlas::Global::Variables.currentScene.objectsOnScene[selectedObject]->TranslateAdd3f(-Atlas::Global::Variables.movementSpeed * deltaTime, 0.0f, 0.0f);
+				(*selectedObject)->TranslateAdd3f(-Atlas::Global::Variables.movementSpeed * deltaTime, 0.0f, 0.0f);
 			}
 			if (Atlas::Global::Variables.keyIn.dHeld) {
-				Atlas::Global::Variables.currentScene.objectsOnScene[selectedObject]->TranslateAdd3f(Atlas::Global::Variables.movementSpeed * deltaTime, 0.0f, 0.0f);
+				(*selectedObject)->TranslateAdd3f(Atlas::Global::Variables.movementSpeed * deltaTime, 0.0f, 0.0f);
 			}
 			if (Atlas::Global::Variables.keyIn.spaceHeld) {
-				Atlas::Global::Variables.currentScene.objectsOnScene[selectedObject]->TranslateAdd3f(0.0f, Atlas::Global::Variables.movementSpeed * deltaTime, 0.0f);
+				(*selectedObject)->TranslateAdd3f(0.0f, Atlas::Global::Variables.movementSpeed * deltaTime, 0.0f);
 			}
 			if (Atlas::Global::Variables.keyIn.leftControlHeld) {
-				Atlas::Global::Variables.currentScene.objectsOnScene[selectedObject]->TranslateAdd3f(0.0f, -Atlas::Global::Variables.movementSpeed * deltaTime, 0.0f);
+				(*selectedObject)->TranslateAdd3f(0.0f, -Atlas::Global::Variables.movementSpeed * deltaTime, 0.0f);
 			}
 		}
 		else if (currentMode == LevelEditor::Mode::cam) {
@@ -109,52 +109,36 @@ void LevelEditor::LevelEditorControl::Control(LevelEditor::EditorType& currentEd
 		}
 		else if (currentMode == LevelEditor::Mode::rotate) {
 			if (Atlas::Global::Variables.keyIn.wHeld) {
-				Atlas::Global::Variables.currentScene.objectsOnScene[selectedObject]->RotateAdd3f(0.0f, 0.0f, glm::degrees(-Atlas::Global::Variables.movementSpeed * deltaTime));
+				(*selectedObject)->RotateAdd3f(0.0f, 0.0f, glm::degrees(-Atlas::Global::Variables.movementSpeed * deltaTime));
 			}
 			if (Atlas::Global::Variables.keyIn.sHeld) {
-				Atlas::Global::Variables.currentScene.objectsOnScene[selectedObject]->RotateAdd3f(0.0f, 0.0f, glm::degrees(Atlas::Global::Variables.movementSpeed * deltaTime));
+				(*selectedObject)->RotateAdd3f(0.0f, 0.0f, glm::degrees(Atlas::Global::Variables.movementSpeed * deltaTime));
 			}
 			if (Atlas::Global::Variables.keyIn.aHeld) {
-				Atlas::Global::Variables.currentScene.objectsOnScene[selectedObject]->RotateAdd3f(glm::degrees(-Atlas::Global::Variables.movementSpeed * deltaTime), 0.0f, 0.0f);
+				(*selectedObject)->RotateAdd3f(glm::degrees(-Atlas::Global::Variables.movementSpeed * deltaTime), 0.0f, 0.0f);
 			}
 			if (Atlas::Global::Variables.keyIn.dHeld) {
-				Atlas::Global::Variables.currentScene.objectsOnScene[selectedObject]->RotateAdd3f(glm::degrees(Atlas::Global::Variables.movementSpeed * deltaTime), 0.0f, 0.0f);
+				(*selectedObject)->RotateAdd3f(glm::degrees(Atlas::Global::Variables.movementSpeed * deltaTime), 0.0f, 0.0f);
 			}
 			if (Atlas::Global::Variables.keyIn.spaceHeld) {
-				Atlas::Global::Variables.currentScene.objectsOnScene[selectedObject]->RotateAdd3f(0.0f, glm::degrees(Atlas::Global::Variables.movementSpeed * deltaTime), 0.0f);
+				(*selectedObject)->RotateAdd3f(0.0f, glm::degrees(Atlas::Global::Variables.movementSpeed * deltaTime), 0.0f);
 			}
 			if (Atlas::Global::Variables.keyIn.leftControlHeld) {
-				Atlas::Global::Variables.currentScene.objectsOnScene[selectedObject]->RotateAdd3f(0.0f, glm::degrees(-Atlas::Global::Variables.movementSpeed * deltaTime), 0.0f);
+				(*selectedObject)->RotateAdd3f(0.0f, glm::degrees(-Atlas::Global::Variables.movementSpeed * deltaTime), 0.0f);
 			}
-		}
-
-		if (Atlas::Global::Variables.keyIn.leftBracketPressed) {
-			if (selectedObject > 0) {
-				selectedObject--;
-			}
-		}
-		if (Atlas::Global::Variables.keyIn.rightBracketPressed) {
-			if (selectedObject < Atlas::Global::Variables.currentScene.objectsOnScene.size() - 1) {
-				selectedObject++;
-			}
-		}
-		if (Atlas::Global::Variables.keyIn.nPressed) {
-			Atlas::System::Log("Cube created!");
-			Atlas::Global::Variables.currentScene.objectsOnScene.push_back(new Atlas::Object(Atlas::type::cubeModel, "", "", "res/images/textures/", "newcow.png", "res/shaders/", "Lighting.shader", true, true, Atlas::System::GenerateUniqueID(), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), Atlas::Material(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), 32.0f)));
-			selectedObject = Atlas::Global::Variables.currentScene.objectsOnScene.size() - 1;
 		}
 		if (Atlas::Global::Variables.keyIn.backspacePressed) {
-			if (Atlas::Global::Variables.currentScene.objectsOnScene.size() > 0) {
+			if (Atlas::Global::Variables.currentScene.objectsOnScene.size() > 0 && ((*selectedObject) != nullptr)) {
+				std::size_t i = 0;
+				for (i = 0; i < Atlas::Global::Variables.currentScene.objectsOnScene.size(); ++i) {
+					if (Atlas::Global::Variables.currentScene.objectsOnScene[i] == (*selectedObject)) {
+						break;
+					}
+				}
+				Atlas::Global::Variables.currentScene.objectsOnScene.erase(Atlas::Global::Variables.currentScene.objectsOnScene.begin() + i);
+				delete (*selectedObject);
+				(*selectedObject) = nullptr;
 				Atlas::System::Log("Object deleted!");
-				delete Atlas::Global::Variables.currentScene.objectsOnScene.at(selectedObject);
-				Atlas::Global::Variables.currentScene.objectsOnScene.erase(Atlas::Global::Variables.currentScene.objectsOnScene.begin() + selectedObject);
-
-				if (selectedObject > 0) {
-					selectedObject--;
-				}
-				else {
-					selectedObject = 0;
-				}
 			}
 		}
 	}

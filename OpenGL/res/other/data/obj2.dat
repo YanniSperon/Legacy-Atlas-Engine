@@ -27,5 +27,6 @@ textureDir: res/images/textures/
 textureName: newcow.png
 shaderDir: res/shaders/
 shaderName: Lighting.shader
-uid: 1482973543180571
+displayName: Wide Cube #1
+uid: 14795391418412831313:6463087871348110842:5758280262702931862:9311306216104554528
 

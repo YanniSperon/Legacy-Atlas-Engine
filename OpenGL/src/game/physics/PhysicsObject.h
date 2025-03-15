@@ -2,6 +2,7 @@
 #include "Mesh.h"
 #include "Object.h"
 #include "btBulletDynamicsCommon.h"
+#include "UUID.h"
 
 namespace Atlas {
 
@@ -24,12 +25,12 @@ namespace Atlas {
 	class PhysicsObject;
 
 	struct BulletPhysicsObject {
-		unsigned long long int uid;
+		UUID uid;
 		Collision collisionData;
 		bool shouldCollideWithPlayer;
 		PhysicsObject* physicsObject;
 
-		BulletPhysicsObject(PhysicsObject* parentPhysicsObject, unsigned long long int objectUID, bool shouldCollideWithPlayerBody)
+		BulletPhysicsObject(PhysicsObject* parentPhysicsObject, const UUID& objectUID, bool shouldCollideWithPlayerBody)
 			: uid(objectUID), collisionData(), physicsObject(parentPhysicsObject), shouldCollideWithPlayer(shouldCollideWithPlayerBody)
 		{
 
@@ -42,7 +43,7 @@ namespace Atlas {
 	
 	class PhysicsObject : public Mesh {
 	private:
-		unsigned long long int uid;
+		UUID uid;
 		GLuint vertexBufferID;
 		GLuint indexBufferID;
 		GLuint texID;
@@ -71,7 +72,7 @@ namespace Atlas {
 		GLuint GetTextureID();
 		GLuint GetVBO();
 		btCollisionObject* GetPhysicsObject();
-		unsigned long long int GetUID();
+		const UUID& GetUID() const;
 
 		void SetHasLighting(bool newValue);
 

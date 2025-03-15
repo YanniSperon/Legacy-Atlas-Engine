@@ -5,11 +5,12 @@
 #include "PhysicsObject.h"
 #include "PhysicsScene.h"
 #include "ShapeData.h"
+#include "Scene.h"
 
 namespace Atlas {
 	class PhysicsEngine {
 	public:
-		static void Initialize();
+		static void Initialize(SceneSettings s);
 		static void Update(double deltaT);
 		static void SetPhysicsScene(PhysicsScene* scene);
 		static btCollisionObject* AddPhysicsBody(btCollisionShape* shape, btTransform& transformation, float mass, PhysicsObject* pObj);

@@ -35,6 +35,7 @@ namespace Atlas {
 			std::string shaderFileDirectory = "";
 			std::string shaderFileName = "";
 			std::string strType = "Invalid";
+			std::string displayName = "Default";
 			float mass = 0.0f;
 			glm::vec3 linearVelocity(0.0f, 0.0f, 0.0f);
 			glm::vec3 angularVelocity(0.0f, 0.0f, 0.0f);
@@ -52,11 +53,18 @@ namespace Atlas {
 				std::string line;
 				std::getline(objDataStream, line);
 
-				if (line.find("#") != std::string::npos) {
+				if (line.size() == 0) {
+					continue;
+				}
+				if (line[0] == '#') {
 				}
 				else if (line.find("type: ") != std::string::npos) {
 					std::string value = line.substr(6);
 					strType = value;
+				}
+				else if (line.find("displayName: ") != std::string::npos) {
+					std::string value = line.substr(13);
+					displayName = value;
 				}
 				else if (line.find("modelType: ") != std::string::npos) {
 					std::string value = line.substr(11);
@@ -299,14 +307,16 @@ namespace Atlas {
 			Object* value;
 
 			if (strType == "Light") {
-				value = new Light(LightIntensity(lightAmbient, lightDiffuse, lightSpecular), objectType, modelFileDirectory, modelFileName, textureFileDirectory, textureFileName, shaderFileDirectory, shaderFileName, false, hasLighting, System::UpdateLastUID(uid), rotation, translation, scale, Material(ambient, diffuse, specular, shininess));
+				value = new Light(LightIntensity(lightAmbient, lightDiffuse, lightSpecular), objectType, modelFileDirectory, modelFileName, textureFileDirectory, textureFileName, shaderFileDirectory, shaderFileName, false, hasLighting, UUID(), rotation, translation, scale, Material(ambient, diffuse, specular, shininess));
 			}
 			else if (strType == "Object") {
-				value = new Object(objectType, modelFileDirectory, modelFileName, textureFileDirectory, textureFileName, shaderFileDirectory, shaderFileName, false, hasLighting, System::UpdateLastUID(uid), rotation, translation, scale, Material(ambient, diffuse, specular, shininess));
+				value = new Object(objectType, modelFileDirectory, modelFileName, textureFileDirectory, textureFileName, shaderFileDirectory, shaderFileName, false, hasLighting, UUID(), rotation, translation, scale, Material(ambient, diffuse, specular, shininess));
 			}
-			else if (strType == "Invalid") {
-				value = new Object(objectType, modelFileDirectory, modelFileName, textureFileDirectory, textureFileName, shaderFileDirectory, shaderFileName, false, hasLighting, System::UpdateLastUID(uid), rotation, translation, scale, Material(ambient, diffuse, specular, shininess));
+			else {
+				value = new Object(objectType, modelFileDirectory, modelFileName, textureFileDirectory, textureFileName, shaderFileDirectory, shaderFileName, false, hasLighting, UUID(), rotation, translation, scale, Material(ambient, diffuse, specular, shininess));
 			}
+
+			value->SetDisplayName(displayName);
 
 			meshLoaderMutex.lock();
 			vec.push_back(value);
@@ -379,6 +389,7 @@ namespace Atlas {
 
 		std::string modelType = obj->GetModelType();
 		std::string uid = std::to_string(obj->GetUID());
+		std::string displayName = obj->GetDisplayName();
 
 		objectFile << "Object: " << index << "\n";
 		objectFile << "type: " << type << "\n";
@@ -409,6 +420,7 @@ namespace Atlas {
 		objectFile << "textureName: " << texName << "\n";
 		objectFile << "shaderDir: " << shaderDir << "\n";
 		objectFile << "shaderName: " << shaderName << "\n";
+		objectFile << "displayName: " << displayName << "\n";
 		objectFile << "uid: " << uid << "\n";
 		if (type == "Light") {
 			Light* light = dynamic_cast<Light*>(obj);

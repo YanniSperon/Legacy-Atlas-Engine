@@ -3,12 +3,12 @@
 #include "UUID.h"
 
 namespace Atlas {
-	class String {
+	class CachedString {
 	private:
 		UUID uuid;
 
 	public:
-		String(const std::string& str);
+		CachedString(const std::string& str);
 
 	};
 }

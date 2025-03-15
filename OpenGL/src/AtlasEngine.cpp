@@ -33,9 +33,9 @@ namespace Atlas {
 			RenderingEngine::Initialize();
 
 			//Global::Variables.currentScene.camerasOnScene.push_back(new Player(true, Global::Variables.originalMovementSpeed, glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), 5.0f, Global::Variables.mouseSensitivity, type::normalModel, "res/models/", "person.obj", "res/images/textures/", "person4k.png", "res/shaders/", "Lighting.shader", true, true, true, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(3.0f, 5.0f, 3.0f), glm::vec3(1.0f, 1.0f, 1.0f), 100.0f, Material()));
-			Global::Variables.activeCamera->SetSkybox(new Object(type::skyBox, "", "", "res/images/textures/", "skybox.png", "res/shaders/", "Basic.shader", true, false, System::GenerateUniqueID(), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(50.0f, 50.0f, 50.0f)));
-			Global::Variables.currentScene.lightsOnScene.push_back(new Light(LightIntensity(glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(1.0f, 1.0f, 1.0f)), type::cubeInvertedLighting, "", "", "res/images/colors/", "yellow.png", "res/shaders/", "Lighting.shader", true, true, System::GenerateUniqueID(), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 5.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), Material(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), 512.0f)));
-			Global::Variables.currentScene.preloadedObjectsOnScene.push_back(new Object(type::normalModel, "res/models/", "plane.obj", "res/images/colors/", "white.png", "res/shaders/", "Lighting.shader", true, true, System::GenerateUniqueID(), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -3.0f, 0.0f), glm::vec3(3.0f, 3.0f, 3.0f), Material(glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(0.5f, 0.5f, 0.5f), 32.0f)));
+			Global::Variables.activeCamera->SetSkybox(new Object(type::skyBox, "", "", "res/images/textures/", "skybox.png", "res/shaders/", "Basic.shader", true, false, UUID(), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(50.0f, 50.0f, 50.0f)));
+			Global::Variables.currentScene.lightsOnScene.push_back(new Light(LightIntensity(glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(1.0f, 1.0f, 1.0f)), type::cubeInvertedLighting, "", "", "res/images/colors/", "yellow.png", "res/shaders/", "Lighting.shader", true, true, UUID(), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 5.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), Material(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), 512.0f)));
+			Global::Variables.currentScene.preloadedObjectsOnScene.push_back(new Object(type::normalModel, "res/models/", "plane.obj", "res/images/colors/", "white.png", "res/shaders/", "Lighting.shader", true, true, UUID(), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -3.0f, 0.0f), glm::vec3(3.0f, 3.0f, 3.0f), Material(glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(0.5f, 0.5f, 0.5f), 32.0f)));
 			
 			IO::LoadFile(Global::Variables.currentScene.objectsOnScene, "res/other/", "level.lvl");
 
@@ -49,15 +49,11 @@ namespace Atlas {
 			double timeConstant = 1.0;
 			auto lastTime = std::chrono::high_resolution_clock::now();
 			auto currentTime = lastTime;
-			unsigned int selectedObject;
+			Object* selectedObject;
 			bool shouldLaunchSimulation = false;
 
-			if (Global::Variables.currentScene.objectsOnScene.size() > 0) {
-				selectedObject = Global::Variables.currentScene.objectsOnScene.size() - 1;
-			}
-			else {
-				selectedObject = 0;
-			}
+			selectedObject = nullptr;
+
 			Global::Variables.mouseX = 36000000.0;
 			Global::Variables.mouseY = 0.0;
 			glfwSetCursorPos(Global::Variables.window, 36000000.0, 0.0);
@@ -92,7 +88,7 @@ namespace Atlas {
 				}
 				///////////////////////////////////////////////////////////////////////////
 				if (EditorEnabled) {
-					LevelEditor::LevelEditorControl::Control(currentEditorType, currentMode, selectedObject, deltaTime);
+					LevelEditor::LevelEditorControl::Control(currentEditorType, currentMode, &selectedObject, deltaTime);
 				}
 				///////////////////////////////////////////////////////////////////////////
 				Global::Variables.activeCamera->ChangeMovementSpeed(Global::Variables.movementSpeed);
@@ -100,7 +96,7 @@ namespace Atlas {
 				///////////////////////////////////////////////////////////////////////////
 				Global::Variables.currentRenderer->SimpleFlush(Global::Variables.activeCamera, Global::Variables.currentWidth, Global::Variables.currentHeight, Global::Variables.FOV, Global::Variables.currentScene.lightsOnScene.at(0));
 				///////////////////////////////////////////////////////////////////////////
-				RenderingEngine::Render(EnableWireframe, GUIEnabled, currentEditorType, currentMode, selectedObject);
+				RenderingEngine::Render(EnableWireframe, GUIEnabled, currentEditorType, currentMode, &selectedObject);
 				///////////////////////////////////////////////////////////////////////////
 				InputHandler::Flush(&Global::Variables.keyIn, &Global::Variables.mouseIn);
 				///////////////////////////////////////////////////////////////////////////

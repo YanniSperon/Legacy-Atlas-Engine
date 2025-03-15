@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Mesh.h"
+#include "UUID.h"
 #include "primitives/ShapeData.h"
 #include "Shader.h"
 
@@ -25,7 +26,7 @@ namespace Atlas {
 
 	class Object : public Mesh {
 	private:
-		unsigned long long int uid;
+		UUID uid;
 		GLuint vertexBufferID;
 		GLuint indexBufferID;
 		GLuint texID;
@@ -38,11 +39,13 @@ namespace Atlas {
 		std::string shaderDirectory;
 		std::string shaderName;
 		bool hasLighting;
+		std::string displayName;
+
 	public:
 		Object();
-		Object(type type, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderFileName, bool glInit, bool lighting, unsigned long long int uid);
-		Object(type type, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderFileName, bool glInit, bool lighting, unsigned long long int uid, glm::vec3 rot, glm::vec3 trans, glm::vec3 s);
-		Object(type type, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderFileName, bool glInit, bool lighting, unsigned long long int uid, glm::vec3 rot, glm::vec3 trans, glm::vec3 s, Material mat);
+		Object(type t, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderFileName, bool glInit, bool lighting, const UUID& uid);
+		Object(type t, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderFileName, bool glInit, bool lighting, const UUID& uid, glm::vec3 rot, glm::vec3 trans, glm::vec3 s);
+		Object(type t, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderFileName, bool glInit, bool lighting, const UUID& uid, glm::vec3 rot, glm::vec3 trans, glm::vec3 s, Material mat);
 		virtual ~Object();
 
 		void GLInit();
@@ -69,12 +72,15 @@ namespace Atlas {
 		GLuint GetVBO();
 		GLuint GetIBO();
 
-		unsigned long long int GetUID();
+		const UUID& GetUID() const;
 
 		virtual std::string GetType() override;
 
 		static void FlushCache();
 
 		virtual std::string ToString() override;
+
+		const std::string& GetDisplayName() const;
+		void SetDisplayName(const std::string& newDisplayName);
 	};
 }

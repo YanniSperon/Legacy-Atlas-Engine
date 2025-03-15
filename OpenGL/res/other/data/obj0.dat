@@ -1,7 +1,7 @@
 Object: 0
 type: Object
 modelType: cubeModel
-translation.x: 0
+translation.x: 3
 translation.y: 0
 translation.z: 0
 rotation.x: 0
@@ -9,7 +9,7 @@ rotation.y: 0
 rotation.z: 0
 scale.x: 1
 scale.y: 1
-scale.z: 1
+scale.z: 7
 ambient.r: 1
 ambient.g: 1
 ambient.b: 1
@@ -27,5 +27,6 @@ textureDir: res/images/textures/
 textureName: newcow.png
 shaderDir: res/shaders/
 shaderName: Lighting.shader
-uid: 4
+displayName: New Cube #1
+uid: 13623144230632547094:954531375165097234:11038353014499455332:8066236863510816863
 

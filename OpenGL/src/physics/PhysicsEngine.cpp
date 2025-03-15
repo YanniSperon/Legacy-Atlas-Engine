@@ -55,7 +55,7 @@ namespace Atlas {
 		return false;
 	}
 
-	void PhysicsEngine::Initialize()
+	void PhysicsEngine::Initialize(SceneSettings s)
 	{
 		gContactAddedCallback=BulletCollisionCallbackFunc;
 		collisionConfiguration = new btDefaultCollisionConfiguration();
@@ -63,7 +63,7 @@ namespace Atlas {
 		overlappingPairCache = new btDbvtBroadphase();
 		solver = new btSequentialImpulseConstraintSolver;
 		dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
-		dynamicsWorld->setGravity(btVector3(0, -9.80665, 0));
+		dynamicsWorld->setGravity(Convert::Vector3(s.gravity));
 		
 		//debugDrawer = new PhysicsDebugDrawer();
 		//debugDrawer->setDebugMode(0);
@@ -125,7 +125,7 @@ namespace Atlas {
 			}
 			//body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
 			//body->setActivationState(DISABLE_DEACTIVATION);
-			//void* parentPhysicsObject, unsigned long long int objectUID, bool shouldCollideWithPlayerBody
+			//void* parentPhysicsObject, UUID objectUID, bool shouldCollideWithPlayerBody
 			body->setUserPointer(static_cast<void*>(new BulletPhysicsObject(pObj, pObj->GetUID(), shouldCollideWithPlayerBody)));
 			dynamicsWorld->addRigidBody(body);
 			return body;

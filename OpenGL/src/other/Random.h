@@ -1,10 +1,10 @@
 #pragma once
 #include "Integers.h"
-#include "Sequences.h"
 
 #include <limits>
 #include <string>
 #include <random>
+#include <vector>
 
 template <class T, class Generator = std::mt19937_64, class Distribution = std::uniform_int_distribution<T>>
 class RandomInternal {
@@ -24,8 +24,8 @@ public:
 	}
 
 
-	Vector<T> GenerateVector(uint64 num, Vector<T>& options) {
-		Vector<T> out(num);
+	std::vector<T> GenerateVector(uint64 num, std::vector<T>& options) {
+		std::vector<T> out(num);
 		std::uniform_int_distribution<uint64> dist = std::uniform_int_distribution<uint64>(0, options.size());
 
 		for (uint64 i = 0; i < num; ++i) {
@@ -34,11 +34,11 @@ public:
 		return std::move(out);
 	}
 
-	Vector<T> GenerateVector(uint64 minNum, uint64 maxNum, Vector<T>& options) {
+	std::vector<T> GenerateVector(uint64 minNum, uint64 maxNum, std::vector<T>& options) {
 		Distribution numDist = Distribution(minNum, maxNum);
 		uint64 num = numDist(gen);
 
-		Vector<T> out(num);
+		std::vector<T> out(num);
 		std::uniform_int_distribution<uint64> dist = std::uniform_int_distribution<uint64>(0, options.size());
 
 		for (uint64 i = 0; i < num; ++i) {
@@ -47,8 +47,8 @@ public:
 		return std::move(out);
 	}
 
-	Vector<T> GenerateVector(uint64 num, T min, T max) {
-		Vector<T> out(num);
+	std::vector<T> GenerateVector(uint64 num, T min, T max) {
+		std::vector<T> out(num);
 		Distribution dist = Distribution(min, max);
 
 		for (uint64 i = 0; i < num; ++i) {
@@ -57,11 +57,11 @@ public:
 		return std::move(out);
 	}
 
-	Vector<T> GenerateVector(uint64 minNum, uint64 maxNum, T min, T max) {
+	std::vector<T> GenerateVector(uint64 minNum, uint64 maxNum, T min, T max) {
 		Distribution numDist = Distribution(minNum, maxNum);
 		uint64 num = numDist(gen);
 
-		Vector<T> out(num);
+		std::vector<T> out(num);
 		Distribution dist = Distribution(min, max);
 
 		for (uint64 i = 0; i < num; ++i) {
@@ -71,8 +71,8 @@ public:
 	}
 
 
-	Vector<T> GenerateString(uint64 num, Vector<T>& options) {
-		Vector<T> out(num);
+	std::string GenerateString(uint64 num, std::string& options) {
+		std::string out(num, ' ');
 		std::uniform_int_distribution<uint64> dist = std::uniform_int_distribution<uint64>(0, options.size());
 
 		for (uint64 i = 0; i < num; ++i) {
@@ -81,38 +81,15 @@ public:
 		return std::move(out);
 	}
 
-	Vector<T> GenerateVector(uint64 minNum, uint64 maxNum, Vector<T>& options) {
+	std::string GenerateVector(uint64 minNum, uint64 maxNum, std::string& options) {
 		Distribution numDist = Distribution(minNum, maxNum);
 		uint64 num = numDist(gen);
 
-		Vector<T> out(num);
+		std::string out(num, ' ');
 		std::uniform_int_distribution<uint64> dist = std::uniform_int_distribution<uint64>(0, options.size());
 
 		for (uint64 i = 0; i < num; ++i) {
 			out[i] = options[dist(gen)];
-		}
-		return std::move(out);
-	}
-
-	Vector<T> GenerateVector(uint64 num, T min, T max) {
-		Vector<T> out(num);
-		Distribution dist = Distribution(min, max);
-
-		for (uint64 i = 0; i < num; ++i) {
-			out[i] = dist(gen);
-		}
-		return std::move(out);
-	}
-
-	Vector<T> GenerateVector(uint64 minNum, uint64 maxNum, T min, T max) {
-		Distribution numDist = Distribution(minNum, maxNum);
-		uint64 num = numDist(gen);
-
-		Vector<T> out(num);
-		Distribution dist = Distribution(min, max);
-
-		for (uint64 i = 0; i < num; ++i) {
-			out[i] = dist(gen);
 		}
 		return std::move(out);
 	}

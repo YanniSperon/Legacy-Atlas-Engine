@@ -16,7 +16,7 @@ namespace Atlas {
 		ids[3] = r.Generate();
 	}
 
-	UUID::UUID(const Array<uint64, 4>& idsArg)
+	UUID::UUID(const std::array<uint64, 4>& idsArg)
 	{
 		ids[0] = idsArg[0];
 		ids[1] = idsArg[1];
@@ -32,7 +32,7 @@ namespace Atlas {
 		ids[3] = ids3;
 	}
 
-	UUID::UUID(UUID& other)
+	UUID::UUID(const UUID& other)
 	{
 		ids[0] = other.ids[0];
 		ids[1] = other.ids[1];
@@ -40,7 +40,7 @@ namespace Atlas {
 		ids[3] = other.ids[3];
 	}
 
-	UUID& UUID::operator=(UUID& other)
+	UUID& UUID::operator=(const UUID& other)
 	{
 		ids[0] = other.ids[0];
 		ids[1] = other.ids[1];
@@ -49,12 +49,12 @@ namespace Atlas {
 		return *this;
 	}
 
-	bool UUID::operator==(UUID& other)
+	bool UUID::operator==(const UUID& other) const
 	{
 		return (ids[0] == other.ids[0]) && (ids[1] == other.ids[1]) && (ids[2] == other.ids[2]) && (ids[3] == other.ids[3]);
 	}
 
-	const Array<uint64, 4>& UUID::GetIDs() const
+	const std::array<uint64, 4>& UUID::GetIDs() const
 	{
 		return ids;
 	}

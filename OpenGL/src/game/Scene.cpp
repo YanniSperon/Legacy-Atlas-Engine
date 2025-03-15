@@ -11,12 +11,13 @@ namespace Atlas {
 
 	}
 
-	Scene::Scene(std::vector<Object*> preloadedObjects, std::vector<Object*> objects, std::vector<Light*> lightSource, std::vector<Camera*> cameras)
+	Scene::Scene(std::vector<Object*> preloadedObjects, std::vector<Object*> objects, std::vector<Light*> lightSource, std::vector<Camera*> cameras, SceneSettings settings)
 	{
 		preloadedObjectsOnScene = preloadedObjects;
 		objectsOnScene = objects;
 		lightsOnScene = lightSource;
 		camerasOnScene = cameras;
+		sceneSettings = settings;
 	}
 
 	Scene::~Scene()

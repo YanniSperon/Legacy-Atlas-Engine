@@ -8,8 +8,6 @@
 namespace Atlas {
 	
 	class PhysicsScene {
-	private:
-
 	public:
 		std::vector<PhysicsObject*> physicsObjectsOnScene;
 		std::vector<PhysicsLight*> physicsLightsOnScene;
@@ -21,5 +19,8 @@ namespace Atlas {
 
 		void Submit(PhysicsRenderer* renderer, Player* camera);
 		void Update();
+
+		SceneSettings sceneSettings;
+
 	};
 }

@@ -125,7 +125,7 @@ namespace Atlas {
 	
 	void Window::DrawDebug(bool& EnableConsole, bool& Wireframe)
 	{
-		ImGui::SetNextWindowPos(ImVec2((230.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (20.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
+		ImGui::SetNextWindowPos(ImVec2((550.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (20.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
 		ImGui::SetNextWindowSize(ImVec2((240.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (100.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
 		ImGui::Begin("Debug", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
 		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.12f).x);
@@ -159,7 +159,7 @@ namespace Atlas {
 
 	void Window::DrawFileManager(GLFWwindow* window)
 	{
-		ImGui::SetNextWindowPos(ImVec2((20.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (285.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
+		ImGui::SetNextWindowPos(ImVec2((335.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (305.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
 		ImGui::SetNextWindowSize(ImVec2((190.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (100.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
 		ImGui::Begin("File Manager", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
 		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.125f).x);
@@ -473,7 +473,7 @@ namespace Atlas {
 		ImGui::End();
 	}
 
-	void Window::DrawSpawnWindow(std::vector<Object*>& objectsOnScene, unsigned int& selectedObject)
+	void Window::DrawSpawnWindow(Object** selectedObject)
 	{
 		static glm::vec3 InputRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 		static glm::vec3 InputTranslation = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -498,6 +498,33 @@ namespace Atlas {
 				bool is_selected = (currentSelectedMesh == it.first);
 				if (ImGui::Selectable(it.first.c_str(), is_selected)) {
 					currentSelectedMesh = it.first;
+					if (is_selected) {
+						ImGui::SetItemDefaultFocus();
+					}
+				}
+			}
+			{
+				bool is_selected = (currentSelectedMesh == "cubeModel");
+				if (ImGui::Selectable("cubeModel", is_selected)) {
+					currentSelectedMesh = "cubeModel";
+					if (is_selected) {
+						ImGui::SetItemDefaultFocus();
+					}
+				}
+			}
+			{
+				bool is_selected = (currentSelectedMesh == "skyBox");
+				if (ImGui::Selectable("skyBox", is_selected)) {
+					currentSelectedMesh = "skyBox";
+					if (is_selected) {
+						ImGui::SetItemDefaultFocus();
+					}
+				}
+			}
+			{
+				bool is_selected = (currentSelectedMesh == "cubeInvertedLighting");
+				if (ImGui::Selectable("cubeInvertedLighting", is_selected)) {
+					currentSelectedMesh = "cubeInvertedLighting";
 					if (is_selected) {
 						ImGui::SetItemDefaultFocus();
 					}
@@ -563,20 +590,41 @@ namespace Atlas {
 		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.05f).x);
 		ImGui::SliderInt("Shininess##shininessintslider", &InputShininess, 0, 512);
 		ImGui::Separator();
+		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.05f).x);
+		static char name[1024];
+		ImGui::InputText("Display Name##entry", name, IM_ARRAYSIZE(name));
+		ImGui::Separator();
 		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.25f).x);
 		if (ImGui::Button("Spawn##spawn", ImVec2(ImGui::GetWindowSize().x * 0.50f, 0.0f))) {
 			if (currentSelectedTexture == "" || currentSelectedMesh == "" || currentSelectedShader == "") {
 				System::Log("Please select a mesh, texture, and shader");
 			}
 			else {
-				if (Global::Variables.loadedMeshCache.find(currentSelectedMesh) != Global::Variables.loadedMeshCache.end() && Global::Variables.loadedTextureCache.find(currentSelectedTexture) != Global::Variables.loadedTextureCache.end() && Global::Variables.loadedShaderCache.find(currentSelectedShader) != Global::Variables.loadedShaderCache.end()) {
+				if ((currentSelectedMesh == "cubeModel" || currentSelectedMesh == "skyBox" || currentSelectedMesh == "cubeInvertedLighting") && Global::Variables.loadedTextureCache.find(currentSelectedTexture) != Global::Variables.loadedTextureCache.end() && Global::Variables.loadedShaderCache.find(currentSelectedShader) != Global::Variables.loadedShaderCache.end()) {
+					Filepath texpath = System::SeperateFilepath(Global::Variables.loadedTextureCache[currentSelectedTexture]);
+					Filepath shaderpath = System::SeperateFilepath(Global::Variables.loadedShaderCache[currentSelectedShader]);
+
+					System::Log("Spawned object with model \"" + currentSelectedMesh + "\" at (" + std::to_string(InputTranslation.x) + ", " + std::to_string(InputTranslation.y) + ", " + std::to_string(InputTranslation.z) + ")");
+					type t = cubeModel;
+					if (currentSelectedMesh == "skyBox") {
+						t = skyBox;
+					}
+					else if (currentSelectedMesh == "cubeInvertedLighting") {
+						t = cubeInvertedLighting;
+					}
+					Global::Variables.currentScene.objectsOnScene.push_back(new Object(t, "", "", texpath.directory, texpath.filename, shaderpath.directory, shaderpath.filename, true, true, UUID(), InputRotation, InputTranslation, InputScale, Material(InputAmbient, InputDiffuse, InputSpecular, ((float)InputShininess))));
+					(*selectedObject) = Global::Variables.currentScene.objectsOnScene[Global::Variables.currentScene.objectsOnScene.size() - 1];
+					(*selectedObject)->SetDisplayName(name);
+				} else if (Global::Variables.loadedMeshCache.find(currentSelectedMesh) != Global::Variables.loadedMeshCache.end() && Global::Variables.loadedTextureCache.find(currentSelectedTexture) != Global::Variables.loadedTextureCache.end() && Global::Variables.loadedShaderCache.find(currentSelectedShader) != Global::Variables.loadedShaderCache.end()) {
 					Filepath meshpath = System::SeperateFilepath(Global::Variables.loadedMeshCache[currentSelectedMesh]);
 					Filepath texpath = System::SeperateFilepath(Global::Variables.loadedTextureCache[currentSelectedTexture]);
 					Filepath shaderpath = System::SeperateFilepath(Global::Variables.loadedShaderCache[currentSelectedShader]);
 
 					System::Log("Spawned object with model \"" + meshpath.directory + meshpath.filename + "\" at (" + std::to_string(InputTranslation.x) + ", " + std::to_string(InputTranslation.y) + ", " + std::to_string(InputTranslation.z) + ")");
-					objectsOnScene.push_back(new Object(type::normalModel, meshpath.directory, meshpath.filename, texpath.directory, texpath.filename, shaderpath.directory, shaderpath.filename, true, true, System::GenerateUniqueID(), InputRotation, InputTranslation, InputScale, Material(InputAmbient, InputDiffuse, InputSpecular, ((float)InputShininess))));
-					selectedObject = objectsOnScene.size() - 1;
+					
+					Global::Variables.currentScene.objectsOnScene.push_back(new Object(type::normalModel, meshpath.directory, meshpath.filename, texpath.directory, texpath.filename, shaderpath.directory, shaderpath.filename, true, true, UUID(), InputRotation, InputTranslation, InputScale, Material(InputAmbient, InputDiffuse, InputSpecular, ((float)InputShininess))));
+					(*selectedObject) = Global::Variables.currentScene.objectsOnScene[Global::Variables.currentScene.objectsOnScene.size() - 1];
+					(*selectedObject)->SetDisplayName(name);
 				}
 				else {
 					System::Err("Invalid or corrupted cache files!");
@@ -599,6 +647,27 @@ namespace Atlas {
 		static char* current_item = items[0];
 		static std::string currentSelectedTexture = "";
 		static std::string currentSelectedShader = "";
+		static char name[1024];
+		static Object* lastObject = object;
+
+		auto loadObjectData = [&]() {
+			InputModificationRotation = object->GetRotation();
+			InputModificationTranslation = object->GetTranslation();
+			InputModificationScale = object->GetScale();
+			InputModificationAmbient = object->GetMaterial().ambient;
+			InputModificationDiffuse = object->GetMaterial().diffuse;
+			InputModificationSpecular = object->GetMaterial().specular;
+			InputModificationShininess = object->GetMaterial().shininess;
+			current_item = items[0];
+			currentSelectedTexture = "";
+			currentSelectedShader = "";
+			name[0] = '\0';
+		};
+
+		if (lastObject != object) {
+			lastObject = object;
+			loadObjectData();
+		}
 
 		ImGui::SetNextWindowPos(ImVec2((1605.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (445.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
 		ImGui::SetNextWindowSize(ImVec2((295.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (470.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
@@ -665,6 +734,15 @@ namespace Atlas {
 			if (ImGui::Button("Apply##s1", ImVec2(ImGui::GetWindowSize().x * 0.50f, 0.0f))) {
 				Filepath shaderpath = System::SeperateFilepath(Global::Variables.loadedShaderCache[currentSelectedShader]);
 				object->SetShader(std::string(shaderpath.directory), std::string(shaderpath.filename));
+			}
+			ImGui::Separator();
+			ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.4f).x);
+			ImGui::Text("Display Name");
+			ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.17f).x);
+			ImGui::InputText("##entryeditor", name, IM_ARRAYSIZE(name));
+			ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.25f).x);
+			if (ImGui::Button("Apply##name1", ImVec2(ImGui::GetWindowSize().x * 0.50f, 0.0f))) {
+				object->SetDisplayName(std::string(name));
 			}
 		}
 		else if (current_item == "Position") {
@@ -755,12 +833,41 @@ namespace Atlas {
 		ImGui::End();
 	}
 
+	void Window::DrawSceneViewer(Object** selectedObject)
+	{
+		ImGui::SetNextWindowPos(ImVec2((20.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (20.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
+		ImGui::SetNextWindowSize(ImVec2((295.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (820.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
+		ImGui::Begin("Scene Viewer", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.05f).x);
+		if (ImGui::Button("Deselect All", ImVec2(ImGui::GetWindowSize().x * 0.90f, 0.0f))) {
+			(*selectedObject) = nullptr;
+		}
+		Scene& scene = Global::Variables.currentScene;
+		for (size_t i = 0; i < scene.objectsOnScene.size(); ++i) {
+			ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.125f).x);
+			std::string buttonName = scene.objectsOnScene[i]->GetDisplayName() + "##" + std::to_string(scene.objectsOnScene[i]->GetUID());
+			bool isSelected = (*selectedObject) == scene.objectsOnScene[i];
+			if (isSelected) {
+				ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
+				ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
+			}
+			if (ImGui::Button(buttonName.c_str(), ImVec2(ImGui::GetWindowSize().x * 0.75f, 0.0f))) {
+				(*selectedObject) = scene.objectsOnScene[i];
+			}
+			if (isSelected) {
+				ImGui::PopItemFlag();
+				ImGui::PopStyleVar();
+			}
+		}
+		ImGui::End();
+	}
+
 	void Window::DrawPhysicsManager()
 	{
 		static bool EnablePhysics = true;
 		static glm::vec3 gravity = glm::vec3(0.0f, -9.80665, 0.0f);
 		PhysicsEngine::SetPhysics(EnablePhysics);
-		ImGui::SetNextWindowPos(ImVec2((1605.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (445.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
+		ImGui::SetNextWindowPos(ImVec2((1290.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (20.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
 		ImGui::SetNextWindowSize(ImVec2((295.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (100.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
 		ImGui::Begin("Physics Manager", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
 		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.3f).x);
@@ -769,7 +876,7 @@ namespace Atlas {
 		ImGui::InputFloat3("Gravity##gravityfloatin", &gravity[0]);
 		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.25f).x);
 		if (ImGui::Button("Apply##applygravitybutton", ImVec2(ImGui::GetWindowSize().x * 0.50f, 0.0f))) {
-			PhysicsEngine::SetGravity(Convert::Vector3(gravity));
+			Global::Variables.currentScene.sceneSettings.gravity = gravity;
 		}
 		ImGui::End();
 	}
