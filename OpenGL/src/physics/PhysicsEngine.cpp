@@ -4,7 +4,10 @@
 #include "Convert.h"
 #include "Player.h"
 #include "PhysicsLinker.h"
-#include <iostream>
+
+#include "bullet/BulletCollision/Gimpact/btGImpactCollisionAlgorithm.h"
+
+#include <vector>
 
 namespace Atlas {
 
@@ -17,6 +20,9 @@ namespace Atlas {
 	static bool physicsEnabled;
 
 	static PhysicsScene* physicsScene;
+
+	static std::vector<btTriangleMesh*> triangleMeshes;
+	static std::vector<btTriangleIndexVertexArray*> indexVertexArrays;
 
 
 
@@ -57,6 +63,7 @@ namespace Atlas {
 
 	void PhysicsEngine::Initialize(SceneSettings s)
 	{
+
 		gContactAddedCallback=BulletCollisionCallbackFunc;
 		collisionConfiguration = new btDefaultCollisionConfiguration();
 		dispatcher = new btCollisionDispatcher(collisionConfiguration);
@@ -65,6 +72,9 @@ namespace Atlas {
 		dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
 		dynamicsWorld->setGravity(Convert::Vector3(s.gravity));
 		
+		btCollisionDispatcher* dispatcher = static_cast<btCollisionDispatcher*>(dynamicsWorld->getDispatcher());
+		btGImpactCollisionAlgorithm::registerAlgorithm(dispatcher);
+
 		//debugDrawer = new PhysicsDebugDrawer();
 		//debugDrawer->setDebugMode(0);
 		//dynamicsWorld->setDebugDrawer(debugDrawer);
@@ -160,7 +170,15 @@ namespace Atlas {
 			dynamicsWorld->removeCollisionObject(obj);
 			delete obj;
 		}
-		
+
+		for (std::size_t i = 0; i < indexVertexArrays.size(); ++i) {
+			delete indexVertexArrays[i];
+		}
+
+		for (std::size_t i = 0; i < triangleMeshes.size(); ++i) {
+			delete triangleMeshes[i];
+		}
+
 		delete dynamicsWorld;
 		delete solver;
 		delete overlappingPairCache;
@@ -197,7 +215,7 @@ namespace Atlas {
 		dynamicsWorld->setGravity(newGravity);
 	}
 
-	btTriangleMesh* PhysicsEngine::CreatePhysicsBodyMesh(ShapeData& data)
+	btTriangleMesh* PhysicsEngine::CreateTriangleMesh(ShapeData& data)
 	{
 		btTriangleMesh* returnValue = new btTriangleMesh();
 		for (int i = 0; i < data.numIndices / 3; i++)
@@ -210,7 +228,21 @@ namespace Atlas {
 			btVector3 vertex2(Convert::Vector3(data.vertices[index2].position));
 			returnValue->addTriangle(vertex0, vertex1, vertex2);
 		}
+		triangleMeshes.push_back(returnValue);
 		return returnValue;
+	}
+
+	btTriangleIndexVertexArray* PhysicsEngine::CreateIndexVertexArray(btTriangleMesh* m) {
+		const IndexedMeshArray& meshArray = m->getIndexedMeshArray();
+		btTriangleIndexVertexArray* indexVertexArray = new btTriangleIndexVertexArray();
+
+		for (int i = 0; i < meshArray.size(); ++i) {
+			indexVertexArray->addIndexedMesh(meshArray[i], PHY_INTEGER);
+		}
+
+		indexVertexArrays.push_back(indexVertexArray);
+
+		return indexVertexArray;
 	}
 
 	void PhysicsEngine::SetPhysics(bool togglePhysics)

@@ -41,7 +41,6 @@ namespace Atlas {
 	Object::Object(type t, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderFileName, bool glInit, bool lighting, const UUID& uuid)
 		: Mesh(t, meshDir, meshName), material(), glInitialized(glInit), textureDirectory(texDir), textureName(texName), hasLighting(lighting), indexBufferID(0), vertexBufferID(0), shaderDirectory(shaderDir), shaderName(shaderFileName), uid(uuid), displayName(to_string(t) + meshDir + meshName)
 	{
-		System::Log("First constructor UID set to " + std::to_string(uid));
 		if (Global::Variables.textureCache.find(texDir + texName) != Global::Variables.textureCache.end()) {
 			texID = Global::Variables.textureCache[texDir + texName];
 		}
@@ -91,7 +90,6 @@ namespace Atlas {
 	Object::Object(type t, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderFileName, bool glInit, bool lighting, const UUID& uuid, glm::vec3 rot, glm::vec3 trans, glm::vec3 s)
 		: Mesh(t, meshDir, meshName, rot, trans, s), material(), glInitialized(glInit), textureDirectory(texDir), textureName(texName), shaderDirectory(shaderDir), shaderName(shaderFileName), hasLighting(lighting), indexBufferID(0), vertexBufferID(0), uid(uuid)
 	{
-		System::Log("Second constructor UID set to " + std::to_string(uid));
 		if (Global::Variables.textureCache.find(texDir + texName) != Global::Variables.textureCache.end()) {
 			texID = Global::Variables.textureCache[texDir + texName];
 		}
@@ -141,7 +139,6 @@ namespace Atlas {
 	Object::Object(type t, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderFileName, bool glInit, bool lighting, const UUID& uuid, glm::vec3 rot, glm::vec3 trans, glm::vec3 s, Material mat)
 		: Mesh(t, meshDir, meshName, rot, trans, s), material(mat), glInitialized(glInit), textureDirectory(texDir), textureName(texName), shaderDirectory(shaderDir), shaderName(shaderFileName), hasLighting(lighting), indexBufferID(0), vertexBufferID(0), uid(uuid)
 	{
-		System::Log("Third constructor UID set to " + std::to_string(uid));
 		if (Global::Variables.textureCache.find(texDir + texName) != Global::Variables.textureCache.end()) {
 			texID = Global::Variables.textureCache[texDir + texName];
 		}
@@ -186,6 +183,13 @@ namespace Atlas {
 		if (glInit) {
 			GLInit();
 		}
+	}
+
+	//Object(type t, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderFileName, bool glInit, bool lighting, const UUID& uid, glm::vec3 rot, glm::vec3 trans, glm::vec3 s, Material mat);
+	Object::Object(type t, std::string meshDir, std::string meshName, Object& objToCopy)
+		: Object(t, meshDir, meshName, objToCopy.textureDirectory, objToCopy.textureName, objToCopy.shaderDirectory, objToCopy.shaderName, true, objToCopy.hasLighting, objToCopy.uid, objToCopy.GetRotation(), objToCopy.GetTranslation(), objToCopy.GetScale(), objToCopy.material)
+	{
+		SetDisplayName(objToCopy.GetDisplayName());
 	}
 
 	Object::~Object()
@@ -329,7 +333,12 @@ namespace Atlas {
 		return shaderName;
 	}
 
-	Material Object::GetMaterial()
+	Material& Object::GetMaterial()
+	{
+		return material;
+	}
+
+	const Material& Object::GetMaterial() const
 	{
 		return material;
 	}
@@ -374,13 +383,13 @@ namespace Atlas {
 		for (auto it : Global::Variables.textureCache) {
 			glDeleteTextures(1, &it.second);
 		}
-		Global::Variables.textureCache.erase(Global::Variables.textureCache.begin(), Global::Variables.textureCache.end());
+		Global::Variables.textureCache.clear();
 
 		for (auto it : Global::Variables.shaderCache) {
 			it.second->Unbind();
 			delete it.second;
 		}
-		Global::Variables.shaderCache.erase(Global::Variables.shaderCache.begin(), Global::Variables.shaderCache.end());
+		Global::Variables.shaderCache.clear();
 	}
 
 	std::string Object::ToString()

@@ -60,9 +60,14 @@ namespace Atlas {
 		void ScaleAdd3f(float x, float y, float z);
 		void ScaleAddVec3(glm::vec3 s);
 
-		glm::vec3 GetTranslation();
-		glm::vec3 GetRotation();
-		glm::vec3 GetScale();
+		glm::vec3& GetTranslation();
+		glm::vec3& GetRotation();
+		glm::vec3& GetScale();
+
+		const glm::vec3& GetTranslation() const;
+		const glm::vec3& GetRotation() const;
+		const glm::vec3& GetScale() const;
+
 		ShapeData GetShape();
 		std::string GetModelFileName();
 		std::string GetModelFileDirectory();

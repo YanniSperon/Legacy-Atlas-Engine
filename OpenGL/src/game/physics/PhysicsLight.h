@@ -9,7 +9,7 @@ namespace Atlas {
 		LightIntensity intensity;
 	public:
 		PhysicsLight();
-		PhysicsLight(Light* light);
+		PhysicsLight(Light* light, float mass, PhysicsObject::typeShape t);
 		~PhysicsLight();
 
 		void SetLightIntensity(LightIntensity newValue);

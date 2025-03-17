@@ -67,7 +67,7 @@ namespace Atlas {
 		PostProcessor::PrepareForRenderingPhysicsSimulation();
 	}
 
-	void RenderingEngine::Render(bool& EnableWireframe, bool& EnableGUI, LevelEditor::EditorType& currentEditorType, LevelEditor::Mode& currentMode, Object** selectedObject)
+	void RenderingEngine::Render(bool& EnableWireframe, bool& EnableGUI)
 	{
 		if (EnableWireframe) {
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -80,7 +80,7 @@ namespace Atlas {
 			PostProcessor::Render(Global::Variables.currentRenderer);
 		}
 		if (EnableGUI) {
-			GUI::LoadLevelEditorGUI(Global::Variables.window, currentEditorType, currentMode, selectedObject, EnableWireframe);
+			GUI::LoadLevelEditorGUI(Global::Variables.window, EnableWireframe);
 			GUI::Draw();
 		}
 	}

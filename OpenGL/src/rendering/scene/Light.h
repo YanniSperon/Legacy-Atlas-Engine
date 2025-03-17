@@ -22,13 +22,15 @@ namespace Atlas {
 	class Light : public Object {
 	private:
 		LightIntensity intensity;
+
 	public:
 		Light();
 		Light(LightIntensity lightIntensity, type t, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderName, bool glInit, bool hasLighting, const UUID& uid, glm::vec3 rot, glm::vec3 trans, glm::vec3 s);
 		Light(LightIntensity lightIntensity, type t, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderName, bool glInit, bool hasLighting, const UUID& uid, glm::vec3 rot, glm::vec3 trans, glm::vec3 s, Material mat);
+		Light(type t, std::string meshDir, std::string meshName, Light& otherLight);
 
 		void SetLightIntensity(LightIntensity newValue);
-		LightIntensity GetLightIntensity();
+		LightIntensity& GetLightIntensity();
 
 		virtual std::string GetType() override;
 	};

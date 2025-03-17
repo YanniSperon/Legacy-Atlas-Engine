@@ -9,7 +9,7 @@ namespace Atlas {
 
 	struct Material {
 		glm::vec3 ambient, diffuse, specular;
-		float shininess;
+		int shininess;
 
 		Material()
 			: ambient(1.0f, 1.0f, 1.0f), diffuse(1.0f, 1.0f, 1.0f), specular(1.0f, 1.0f, 1.0f), shininess(32)
@@ -17,7 +17,7 @@ namespace Atlas {
 
 		}
 
-		Material(glm::vec3 amb, glm::vec3 diff, glm::vec3 spec, float shin)
+		Material(glm::vec3 amb, glm::vec3 diff, glm::vec3 spec, int shin)
 			: ambient(amb), diffuse(diff), specular(spec), shininess(shin)
 		{
 
@@ -25,7 +25,7 @@ namespace Atlas {
 	};
 
 	class Object : public Mesh {
-	private:
+	protected:
 		UUID uid;
 		GLuint vertexBufferID;
 		GLuint indexBufferID;
@@ -46,6 +46,7 @@ namespace Atlas {
 		Object(type t, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderFileName, bool glInit, bool lighting, const UUID& uid);
 		Object(type t, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderFileName, bool glInit, bool lighting, const UUID& uid, glm::vec3 rot, glm::vec3 trans, glm::vec3 s);
 		Object(type t, std::string meshDir, std::string meshName, std::string texDir, std::string texName, std::string shaderDir, std::string shaderFileName, bool glInit, bool lighting, const UUID& uid, glm::vec3 rot, glm::vec3 trans, glm::vec3 s, Material mat);
+		Object(type t, std::string meshDir, std::string meshName, Object& objToCopy);
 		virtual ~Object();
 
 		void GLInit();
@@ -68,7 +69,8 @@ namespace Atlas {
 		std::string GetShaderName();
 		bool GetGLInitialized();
 		bool GetHasLighting();
-		Material GetMaterial();
+		Material& GetMaterial();
+		const Material& GetMaterial() const;
 		GLuint GetVBO();
 		GLuint GetIBO();
 

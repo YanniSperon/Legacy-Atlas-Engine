@@ -8,6 +8,8 @@
 #include "Object2D.h"
 #include "PhysicsEngine.h"
 #include "SimpleRenderer.h"
+#include "PhysicsSettings.h"
+
 #include <chrono>
 #include <unordered_map>
 #include <vector>
@@ -74,6 +76,10 @@ namespace Atlas {
 		GLFWwindow* window;
 
 		SimpleRenderer* currentRenderer;
+
+		std::vector<Object*> selectedObjects;
+
+		PhysicsSettings physicsSettings;
 	};
 
 }

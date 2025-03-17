@@ -5,18 +5,17 @@
 #include "GLFW/glfw3.h"
 #include <vector>
 
+struct GLFWwindow;
+
 namespace Atlas {
 
 	class Window {
 	public:
-		static void DrawInfoWindow(LevelEditor::EditorType& currentEditorType, LevelEditor::Mode& currentMode);
-		static void DrawDebug(bool& EnableConsole, bool& EnableWireframe);
+		static void DrawUI(GLFWwindow* window, bool& EnableWireframe);
+		static void DrawControl(GLFWwindow* window, bool& isMovingCamera);
 		static void DrawFPSCounter();
-		static void DrawFileManager(GLFWwindow* window);
-		static void DrawSceneViewer(Object** selectedObject);
+		static void DrawSceneViewer();
 		static void DrawPostProcessingManager(GLFWwindow* window);
-		static void DrawSpawnWindow(Object** selectedObject);
-		static void DrawObjectSettingsWindow(Object* object);
-		static void DrawPhysicsManager();
+		static void DrawObjectSettingsWindow();
 	};
 }

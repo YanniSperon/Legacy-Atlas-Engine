@@ -4,6 +4,6 @@
 namespace Atlas {
 	class PhysicsSimulator {
 	public:
-		static void LaunchSimulation(Scene* sceneToSimulate, double timeConstant);
+		static void LaunchSimulation(Scene* sceneToSimulate);
 	};
 }

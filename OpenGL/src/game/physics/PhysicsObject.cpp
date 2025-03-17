@@ -7,17 +7,19 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtx/euler_angles.hpp"
 //#include "glm/gtx/quaternion.hpp"
+#include "bullet/BulletCollision/Gimpact/btGImpactShape.h"
 
 namespace Atlas {
 
 	PhysicsObject::PhysicsObject()
-		: uid(), vertexBufferID(0), indexBufferID(0), texID(0), shaderID(0), numIndices(0), material(), glInitialized(false), textureDirectory(""), textureName(""), shaderDirectory(""), shaderName(""), hasLighting(false), physicsObject(NULL)
+		: uid(), vertexBufferID(0), indexBufferID(0), texID(0), shaderID(0), numIndices(0), material(), glInitialized(false), textureDirectory(""), textureName(""), shaderDirectory(""), shaderName(""), hasLighting(false), physicsObject(NULL), s(box)
 	{
 	}
 
-	PhysicsObject::PhysicsObject(Object* obj, float mass)
-		: Mesh(obj->GetTypeEnum(), obj->GetModelFileDirectory(), obj->GetModelFileName(), obj->GetRotation(), obj->GetTranslation(), obj->GetScale()), glInitialized(false), uid()
+	PhysicsObject::PhysicsObject(Object* obj, float mass, typeShape shapeType)
+		: Mesh(obj->GetTypeEnum(), obj->GetModelFileDirectory(), obj->GetModelFileName(), obj->GetRotation(), obj->GetTranslation(), obj->GetScale()), glInitialized(false), uid(), s(shapeType)
 	{
+		displayName = obj->GetDisplayName();
 		textureDirectory = obj->GetTextureDirectory();
 		textureName = obj->GetTextureName();
 		shaderDirectory = obj->GetShaderDirectory();
@@ -72,7 +74,40 @@ namespace Atlas {
 		shaderID = obj->GetShaderID();
 		numIndices = obj->GetNumIndices();
 		
-		btCollisionShape* physicsShape = new btBoxShape(Convert::Vector3(GetShape().max));
+		btCollisionShape* physicsShape = nullptr;
+		
+		if (s == sphere) {
+			physicsShape = new btSphereShape(glm::distance(GetShape().max, GetShape().min) * 0.5f);
+		}
+		else if (s == staticConcave || (s == dynamicConcave && mass == 0.0f)) {
+			//sphere, box, staticConcave, dynamicConcave, convexHull, convexDecomposition
+			s = staticConcave;
+			physicsShape = new btBvhTriangleMeshShape(PhysicsEngine::CreateTriangleMesh(GetShape()), true);
+			mass = 0.0f;
+		}
+		else if (s == dynamicConcave) {
+			btGImpactMeshShape* gimpactshape = new btGImpactMeshShape(PhysicsEngine::CreateIndexVertexArray(PhysicsEngine::CreateTriangleMesh(GetShape())));
+			gimpactshape->updateBound();
+			physicsShape = gimpactshape;
+		}
+		else if (s == convexHull) {
+			btConvexHullShape* ch = new btConvexHullShape();
+			ShapeData& s = GetShape();
+			for (GLuint i = 0; i < s.numVertices; ++i) {
+				ch->addPoint(btVector3(s.vertices[i].position.x, s.vertices[i].position.y, s.vertices[i].position.z), false);
+			}
+			ch->recalcLocalAabb();
+			physicsShape = ch;
+		}
+		else if (s == convexDecomposition) {
+			System::Err("Convex decomposition not implemented yet, defaulting to box");
+			physicsShape = new btBoxShape(Convert::Vector3(GetShape().max));
+		}
+		else {
+			// s == box
+			physicsShape = new btBoxShape(Convert::Vector3(GetShape().max));
+		}
+
 		physicsShape->setLocalScaling(Convert::Vector3(obj->GetScale()));
 		btTransform shapeTransformation;
 		shapeTransformation.setFromOpenGLMatrix(&GetModelTransRotMatrix()[0][0]);
@@ -85,7 +120,6 @@ namespace Atlas {
 
 	PhysicsObject::~PhysicsObject()
 	{
-
 	}
 
 	void PhysicsObject::Update()
@@ -159,6 +193,16 @@ namespace Atlas {
 	const UUID& PhysicsObject::GetUID() const
 	{
 		return uid;
+	}
+
+	const std::string& PhysicsObject::GetDisplayName() const
+	{
+		return displayName;
+	}
+
+	void PhysicsObject::SetDisplayName(std::string s)
+	{
+		displayName = s;
 	}
 
 	void PhysicsObject::SetHasLighting(bool newValue)

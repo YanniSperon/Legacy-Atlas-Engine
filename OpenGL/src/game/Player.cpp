@@ -15,7 +15,7 @@ namespace Atlas {
 	Player::Player(Camera* camera)
 		: hasControls(camera->GetHasControls()), movementSpeed(camera->GetMovementSpeed()), viewDirection(camera->GetViewDirection()), upDirection(camera->GetUpDirection()), skybox(camera->GetSkybox()), cameraTranslation(camera->GetTranslation()), oldMouseX(camera->GetOldMousePos().x), oldMouseY(camera->GetOldMousePos().y), mouseSensitivity(camera->GetMouseSensitivity())
 	{
-		playerModel = new PhysicsObject(new Object(type::cubeModel, "", "", "res/images/textures/", "newcow.png", "res/shaders/", "Lighting.shader", true, true, UUID(), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 2.0f, 1.0f)), 100.0f);
+		playerModel = new PhysicsObject(new Object(type::cubeModel, "", "", "res/images/textures/", "newcow.png", "res/shaders/", "Lighting.shader", true, true, UUID(), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 2.0f, 1.0f)), 100.0f, PhysicsObject::typeShape::sphere);
 	}
 
 	Player::~Player()

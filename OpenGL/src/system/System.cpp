@@ -11,11 +11,13 @@
 #include <fstream>
 #include <algorithm>
 #include <sstream>
+#include <deque>
 
 namespace Atlas {
 
 	static std::string workingDir;
 	static std::ofstream consoleLogFile;
+	static std::deque<std::function<void()>> globalEvents;
 
 	std::vector<std::string> System::GetFilesInDirectory(const std::string& directory)
 	{
@@ -357,10 +359,10 @@ namespace Atlas {
 		consoleLogFile = std::ofstream(logFilePath);
 	}
 
-	void System::DrawConsole()
+	void System::DrawConsole(float offset)
 	{
 		static char InputConsoleString[128] = "";
-		ImGui::SetNextWindowPos(ImVec2((20.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (860.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
+		ImGui::SetNextWindowPos(ImVec2(((20.0f + offset) / 1920.0f) * ((float)Global::Variables.currentWidth), (860.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
 		ImGui::SetNextWindowSize(ImVec2((750.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (200.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
 		ImGui::Begin("Console", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
 		ImGui::BeginChild("Log");
@@ -466,9 +468,21 @@ namespace Atlas {
 		return Filepath(dir, name);
 	}
 
-	//std::size_t System::GenerateUniqueID()
-	//{
-	//	lastID++;
-	//	return std::hash<unsigned long long int>{}(lastID);
-	//}
+	void System::AddEventToGlobalQueue(std::function<void()> func)
+	{
+		globalEvents.push_back(func);
+	}
+
+	void System::AddPriorityEventToGlobalQueue(std::function<void()> func)
+	{
+		globalEvents.push_front(func);
+	}
+	void System::ProcessGlobalEvents()
+	{
+		while (!globalEvents.empty()) {
+			auto temp = globalEvents.front();
+			globalEvents.pop_front();
+			temp();
+		}
+	}
 }

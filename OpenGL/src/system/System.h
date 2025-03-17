@@ -56,10 +56,15 @@ namespace Atlas {
 		static void SetConsoleLogFile(const std::string& logFile);
 
 
-		static void DrawConsole();
+		static void DrawConsole(float offset);
 
 		static std::string FileOpenDialog(const std::string& label, LPCSTR filter, GLFWwindow* window);
 
 		static Filepath SeperateFilepath(const std::string& filePath);
+
+		static void AddEventToGlobalQueue(std::function<void()> func);
+		static void AddPriorityEventToGlobalQueue(std::function<void()> func);
+
+		static void ProcessGlobalEvents();
 	};
 };

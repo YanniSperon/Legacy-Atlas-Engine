@@ -1,9 +1,9 @@
 Object: 5
 type: Object
 modelType: cubeModel
-translation.x: 0
-translation.y: 0
-translation.z: 4
+translation.x: -1.29515
+translation.y: 0.177859
+translation.z: 10.7138
 rotation.x: 0
 rotation.y: 0
 rotation.z: 0
@@ -28,5 +28,5 @@ textureName: yellow.png
 shaderDir: res/shaders/
 shaderName: Lighting.shader
 displayName: Testing123
-uid: 8638461229220112050:4571669948821181430:1792735185119893529:11992828460851154207
+uid: 5531976851323806656:2252561920211159431:6470059412504388569:3325735477802310277
 

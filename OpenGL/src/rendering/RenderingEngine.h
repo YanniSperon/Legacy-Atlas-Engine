@@ -10,7 +10,7 @@ namespace Atlas {
 		static void Initialize();
 		static void Begin();
 		static void BeginPhysicsSimulator();
-		static void Render(bool& EnableWireframe, bool& EnableGUI, LevelEditor::EditorType& currentEditorType, LevelEditor::Mode& currentMode, Object** selectedObject);
+		static void Render(bool& EnableWireframe, bool& EnableGUI);
 		static void End();
 		static void Cleanup();
 	};

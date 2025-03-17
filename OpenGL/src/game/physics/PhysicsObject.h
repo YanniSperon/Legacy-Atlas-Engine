@@ -42,6 +42,10 @@ namespace Atlas {
 	};
 	
 	class PhysicsObject : public Mesh {
+	public:
+		enum typeShape {
+			sphere, box, staticConcave, dynamicConcave, convexHull, convexDecomposition
+		};
 	private:
 		UUID uid;
 		GLuint vertexBufferID;
@@ -57,9 +61,11 @@ namespace Atlas {
 		std::string shaderName;
 		bool hasLighting;
 		btCollisionObject* physicsObject;
+		std::string displayName;
+		typeShape s;
 	public:
 		PhysicsObject();
-		PhysicsObject(Object* obj, float mass);
+		PhysicsObject(Object* obj, float mass, typeShape shapeType);
 		~PhysicsObject();
 
 		void Update();
@@ -73,6 +79,9 @@ namespace Atlas {
 		GLuint GetVBO();
 		btCollisionObject* GetPhysicsObject();
 		const UUID& GetUID() const;
+		const std::string& GetDisplayName() const;
+
+		void SetDisplayName(std::string s);
 
 		void SetHasLighting(bool newValue);
 

@@ -515,6 +515,7 @@
     <ClInclude Include="src\game\physics\PhysicsObject.h" />
     <ClInclude Include="src\game\physics\PhysicsRenderer.h" />
     <ClInclude Include="src\game\physics\PhysicsScene.h" />
+    <ClInclude Include="src\game\physics\PhysicsSettings.h" />
     <ClInclude Include="src\game\Player.h" />
     <ClInclude Include="src\game\Scene.h" />
     <ClInclude Include="src\global\Global.h" />

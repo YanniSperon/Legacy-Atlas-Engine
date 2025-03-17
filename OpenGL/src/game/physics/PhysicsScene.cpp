@@ -15,15 +15,15 @@ namespace Atlas {
 		System::Log("Preloaded Objects:");
 		for (unsigned int i = 0; i < scene->preloadedObjectsOnScene.size(); i++) {
 			System::Log("    " + scene->preloadedObjectsOnScene.at(i)->ToString());
-			physicsObjectsOnScene.push_back(new PhysicsObject(scene->preloadedObjectsOnScene.at(i), 0.0f));
+			physicsObjectsOnScene.push_back(new PhysicsObject(scene->preloadedObjectsOnScene.at(i), 0.0f, PhysicsObject::typeShape::box));
 		}
 		System::Log("Objects:");
 		for (unsigned int i = 0; i < scene->objectsOnScene.size(); i++) {
 			System::Log("    " + scene->objectsOnScene.at(i)->ToString());
-			physicsObjectsOnScene.push_back(new PhysicsObject(scene->objectsOnScene.at(i), 1.0f));
+			physicsObjectsOnScene.push_back(new PhysicsObject(scene->objectsOnScene.at(i), 1.0f, PhysicsObject::typeShape::box));
 		}
 		for (unsigned int i = 0; i < scene->preloadedObjectsOnScene.size(); i++) {
-			physicsLightsOnScene.push_back(new PhysicsLight(scene->lightsOnScene.at(i)));
+			physicsLightsOnScene.push_back(new PhysicsLight(scene->lightsOnScene.at(i), 0.0f, PhysicsObject::typeShape::box));
 		}
 		for (unsigned int i = 0; i < scene->camerasOnScene.size(); i++) {
 			playersOnScene.push_back(new Player(scene->camerasOnScene.at(i)));

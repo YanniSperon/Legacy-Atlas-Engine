@@ -348,17 +348,32 @@ namespace Atlas {
 		}
 	}
 
-	glm::vec3 Mesh::GetTranslation()
+	glm::vec3& Mesh::GetTranslation()
 	{
 		return translation;
 	}
 
-	glm::vec3 Mesh::GetRotation()
+	glm::vec3& Mesh::GetRotation()
 	{
 		return rotation;
 	}
 
-	glm::vec3 Mesh::GetScale()
+	glm::vec3& Mesh::GetScale()
+	{
+		return scale;
+	}
+
+	const glm::vec3& Mesh::GetTranslation() const
+	{
+		return translation;
+	}
+
+	const glm::vec3& Mesh::GetRotation() const
+	{
+		return rotation;
+	}
+
+	const glm::vec3& Mesh::GetScale() const
 	{
 		return scale;
 	}

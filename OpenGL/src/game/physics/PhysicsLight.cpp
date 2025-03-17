@@ -7,8 +7,8 @@ namespace Atlas {
 
 	}
 
-	PhysicsLight::PhysicsLight(Light* light)
-		: PhysicsObject(light, 0.0f)
+	PhysicsLight::PhysicsLight(Light* light, float mass, PhysicsObject::typeShape t)
+		: PhysicsObject(light, 0.0f, t)
 	{
 		intensity = light->GetLightIntensity();
 	}

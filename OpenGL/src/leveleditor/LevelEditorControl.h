@@ -6,6 +6,6 @@
 namespace LevelEditor {
 	class LevelEditorControl {
 	public:
-		static void Control(LevelEditor::EditorType& currentEditorType, LevelEditor::Mode& currentMode, Atlas::Object** selectedObject, float deltaTime);
+		static void Control(double deltaTime);
 	};
 }

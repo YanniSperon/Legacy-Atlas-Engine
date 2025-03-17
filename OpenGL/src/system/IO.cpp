@@ -26,7 +26,7 @@ namespace Atlas {
 			glm::vec3 ambient = glm::vec3(0.1f, 0.1f, 0.1f);
 			glm::vec3 diffuse = glm::vec3(0.25f, 0.25f, 0.25f);
 			glm::vec3 specular = glm::vec3(0.25f, 0.25f, 0.25f);
-			float shininess = 32.0f;
+			int shininess = 32.0f;
 			bool hasLighting = true;
 			std::string modelFileDirectory = "";
 			std::string modelFileName = "";
@@ -159,7 +159,7 @@ namespace Atlas {
 				}
 				else if (line.find("shininess: ") != std::string::npos) {
 					std::string value = line.substr(11);
-					shininess = std::stof(value);
+					shininess = std::stoi(value);
 				}
 				else if (line.find("hasLighting: ") != std::string::npos) {
 					std::string value = line.substr(13);
