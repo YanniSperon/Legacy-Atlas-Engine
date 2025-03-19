@@ -13,6 +13,9 @@ namespace Atlas {
 		originalMovementSpeed = movementSpeed;
 		isPaused = false;
 
+		nearPlane = 0.1;
+		farPlane = 1600.0;
+
 		fullscreen = config.GetFullscreenPreference();
 		forceFullscreen = config.GetForceFullscreen();
 		mouseSensitivity = config.GetMouseSensitivityPreference();

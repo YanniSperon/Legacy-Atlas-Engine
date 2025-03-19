@@ -319,6 +319,7 @@ namespace Atlas {
 			IsMovingCamera = !IsMovingCamera;
 			glfwSetInputMode(window, GLFW_CURSOR, IsMovingCamera ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
 			Global::Variables.enableMouseMove = IsMovingCamera;
+			Global::Variables.selectedObjects.clear();
 			if (!IsMovingCamera) {
 				glfwSetCursorPos(window, Global::Variables.currentWidth * 0.5, Global::Variables.currentHeight * 0.5);
 			}
@@ -387,21 +388,69 @@ namespace Atlas {
 	void Window::DrawControl(GLFWwindow* window, bool& isMovingCamera)
 	{
 		ImGui::SetNextWindowPos(ImVec2((550.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (20.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
-		ImGui::SetNextWindowSize(ImVec2((240.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (120.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
+		ImGui::SetNextWindowSize(ImVec2((240.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (250.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
 		ImGui::Begin("Control", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
-		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.12f).x);
+		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.125f).x);
 		ImGui::Text("%.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::Separator();
-		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.1f).x);
+		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.4f).x);
+		ImGui::Text("Near Plane");
+		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.075f).x);
+		if (ImGui::Button("-##nearplane", ImVec2(ImGui::GetWindowSize().x * 0.4f, 0.0f))) {
+			double res = Global::Variables.nearPlane * 0.5;
+			if (res >= 0.0) {
+				System::Log("Near plane set to " + std::to_string(res));
+				Global::Variables.nearPlane = res;
+			}
+			else {
+				System::Log("Near plane cannot be zero");
+			}
+		}
+		ImGui::SameLine();
+		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.525f).x);
+		if (ImGui::Button("+##nearplane", ImVec2(ImGui::GetWindowSize().x * 0.4f, 0.0f))) {
+			double res = Global::Variables.nearPlane * 2.0;
+			if (res < Global::Variables.farPlane) {
+				System::Log("Near plane set to " + std::to_string(res));
+				Global::Variables.nearPlane = res;
+			}
+			else {
+				System::Log("Near plane cannot be greater than or equal to the far plane");
+			}
+		}
+		ImGui::Separator();
+		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.4f).x);
+		ImGui::Text("Far Plane");
+		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.075f).x);
+		if (ImGui::Button("-##farplane", ImVec2(ImGui::GetWindowSize().x * 0.4f, 0.0f))) {
+			double res = Global::Variables.farPlane * 0.5;
+			if (res > Global::Variables.nearPlane) {
+				System::Log("Far plane set to " + std::to_string(res));
+				Global::Variables.farPlane = res;
+			}
+			else {
+				System::Log("Far plane cannot be less than or equal to near plane");
+			}
+		}
+		ImGui::SameLine();
+		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.525f).x);
+		if (ImGui::Button("+##farplane", ImVec2(ImGui::GetWindowSize().x * 0.4f, 0.0f))) {
+			double res = Global::Variables.farPlane * 2.0;
+			if (res < 1000000000.0) {
+				System::Log("Far plane set to " + std::to_string(res));
+				Global::Variables.farPlane = res;
+			}
+			else {
+				System::Log("Far plane cannot be greater than or equal to 1,000,000,000");
+			}
+		}
+		ImGui::Separator();
+		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.125f).x);
 		ImGui::InputFloat3("Gravity##gravityfloatin", &(Global::Variables.currentScene.sceneSettings.gravity[0]), 3);
 		ImGui::Separator();
 		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.25f).x);
 		if (ImGui::Button("Start##startbutton", ImVec2(ImGui::GetWindowSize().x * 0.50f, 0.0f))) {
 			System::AddPriorityEventToGlobalQueue([&]() {
-				System::Log("Loading physics: " + std::string(window != nullptr ? "Good" : "Not good"));
-				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-				glfwSetCursorPos(window, Global::Variables.mouseX, Global::Variables.mouseY);
-				Global::Variables.enableMouseMove = true;
 				isMovingCamera = false; // Set to false so when this is next checked (when simulation is over) it is in sync
 				PhysicsSimulator::LaunchSimulation(&Global::Variables.currentScene);
 			});
@@ -609,8 +658,8 @@ namespace Atlas {
 			if (current_item == "Rendering") {
 				ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.4f).x);
 				ImGui::Text("Model");
-				ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.1f).x);
-				if (ImGui::BeginCombo("Model##modelcombo", currentSelectedMesh.c_str()))
+				ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.17f).x);
+				if (ImGui::BeginCombo("##modelcombo", currentSelectedMesh.c_str()))
 				{
 					for (auto it : Global::Variables.loadedMeshCache) {
 						bool is_selected = (currentSelectedMesh == it.first);
@@ -755,21 +804,21 @@ namespace Atlas {
 				ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.38f).x);
 				ImGui::Text("Rotation");
 				ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.17f).x);
-				ImGui::InputFloat3("##in1", &((object->GetRotation())[0]));
+				ImGui::InputFloat3("##in1", &((object->GetRotation())[0]), 3);
 
 				ImGui::Separator();
 
 				ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.36f).x);
 				ImGui::Text("Translation");
 				ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.17f).x);
-				ImGui::InputFloat3("##in2", &((object->GetTranslation())[0]));
+				ImGui::InputFloat3("##in2", &((object->GetTranslation())[0]), 3);
 
 				ImGui::Separator();
 
 				ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.41f).x);
 				ImGui::Text("Scale");
 				ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.17f).x);
-				ImGui::InputFloat3("##in3", &((object->GetScale())[0]));
+				ImGui::InputFloat3("##in3", &((object->GetScale())[0]), 3);
 
 				ImGui::Separator();
 			}
@@ -779,21 +828,21 @@ namespace Atlas {
 					ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.27f).x);
 					ImGui::Text("Ambient Color");
 					ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.17f).x);
-					ImGui::InputFloat3("##ambcolor", &((lt->GetLightIntensity().ambient)[0]));
+					ImGui::InputFloat3("##ambcolor", &((lt->GetLightIntensity().ambient)[0]), 3);
 
 					ImGui::Separator();
 
 					ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.27f).x);
 					ImGui::Text("Diffuse Color");
 					ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.17f).x);
-					ImGui::InputFloat3("##diffcolor", &((lt->GetLightIntensity().diffuse)[0]));
+					ImGui::InputFloat3("##diffcolor", &((lt->GetLightIntensity().diffuse)[0]), 3);
 
 					ImGui::Separator();
 
 					ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.27f).x);
 					ImGui::Text("Specular Color");
 					ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.17f).x);
-					ImGui::InputFloat3("##speccolor", &((lt->GetLightIntensity().specular)[0]));
+					ImGui::InputFloat3("##speccolor", &((lt->GetLightIntensity().specular)[0]), 3);
 
 					ImGui::Separator();
 
@@ -802,21 +851,21 @@ namespace Atlas {
 					ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.27f).x);
 					ImGui::Text("Ambient Reflection");
 					ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.17f).x);
-					ImGui::InputFloat3("##lin2", &((object->GetMaterial().ambient)[0]));
+					ImGui::InputFloat3("##lin2", &((object->GetMaterial().ambient)[0]), 3);
 
 					ImGui::Separator();
 
 					ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.27f).x);
 					ImGui::Text("Diffuse Reflection");
 					ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.17f).x);
-					ImGui::InputFloat3("##lin3", &((object->GetMaterial().diffuse)[0]));
+					ImGui::InputFloat3("##lin3", &((object->GetMaterial().diffuse)[0]), 3);
 
 					ImGui::Separator();
 
 					ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.27f).x);
 					ImGui::Text("Specular Reflection");
 					ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.17f).x);
-					ImGui::InputFloat3("##lin4", &((object->GetMaterial().specular)[0]));
+					ImGui::InputFloat3("##lin4", &((object->GetMaterial().specular)[0]), 3);
 
 					ImGui::Separator();
 
@@ -854,7 +903,10 @@ namespace Atlas {
 		}
 
 		for (std::size_t i = front; i <= back; ++i) {
-			if (i >= Global::Variables.currentScene.objectsOnScene.size()) {
+			if (i >= (Global::Variables.currentScene.objectsOnScene.size() + Global::Variables.currentScene.lightsOnScene.size())) {
+				Global::Variables.selectedObjects.push_back(Global::Variables.activeCamera->GetSkybox());
+			}
+			else if (i >= Global::Variables.currentScene.objectsOnScene.size()) {
 				Global::Variables.selectedObjects.push_back(Global::Variables.currentScene.lightsOnScene[(i - Global::Variables.currentScene.objectsOnScene.size())]);
 			}
 			else {
@@ -891,6 +943,13 @@ namespace Atlas {
 		ImGui::SetNextWindowPos(ImVec2((20.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (20.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
 		ImGui::SetNextWindowSize(ImVec2((295.0f / 1920.0f) * ((float)Global::Variables.currentWidth), (1040.0f / 1080.0f) * ((float)Global::Variables.currentHeight)));
 		ImGui::Begin("Scene Viewer", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.05f).x);
+		if (ImGui::Button("Create New", ImVec2(ImGui::GetWindowSize().x * 0.90f, 0.0f))) {
+			Global::Variables.currentScene.objectsOnScene.push_back(new Object(type::cubeModel, "", "", "res/images/textures/", "newcow.png", "res/shaders/", "Lighting.shader", true, true, UUID(), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), Material(glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(0.5f, 0.5f, 0.5f), 32)));
+			Global::Variables.selectedObjects.clear();
+			Global::Variables.selectedObjects.push_back(Global::Variables.currentScene.objectsOnScene.at(Global::Variables.currentScene.objectsOnScene.size() - 1));
+			Global::Variables.currentScene.objectsOnScene.at(Global::Variables.currentScene.objectsOnScene.size() - 1)->SetDisplayName("New Cube");
+		}
 		ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.05f).x);
 		if (ImGui::Button("Deselect All", ImVec2(ImGui::GetWindowSize().x * 0.90f, 0.0f))) {
 			Global::Variables.selectedObjects.clear();
@@ -951,7 +1010,7 @@ namespace Atlas {
 			if (ImGui::Button(buttonName.c_str(), ImVec2(ImGui::GetWindowSize().x * 0.75f, 0.0f))) {
 				if (Global::Variables.keyIn.leftShiftHeld || Global::Variables.keyIn.leftShiftPressed || Global::Variables.keyIn.rightShiftHeld || Global::Variables.keyIn.rightShiftPressed) {
 					Global::Variables.selectedObjects.clear();
-					AddItemsBetweenToSelectedObjects(indexOfLastSelection, i);
+					AddItemsBetweenToSelectedObjects(indexOfLastSelection, totalIndex);
 				}
 				else if (Global::Variables.keyIn.leftControlHeld || Global::Variables.keyIn.leftControlPressed || Global::Variables.keyIn.rightControlHeld || Global::Variables.keyIn.rightControlPressed) {
 					if (IsAlreadyInSelectedItems(scene.lightsOnScene[i])) {
@@ -966,6 +1025,52 @@ namespace Atlas {
 					if (!IsAlreadyInSelectedItems(scene.lightsOnScene[i])) {
 						Global::Variables.selectedObjects.clear();
 						Global::Variables.selectedObjects.push_back(scene.lightsOnScene[i]);
+					}
+					else {
+						Global::Variables.selectedObjects.clear();
+					}
+					indexOfLastSelection = totalIndex;
+				}
+			}
+			if (isPrimarySelected || isSelected) {
+				//ImGui::PopItemFlag();
+				ImGui::PopStyleVar();
+			}
+			totalIndex++;
+		}
+
+		{
+			ImGui::SetCursorPosX((ImGui::GetWindowSize() * 0.125f).x);
+			Object* o = Global::Variables.activeCamera->GetSkybox();
+			std::string buttonName = o->GetDisplayName() + "##" + std::to_string(o->GetUID());
+			bool isPrimarySelected = IsPrimarySelected(o);
+			bool isSelected = isPrimarySelected || IsSelected(o);
+			if (isPrimarySelected) {
+				//ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
+				ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
+			}
+			else if (isSelected) {
+				//ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
+				ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
+			}
+			if (ImGui::Button(buttonName.c_str(), ImVec2(ImGui::GetWindowSize().x * 0.75f, 0.0f))) {
+				if (Global::Variables.keyIn.leftShiftHeld || Global::Variables.keyIn.leftShiftPressed || Global::Variables.keyIn.rightShiftHeld || Global::Variables.keyIn.rightShiftPressed) {
+					Global::Variables.selectedObjects.clear();
+					AddItemsBetweenToSelectedObjects(indexOfLastSelection, totalIndex);
+				}
+				else if (Global::Variables.keyIn.leftControlHeld || Global::Variables.keyIn.leftControlPressed || Global::Variables.keyIn.rightControlHeld || Global::Variables.keyIn.rightControlPressed) {
+					if (IsAlreadyInSelectedItems(o)) {
+						RemoveFromSelectedItems(o);
+					}
+					else {
+						Global::Variables.selectedObjects.push_back(o);
+					}
+					indexOfLastSelection = totalIndex;
+				}
+				else {
+					if (!IsAlreadyInSelectedItems(o)) {
+						Global::Variables.selectedObjects.clear();
+						Global::Variables.selectedObjects.push_back(o);
 					}
 					else {
 						Global::Variables.selectedObjects.clear();

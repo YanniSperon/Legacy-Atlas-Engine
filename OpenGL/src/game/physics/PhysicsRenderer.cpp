@@ -2,6 +2,7 @@
 #include "glm/gtx/quaternion.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "Player.h"
+#include "Global.h"
 
 namespace Atlas {
 
@@ -95,7 +96,7 @@ namespace Atlas {
 		glm::mat4 viewMatrix = camera->GetViewTransformMatrix();
 		if (width != localWidthBuffer || height != localHeightBuffer) {
 			if (width > 0 && height > 0) {
-				projectionMatrix = glm::perspective(glm::radians(FOV), (float)width / (float)height, 0.1f, 100.0f);
+				projectionMatrix = glm::perspective(glm::radians(FOV), (float)width / (float)height, static_cast<float>(Global::Variables.nearPlane), static_cast<float>(Global::Variables.farPlane));
 				orthographicMatrix = glm::ortho(0.0f, (float)width, 0.0f, (float)height);
 			}
 		}

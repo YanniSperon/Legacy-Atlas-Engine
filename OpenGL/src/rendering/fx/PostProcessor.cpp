@@ -139,21 +139,13 @@ namespace Atlas {
 			glBindFramebuffer(GL_READ_FRAMEBUFFER, postProcessingFramebuffer);
 			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, intermediateFramebuffer);
 			glBlitFramebuffer(0, 0, Global::Variables.currentWidth, Global::Variables.currentHeight, 0, 0, Global::Variables.currentWidth, Global::Variables.currentHeight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-			glDisable(GL_DEPTH_TEST);
-			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT);
-			renderer->Submit2D(quadForRenderingFX);
-			renderer->SimpleFlush(Global::Variables.activeCamera, Global::Variables.currentWidth, Global::Variables.currentHeight, Global::Variables.FOV, Global::Variables.currentScene.lightsOnScene.at(0));
 		}
-		else {
-			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-			glDisable(GL_DEPTH_TEST);
-			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT);
-			renderer->Submit2D(quadForRenderingFX);
-			renderer->SimpleFlush(Global::Variables.activeCamera, Global::Variables.currentWidth, Global::Variables.currentHeight, Global::Variables.FOV, Global::Variables.currentScene.lightsOnScene.at(0));
-		}
+		glDisable(GL_DEPTH_TEST);
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT);
+		renderer->Submit2D(quadForRenderingFX);
+		renderer->SimpleFlush(Global::Variables.activeCamera, Global::Variables.currentWidth, Global::Variables.currentHeight, Global::Variables.FOV, Global::Variables.currentScene.lightsOnScene.at(0));
 	}
 
 	void PostProcessor::RenderPhysicsRenderer(PhysicsRenderer* renderer, PhysicsScene* scene)

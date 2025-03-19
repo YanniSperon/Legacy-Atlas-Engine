@@ -1,15 +1,15 @@
 Object: 0
 type: Object
 modelType: cubeModel
-translation.x: 3
-translation.y: 0
-translation.z: 0
+translation.x: 5.82426
+translation.y: 5.0732
+translation.z: 7.55664
 rotation.x: 0
 rotation.y: 0
 rotation.z: 0
 scale.x: 1
 scale.y: 1
-scale.z: 7
+scale.z: 1
 ambient.r: 1
 ambient.g: 1
 ambient.b: 1
@@ -20,13 +20,13 @@ specular.r: 1
 specular.g: 1
 specular.b: 1
 shininess: 32
-hasLighting: true
+hasLighting: false
 modelFileDir: 
 modelFileName: 
-textureDir: res/images/textures/
-textureName: newcow.png
+textureDir: res/images/colors/
+textureName: red.png
 shaderDir: res/shaders/
-shaderName: Lighting.shader
-displayName: New Cube #1
-uid: 2823617560034896891:17655639251053313406:822114396151557551:17750408431792383053
+shaderName: Basic.shader
+displayName: Cube Right
+uid: 6427475856543405430:16026257017908061185:3558486330756462476:2458711679136681649
 

@@ -1,15 +1,15 @@
 Object: 2
 type: Object
 modelType: cubeModel
-translation.x: -1.5548
-translation.y: 0.177859
-translation.z: 5.98109
+translation.x: 1.56226
+translation.y: 5.09807
+translation.z: -8.12416
 rotation.x: 0
 rotation.y: 0
-rotation.z: 32.3394
-scale.x: 1.74979
+rotation.z: 0
+scale.x: 1
 scale.y: 1
-scale.z: 1.68421
+scale.z: 1
 ambient.r: 1
 ambient.g: 1
 ambient.b: 1
@@ -27,6 +27,6 @@ textureDir: res/images/textures/
 textureName: newcow.png
 shaderDir: res/shaders/
 shaderName: Lighting.shader
-displayName: Wide Cube #1
-uid: 4695811953884783676:7430159181313270152:2284482322045222438:5388764062454295459
+displayName: Cube Left
+uid: 12910019653427000942:9887810697013158498:5069102804970122783:1257498018988822155
 

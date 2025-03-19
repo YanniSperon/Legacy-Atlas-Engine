@@ -155,6 +155,8 @@ namespace Atlas {
 		ret.min = min;
 		ret.max = max;
 
+		System::Log("Loaded cube");
+
 		return ret;
 	}
 
@@ -300,6 +302,8 @@ namespace Atlas {
 
 		ret.min = min;
 		ret.max = max;
+
+		System::Log("Loaded inverted lighting cube");
 
 		return ret;
 	}
@@ -546,6 +550,8 @@ namespace Atlas {
 			maximums.z = 0.01f;
 		}
 
+		System::Log("Loaded shape \"" + fileName + "\"");
+
 		ret.min = minimums;
 		ret.max = maximums;
 
@@ -727,6 +733,8 @@ namespace Atlas {
 		ret.max = maximums;
 		ret.min = minimums;
 
+		System::Log("Loaded shape \"" + name + "\"");
+
 		return ret;
 	}
 
@@ -760,6 +768,8 @@ namespace Atlas {
 		ret.numIndices = NUM_ARRAY_ELEMENTS(indices);
 		ret.indices = new GLuint[ret.numIndices];
 		memcpy(ret.indices, indices, sizeof(indices));
+
+		System::Log("Loaded square");
 
 		return ret;
 	}

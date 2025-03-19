@@ -157,6 +157,9 @@ namespace Atlas {
 	void Camera::SetSkybox(Object* newSkybox)
 	{
 		skybox = newSkybox;
+		if (skybox) {
+			skybox->SetDisplayName("Skybox");
+		}
 	}
 
 	Object* Camera::GetSkybox()

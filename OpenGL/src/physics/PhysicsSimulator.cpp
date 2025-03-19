@@ -33,6 +33,9 @@ namespace Atlas {
 		while (!shouldExit && !glfwWindowShouldClose(Global::Variables.window)) {
 
 			glfwPollEvents();
+			glfwSetInputMode(Global::Variables.window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+			glfwSetCursorPos(Global::Variables.window, Global::Variables.mouseX, Global::Variables.mouseY);
+			Global::Variables.enableMouseMove = true;
 			InputHandler::ProcessEvents(&Global::Variables.keyIn, &Global::Variables.mouseIn);
 
 			currentTime = std::chrono::high_resolution_clock::now();
@@ -63,7 +66,7 @@ namespace Atlas {
 				physicsScene.playersOnScene.at(0)->MoveDown(deltaTime);
 			}
 			if (Global::Variables.mouseIn.leftClicked) {
-				physicsScene.physicsObjectsOnScene.push_back(new PhysicsObject(new Object(type::normalModel, "res/models/", "sphere.obj", "res/images/textures/", "newcow.png", "res/shaders/", "Lighting.shader", true, true, Atlas::UUID(), glm::vec3(0.0f, 0.0f, 0.0f), physicsScene.playersOnScene.at(0)->GetTranslation(), glm::vec3(0.25f, 0.25f, 0.5f)), 50.0f, PhysicsObject::typeShape::sphere));
+				physicsScene.physicsObjectsOnScene.push_back(new PhysicsObject(new Object(type::normalModel, "res/models/", "sphere.obj", "res/images/textures/", "white.png", "res/shaders/", "Lighting.shader", true, true, Atlas::UUID(), glm::vec3(0.0f, 0.0f, 0.0f), physicsScene.playersOnScene.at(0)->GetTranslation(), glm::vec3(0.25f, 0.25f, 0.5f)), 50.0f, PhysicsObject::typeShape::sphere));
 				physicsScene.physicsObjectsOnScene.at(physicsScene.physicsObjectsOnScene.size() - 1)->SetDisplayName("Bullet");
 				physicsScene.physicsObjectsOnScene.at(physicsScene.physicsObjectsOnScene.size() - 1)->Launch(physicsScene.playersOnScene.at(0)->GetViewDirection());
 				shootTimer.Reset(0.1f);
@@ -72,7 +75,7 @@ namespace Atlas {
 			if (Global::Variables.mouseIn.leftHeld) {
 				shootTimer.ElapseTime(deltaTime);
 				if (shootTimer.HasFinished()) {
-					physicsScene.physicsObjectsOnScene.push_back(new PhysicsObject(new Object(type::normalModel, "res/models/", "sphere.obj", "res/images/textures/", "newcow.png", "res/shaders/", "Lighting.shader", true, true, Atlas::UUID(), glm::vec3(0.0f, 0.0f, 0.0f), physicsScene.playersOnScene.at(0)->GetTranslation(), glm::vec3(0.25f, 0.25f, 0.5f)), 50.0f, PhysicsObject::typeShape::sphere));
+					physicsScene.physicsObjectsOnScene.push_back(new PhysicsObject(new Object(type::normalModel, "res/models/", "sphere.obj", "res/images/textures/", "white.png", "res/shaders/", "Lighting.shader", true, true, Atlas::UUID(), glm::vec3(0.0f, 0.0f, 0.0f), physicsScene.playersOnScene.at(0)->GetTranslation(), glm::vec3(0.25f, 0.25f, 0.5f)), 50.0f, PhysicsObject::typeShape::sphere));
 					physicsScene.physicsObjectsOnScene.at(physicsScene.physicsObjectsOnScene.size() - 1)->SetDisplayName("Bullet");
 					physicsScene.physicsObjectsOnScene.at(physicsScene.physicsObjectsOnScene.size() - 1)->Launch(physicsScene.playersOnScene.at(0)->GetViewDirection());
 					shootTimer.Reset(0.1f);
@@ -108,6 +111,7 @@ namespace Atlas {
 		Camera::SetFocus(originalCamera);
 		PhysicsEngine::Cleanup();
 		
+		System::Log("Reenabling movement");
 		glfwSetInputMode(Global::Variables.window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		glfwSetCursorPos(Global::Variables.window, Global::Variables.currentWidth * 0.5, Global::Variables.currentHeight * 0.5);
 		Global::Variables.enableMouseMove = false;

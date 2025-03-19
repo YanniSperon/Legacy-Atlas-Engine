@@ -80,6 +80,9 @@ namespace Atlas {
 		std::vector<Object*> selectedObjects;
 
 		PhysicsSettings physicsSettings;
+
+		double nearPlane;
+		double farPlane;
 	};
 
 }

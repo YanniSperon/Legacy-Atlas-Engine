@@ -40,18 +40,18 @@ namespace Atlas {
 		userPtr2->collisionData.obj2 = obj2Object;
 		PhysicsObject* physObj1 = userPtr1->physicsObject;
 		PhysicsObject* physObj2 = userPtr2->physicsObject;
-		if (physObj1) {
-			System::Warn("obj1: " + physObj1->ToString());
-		}
-		else {
-			System::Err("obj1: nullptr");
-		}
-		if (physObj2) {
-			System::Warn("obj2: " + physObj2->ToString());
-		}
-		else {
-			System::Err("obj2: nullptr");
-		}
+		//if (physObj1) {
+		//	System::Warn("obj1: " + physObj1->ToString());
+		//}
+		//else {
+		//	System::Err("obj1: nullptr");
+		//}
+		//if (physObj2) {
+		//	System::Warn("obj2: " + physObj2->ToString());
+		//}
+		//else {
+		//	System::Err("obj2: nullptr");
+		//}
 		//physObj1->PrepareForDeletion();
 		//physObj2->PrepareForDeletion();
 		//PhysicsLinker::DeleteObjectFromScene(physicsScene, physObj1);

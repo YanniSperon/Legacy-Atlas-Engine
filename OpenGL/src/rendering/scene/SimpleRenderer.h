@@ -12,8 +12,6 @@ namespace Atlas {
 		std::deque<Sentence*> renderQueueText;
 		glm::mat4 projectionMatrix;
 		glm::mat4 orthographicMatrix;
-		int localWidthBuffer = 0;
-		int localHeightBuffer = 0;
 	public:
 		void SubmitText(Sentence* renderable) override;
 		void Submit2D(Object2D* renderable) override;

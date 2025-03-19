@@ -39,6 +39,7 @@ namespace Atlas {
 		PostProcessor::ChangeEffect("res/shaders/GreyscalePostFX.shader");
 		PostProcessor::ChangeEffect("res/shaders/InvertPostFX.shader");
 		PostProcessor::ChangeEffect("res/shaders/SharpenPostFX.shader");
+		PostProcessor::ChangeEffect("res/shaders/OutlinePostFX.shader");
 		PostProcessor::ChangeEffect("res/shaders/NoPostFX.shader");
 
 		GUI::Initialize(Global::Variables.window);

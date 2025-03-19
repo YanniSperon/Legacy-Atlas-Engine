@@ -159,9 +159,11 @@
     <ClCompile Include="src\global\Global.cpp" />
     <ClCompile Include="src\global\GlobalVariables.cpp" />
     <ClCompile Include="src\input\InputHandler.cpp" />
+    <ClCompile Include="src\leveleditor\DirectionalArrows.cpp" />
     <ClCompile Include="src\leveleditor\LevelEditorControl.cpp" />
     <ClCompile Include="src\other\Convert.cpp" />
     <ClCompile Include="src\other\CachedString.cpp" />
+    <ClCompile Include="src\other\ExampleScene.cpp" />
     <ClCompile Include="src\physics\PhysicsEngine.cpp" />
     <ClCompile Include="src\physics\PhysicsSimulator.cpp" />
     <ClCompile Include="src\rendering\fx\PostProcessor.cpp" />
@@ -392,6 +394,7 @@
     <None Include="res\shaders\InvertPostFX.shader" />
     <None Include="res\shaders\Lighting.shader" />
     <None Include="res\shaders\GreyscalePostFX.shader" />
+    <None Include="res\shaders\OutlinePostFX.shader" />
     <None Include="res\shaders\SharpenPostFX.shader" />
     <None Include="res\shaders\Text.shader" />
     <None Include="res\shaders\Window.shader" />
@@ -522,7 +525,9 @@
     <ClInclude Include="src\global\GlobalVariables.h" />
     <ClInclude Include="src\input\Input.h" />
     <ClInclude Include="src\input\InputHandler.h" />
+    <ClInclude Include="src\leveleditor\DirectionalArrows.h" />
     <ClInclude Include="src\leveleditor\LevelEditorControl.h" />
+    <ClInclude Include="src\other\ExampleScene.h" />
     <ClInclude Include="src\other\Manager.h" />
     <ClInclude Include="src\other\Convert.h" />
     <ClInclude Include="src\other\Random.h" />

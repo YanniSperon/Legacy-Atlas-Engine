@@ -1,9 +1,9 @@
 Object: 4
 type: Object
 modelType: cubeModel
-translation.x: -1.81462
-translation.y: 0.369965
-translation.z: 7.98931
+translation.x: 4.50074
+translation.y: 0.312623
+translation.z: -5.18491
 rotation.x: 0
 rotation.y: 0
 rotation.z: 0
@@ -24,9 +24,9 @@ hasLighting: true
 modelFileDir: 
 modelFileName: 
 textureDir: res/images/colors/
-textureName: yellow.png
+textureName: white.png
 shaderDir: res/shaders/
 shaderName: Lighting.shader
-displayName: NewName
-uid: 5381000620246314687:16030627020784824446:16847533194176065999:4059185040019086489
+displayName: White Cube
+uid: 3022339696966119630:2101815642353424959:943056953956486025:2258513544003132772
 
