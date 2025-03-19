@@ -12,6 +12,8 @@ Implemented Bullet Physics, a scene editor, a basic 3D rendering engine (blinn-p
 
 Recently went back and arranged a demo scene:
 
+[Logo](https://github.com/YanniSperon/Legacy-Atlas-Engine/blob/master/OpenGL/res/images/textures/newcow.png?raw=true)
+
 ![Animated](https://github.com/YanniSperon/Legacy-Atlas-Engine/raw/1fdc8991a623e2e3b25623dc21a9d8ed5e630b7e/Demonstrations/Animated.mp4)
 
 ![Physics](https://github.com/YanniSperon/Legacy-Atlas-Engine/raw/refs/heads/master/Demonstrations/Physics.mp4)
